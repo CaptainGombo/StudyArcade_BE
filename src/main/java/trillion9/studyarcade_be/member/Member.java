@@ -1,8 +1,11 @@
 package trillion9.studyarcade_be.member;
 
+import lombok.Getter;
+
 import javax.persistence.*;
 
 @Entity
+@Getter
 public class Member {
 
     @Id
@@ -16,5 +19,4 @@ public class Member {
     private String email;
     @Column(nullable = false)
     private String password;
-
 }

@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    include: secret
   thymeleaf:
     cache: 'false'
   jpa:
@@ -9,4 +11,5 @@ spring:
         format_sql: true
     open-in-view: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
+
