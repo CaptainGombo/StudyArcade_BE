@@ -18,6 +18,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
+    private final RedisTemplate redisTemplate;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -27,7 +28,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if(accessToken != null) {
             //Access 토큰 유효 시, security context에 인증 정보 저장
             if(jwtUtil.validateToken(accessToken)){
-                setAuthentication(jwtUtil.getUserInfoFromToken(accessToken));
+                // Redis에 해당 accessToken logout 여부를 확인
+                String isLogout = (String) redisTemplate.opsForValue().get(accessToken);
+                // 로그아웃이 없는(되어 있지 않은) 경우 해당 토큰은 정상적으로 작동하기
+                if (ObjectUtils.isEmpty(isLogout)) {
+                    setAuthentication(jwtUtil.getUserInfoFromToken(accessToken));
+                }
             }
             // Access 토큰 만료
             else if (refreshToken != null) {

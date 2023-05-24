@@ -22,6 +22,8 @@ import trillion9.studyarcade_be.global.jwt.JwtUtil;
 @EnableWebSecurity
 public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
+    private final RedisTemplate redisTemplate;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -46,14 +48,14 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests()
                 //회원가입, 로그인페이지, 메인 페이지
-                .antMatchers("/members/login").permitAll()
-                .antMatchers("/members/signup").permitAll()
-                .antMatchers("/emails/**").permitAll()
-                .antMatchers(HttpMethod.GET,"/posts/**").permitAll()
+                .antMatchers("/**").permitAll()
+                // .antMatchers("/members/signup").permitAll()
+                // .antMatchers("/emails/**").permitAll()
+                // .antMatchers(HttpMethod.GET,"/posts/**").permitAll()
 
                 .anyRequest().authenticated()
                 // JWT 인증/인가를 사용하기 위한 설정
-                .and().addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .and().addFilterBefore(new JwtAuthFilter(jwtUtil, redisTemplate), UsernamePasswordAuthenticationFilter.class);
 
         // 이 설정을 해주지 않으면 밑의 cors가 적용되지 않는다
         http.cors();
@@ -97,5 +99,4 @@ public class WebSecurityConfig {
 //
 //        return source;
 //    }
-
 }
