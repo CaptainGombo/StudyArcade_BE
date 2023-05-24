@@ -67,6 +67,7 @@ public class JwtUtil {
         }
     }
 
+
     public TokenDto createAllToken(String userEmail){
         return new TokenDto(createToken(userEmail,ACCESS_TOKEN), createToken(userEmail,REFRESH_TOKEN));
     }
@@ -129,4 +130,12 @@ public class JwtUtil {
         UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
+
+    // 토큰의 남은 유효시간을 반환
+    public long getRemainingTime(String token) {
+        long expirationTime = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getExpiration().getTime();
+        long currentTime = new Date().getTime();
+        return expirationTime - currentTime;
+    }
+
 }
