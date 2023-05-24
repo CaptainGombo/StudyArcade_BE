@@ -33,8 +33,8 @@ public class WebSecurityConfig {
         return web -> web.ignoring()
                 //static 파일들
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-                //Swagger (필요할까요?)
-                .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**");
+                //Swagger
+                .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**","/api-docs","/swagger-ui.html");
     }
 
     @Bean

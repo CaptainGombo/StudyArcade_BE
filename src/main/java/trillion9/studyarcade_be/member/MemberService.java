@@ -11,4 +11,8 @@ public class MemberService {
     public ResponseDto<String> register(MemberRequestDto memberRequestDto) {
         return ResponseDto.setSuccess("임시");
     }
+
+    public ResponseDto<String> login(MemberRequestDto.login memberRequestDto) {
+        return ResponseDto.setSuccess("임시");
+    }
 }
