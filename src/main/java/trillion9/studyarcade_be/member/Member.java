@@ -2,6 +2,8 @@ package trillion9.studyarcade_be.member;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import trillion9.studyarcade_be.roomMember.RoomMember;
 
 import javax.persistence.*;
 
@@ -22,6 +24,7 @@ public class Member {
     private String email;
     @Column(nullable = false)
     private String password;
+
 
     @Builder
     private Member(Long kakaoId, String nickname, String email, String password) {
