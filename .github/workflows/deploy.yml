@@ -24,6 +24,12 @@ jobs:
         with:
           java-version: '17'
           distribution: 'zulu'
+      - name: Secret yml파일 생성
+        run: |
+          mkdir -p src/main/resources
+          echo "${{ secrets.SECRET_YML }}" | base64 --decode > src/main/resources/application-secret.yml
+          find src
+        shell: bash
       - name: gradlew에 실행 권한 부여
         run: chmod +x ./gradlew
       - name: 프로젝트 빌드
