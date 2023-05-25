@@ -9,6 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Member {
 
     @Id

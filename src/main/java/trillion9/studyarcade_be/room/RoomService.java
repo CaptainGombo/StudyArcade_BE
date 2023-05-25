@@ -82,7 +82,7 @@ public class RoomService {
                 .build();
 
         room.updateRoom(requestDto);
-        roomRepository.save(room);
+
         return ResponseDto.setSuccess("스터디 룸 수정 성공", new RoomResponseDto(room));
     }
 
@@ -92,9 +92,11 @@ public class RoomService {
         Room room = roomRepository.findByRoomId(roomId).orElseThrow(
                 () -> new CustomException(ROOM_NOT_FOUND)
         );
-        if (!room.getMember().getId().equals(member.getId())) {
-            throw new CustomException(INVALID_USER);
-        }
+
+        roomMemberRepository.findByMemberIdAndRoomMaster(member, true).orElseThrow(
+                () -> new CustomException(INVALID_USER)
+        );
+
         roomRepository.delete(room);
         return ResponseDto.setSuccess("스터디 룸 삭제 성공");
     }
