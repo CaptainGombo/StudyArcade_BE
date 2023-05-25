@@ -1,27 +1,22 @@
 package trillion9.studyarcade_be.member;
 
-import static trillion9.studyarcade_be.global.exception.ErrorCode.*;
-
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import lombok.RequiredArgsConstructor;
 import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.exception.CustomException;
 import trillion9.studyarcade_be.global.jwt.JwtUtil;
-import trillion9.studyarcade_be.global.jwt.RefreshToken;
 import trillion9.studyarcade_be.global.jwt.RefreshTokenRepository;
 import trillion9.studyarcade_be.global.jwt.TokenDto;
 import trillion9.studyarcade_be.member.dto.MemberRequestDto;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.concurrent.TimeUnit;
+
+import static trillion9.studyarcade_be.global.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +29,23 @@ public class MemberService {
 
     @Transactional
     public ResponseDto<String> register(MemberRequestDto memberRequestDto) {
-        return ResponseDto.setSuccess("임시");
+        if (!memberRequestDto.getPassword().equals(memberRequestDto.getCheckPassword())) {
+            throw new CustomException(INVALID_USER_PASSWORD);
+        }
+        String encodedPassword = passwordEncoder.encode(memberRequestDto.getPassword());
+
+        memberRepository.findByEmail(memberRequestDto.getEmail()).ifPresent(member -> {
+            throw new CustomException(INVALID_USER_EXISTENCE);
+        });
+
+        Member member = Member.builder()
+                .email(memberRequestDto.getEmail())
+                .password(encodedPassword)
+                .nickname(memberRequestDto.getNickname())
+                .build();
+
+        memberRepository.saveAndFlush(member);
+        return ResponseDto.setSuccess("회원가입 성공");
     }
 
     @Transactional
