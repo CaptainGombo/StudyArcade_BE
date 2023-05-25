@@ -24,17 +24,30 @@ public class Room extends Timestamp {
     @Column(nullable = false)
     private String roomContent;
 
+    @Column
+    private String imageUrl;
+
     @ColumnDefault("false")
-    private boolean roomMaster;
+    private boolean isPrivate;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @Column
+    private String roomPassword;
 
-    public Room(RoomRequestDto requestDto, Member member) {
+
+    @Builder
+    private Room(String roomName, String roomContent, String imageUrl, boolean isPrivate, String roomPassword) {
+        this.roomName = roomName;
+        this.roomContent = roomContent;
+        this.imageUrl = imageUrl;
+        this.isPrivate = isPrivate;
+        this.roomPassword = roomPassword;
+    }
+
+    @Builder
+    public Room(RoomRequestDto requestDto, String imageUrl) {
         this.roomName = requestDto.getRoomName();
         this.roomContent = requestDto.getRoomContent();
-        this.member = member;
+        this.imageUrl = imageUrl;
     }
 
     public void updateRoom(RoomRequestDto requestDto) {

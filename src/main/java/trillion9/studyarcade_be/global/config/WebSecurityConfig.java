@@ -1,5 +1,7 @@
 package trillion9.studyarcade_be.global.config;
 
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,9 +51,9 @@ public class WebSecurityConfig {
         http.authorizeHttpRequests()
                 //회원가입, 로그인페이지, 메인 페이지
                 .antMatchers("/**").permitAll()
-                // .antMatchers("/members/signup").permitAll()
-                // .antMatchers("/emails/**").permitAll()
-                // .antMatchers(HttpMethod.GET,"/posts/**").permitAll()
+//                .antMatchers("/members/signup").permitAll()
+//                .antMatchers("/emails/**").permitAll()
+//                .antMatchers(HttpMethod.GET,"/posts/**").permitAll()
 
                 .anyRequest().authenticated()
                 // JWT 인증/인가를 사용하기 위한 설정
@@ -99,4 +101,5 @@ public class WebSecurityConfig {
 //
 //        return source;
 //    }
+
 }
