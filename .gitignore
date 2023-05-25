@@ -18,6 +18,8 @@ bin/
 !**/src/test/**/bin/
 
 ### IntelliJ IDEA ###
+**/application-secret.yml
+
 .idea
 *.iws
 *.iml
@@ -26,7 +28,6 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
-**/application-secret.yml
 
 ### NetBeans ###
 /nbproject/private/
