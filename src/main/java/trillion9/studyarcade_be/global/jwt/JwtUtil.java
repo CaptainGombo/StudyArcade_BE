@@ -32,8 +32,8 @@ public class JwtUtil {
     public static final String ACCESS_TOKEN = "Access_Token";
     public static final String REFRESH_TOKEN = "Refresh_Token";
 
-    private static final long ACCESS_TOKEN_TIME = 60 * 60 * 1000L;   //AccessToken Time 1 hr
-    private static final long REFRESH_TOKEN_TIME = 24 * 60 * 60 *100L; //RefreshToken Time 1 day
+    public static final long ACCESS_TOKEN_TIME = 60 * 60 * 1000L;   //AccessToken Time 1 hr
+    public static final long REFRESH_TOKEN_TIME = 24 * 60 * 60 *100L; //RefreshToken Time 1 day
     private final UserDetailsServiceImpl userDetailsService;
     private final MemberRepository memberRepository;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -66,6 +66,7 @@ public class JwtUtil {
             return null;
         }
     }
+
 
     public TokenDto createAllToken(String userEmail){
         return new TokenDto(createToken(userEmail,ACCESS_TOKEN), createToken(userEmail,REFRESH_TOKEN));
@@ -129,4 +130,12 @@ public class JwtUtil {
         UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
+
+    // 토큰의 남은 유효시간을 반환
+    public long getRemainingTime(String token) {
+        long expirationTime = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getExpiration().getTime();
+        long currentTime = new Date().getTime();
+        return expirationTime - currentTime;
+    }
+
 }
