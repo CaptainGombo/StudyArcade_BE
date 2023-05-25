@@ -62,6 +62,6 @@ public class MemberController {
         cookie.setPath("/");
         response.addCookie(cookie);
 
-        return "redirect:/api/main";
+        return kakaoService.kakaoLogin(code,response);
     }
 }
