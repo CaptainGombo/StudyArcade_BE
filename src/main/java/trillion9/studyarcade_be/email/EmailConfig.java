@@ -11,7 +11,7 @@ import java.util.Properties;
 
 
 @Configuration
-@PropertySource("classpath:email.properties")
+@PropertySource("classpath:application-secret.yml")
 public class EmailConfig {
 
     @Value("${mail.smtp.port}")
