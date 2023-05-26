@@ -3,7 +3,7 @@ os: linux
 
 files:
   - source:  /
-    destination: /home/ubuntu/StudyArcade_BE
+    destination: /home/ubuntu/StudyHub_BE
     overwrite: yes
 
 permissions:

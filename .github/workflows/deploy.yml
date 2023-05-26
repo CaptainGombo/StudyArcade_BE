@@ -1,4 +1,4 @@
-name: StudyArcade
+name: StudyHub
 run-name: Running
 on:
   push:
