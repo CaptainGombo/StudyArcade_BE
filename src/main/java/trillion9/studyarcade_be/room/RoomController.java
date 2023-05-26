@@ -36,7 +36,7 @@ public class RoomController {
     /* 스터디 룸 수정 */
     @Operation(summary = "스터디 룸 수정 API", description = "스터디 룸 수정")
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 수정 완료")})
-    @PatchMapping("/room/{roomId}")
+    @PatchMapping("/room/{room-id}")
     public ResponseDto<RoomResponseDto> updateRoom(@PathVariable Long roomId,
                                                    @RequestBody RoomRequestDto requestDto,
                                                    @RequestParam(value = "image", required = false) MultipartFile image,
@@ -47,7 +47,7 @@ public class RoomController {
     /* 스터디 룸 삭제 */
     @Operation(summary = "스터디 룸 삭제 API", description = "스터디 룸 삭제")
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 삭제 완료")})
-    @DeleteMapping("/room/{roomId}")
+    @DeleteMapping("/room/{room-id}")
     public ResponseDto<RoomResponseDto> deleteRoom(@PathVariable Long roomId,
                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return roomService.deleteRoom(roomId, userDetails.getMember());
@@ -64,7 +64,7 @@ public class RoomController {
     /* 스터디 룸 정보 조회 */
     @Operation(summary = "스터디 룸 정보 조회 API", description = "스터디 룸 정보 조회")
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 정보 조회 완료")})
-    @GetMapping("/room/{roomId}")
+    @GetMapping("/room/{room-id}")
     public ResponseDto<RoomResponseDto> infoRoom(@PathVariable Long roomId) {
         return roomService.infoRoom(roomId);
     }
