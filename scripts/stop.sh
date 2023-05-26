@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ROOT_PATH="/home/ubuntu/StudyArcade_BE"
+ROOT_PATH="/home/ubuntu/StudyHub_BE"
 JAR="$ROOT_PATH/application.jar"
 STOP_LOG="$ROOT_PATH/stop.log"
 SERVICE_PID=$(pgrep -f $JAR) # 실행중인 Spring 서버의 PID
