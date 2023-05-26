@@ -21,7 +21,7 @@ import javax.validation.Valid;
 
 @Tag(name = "MemberController", description = "회원가입/로그인 API")
 @RestController
-@RequestMapping("api/members")
+@RequestMapping("/api/members")
 @RequiredArgsConstructor
 public class MemberController {
 
@@ -47,8 +47,7 @@ public class MemberController {
     // 로그아웃
     @PostMapping("/logout")
     public ResponseDto<String> logout(HttpServletRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        Member member = userDetails.getMember();
-        return  memberService.logout(request, member);
+        return  memberService.logout(request, userDetails.getMember());
     }
 
 
@@ -62,6 +61,6 @@ public class MemberController {
         cookie.setPath("/");
         response.addCookie(cookie);
 
-        return kakaoService.kakaoLogin(code,response);
+        return "redirect:/api/main";
     }
 }

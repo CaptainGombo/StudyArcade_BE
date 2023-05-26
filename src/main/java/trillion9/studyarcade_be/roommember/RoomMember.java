@@ -1,4 +1,4 @@
-package trillion9.studyarcade_be.roomMember;
+package trillion9.studyarcade_be.roommember;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,7 @@ public class RoomMember {
 
     @MapsId
     @OneToOne
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @ColumnDefault("false")

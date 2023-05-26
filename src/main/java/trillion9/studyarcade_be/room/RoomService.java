@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,8 +16,8 @@ import trillion9.studyarcade_be.global.exception.CustomException;
 import trillion9.studyarcade_be.member.Member;
 import trillion9.studyarcade_be.room.dto.RoomRequestDto;
 import trillion9.studyarcade_be.room.dto.RoomResponseDto;
-import trillion9.studyarcade_be.roomMember.RoomMember;
-import trillion9.studyarcade_be.roomMember.RoomMemberRepository;
+import trillion9.studyarcade_be.roommember.RoomMember;
+import trillion9.studyarcade_be.roommember.RoomMemberRepository;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -104,11 +103,11 @@ public class RoomService {
     /* 스터디 룸 목록 조회 */
     @Transactional(readOnly = true)
     public ResponseDto<List<RoomResponseDto>> allRooms() {
-        List<Room> room = roomRepository.findAllByOrderByCreatedAtDesc();
-        List<RoomResponseDto> roomResponseDto = room.stream()
+        List<Room> rooms = roomRepository.findAllByOrderByCreatedAtDesc();
+        List<RoomResponseDto> roomResponseDtos = rooms.stream()
                 .map(RoomResponseDto::new)
                 .collect(Collectors.toList());
-        return ResponseDto.setSuccess("스터디 룸 목록 조회 성공", roomResponseDto);
+        return ResponseDto.setSuccess("스터디 룸 목록 조회 성공", roomResponseDtos);
     }
 
     /* 스터디 룸 정보 조회 */

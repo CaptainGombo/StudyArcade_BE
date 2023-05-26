@@ -1,4 +1,4 @@
-package trillion9.studyarcade_be.roomMember;
+package trillion9.studyarcade_be.roommember;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import trillion9.studyarcade_be.member.Member;
