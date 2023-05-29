@@ -23,5 +23,3 @@ public class MemberRequestDto {
         private String password;
     }
 }
-
-
