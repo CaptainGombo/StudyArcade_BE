@@ -15,7 +15,7 @@ import trillion9.studyarcade_be.global.jwt.JwtUtil;
         info = @Info(title = "StudyHub API 명세서",
                 description = "StudyHub API 명세서",
                 version = "v1"),
-        servers = @Server(url = "https://studyhub.shop", description = "스터디허브 홀리몰리 레츠기릿"))
+        servers = @Server(url = "https://studyhub.shop", description = "StudyHub HoLlYmOlY GUaCaMoLe lEtSgEtIt"))
 
 @Configuration
 public class SwaggerConfig {
@@ -23,7 +23,7 @@ public class SwaggerConfig {
     public OpenAPI openAPI() {
         io.swagger.v3.oas.models.info.Info info = new io.swagger.v3.oas.models.info.Info()
                 .version("v1.0.0")
-                .title("StudyArcade")
+                .title("StudyHub")
                 .description("Api Description");
 
         String access_token_header = JwtUtil.ACCESS_TOKEN;
