@@ -2,6 +2,7 @@ package trillion9.studyarcade_be.global.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
@@ -11,9 +12,10 @@ import org.springframework.context.annotation.Configuration;
 import trillion9.studyarcade_be.global.jwt.JwtUtil;
 
 @OpenAPIDefinition(
-        info = @Info(title = "StudyArcade API 명세서",
-                description = "StudyArcade API 명세서",
-                version = "v1"))
+        info = @Info(title = "StudyHub API 명세서",
+                description = "StudyHub API 명세서",
+                version = "v1"),
+        servers = @Server(url = "https://studyhub.shop", description = "스터디허브 홀리몰리 레츠기릿"))
 
 @Configuration
 public class SwaggerConfig {
