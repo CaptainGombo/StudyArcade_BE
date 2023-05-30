@@ -49,8 +49,8 @@ public class RoomController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 생성 완료")})
     @PostMapping("/room/create")
     public ResponseDto<RoomCreateResponseDto> createRoom(@RequestPart(value = "content") RoomCreateRequestDto requestDto,
-                                                   @RequestParam(value = "image", required = false) MultipartFile image,
-                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
+                                                         @RequestPart(value = "image", required = false) MultipartFile image,
+                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
         return roomService.createRoom(requestDto, image, userDetails.getMember());
     }
 
@@ -59,8 +59,8 @@ public class RoomController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 수정 완료")})
     @PatchMapping("/room/{session-id}")
     public ResponseDto<RoomDetailResponseDto> updateRoom(@PathVariable("session-id") Long sessionId,
-                                                   @RequestBody RoomCreateRequestDto requestDto,
-                                                   @RequestParam(value = "image", required = false) MultipartFile image,
+                                                   @RequestPart RoomCreateRequestDto requestDto,
+                                                   @RequestPart(value = "image", required = false) MultipartFile image,
                                                    @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return roomService.updateRoom(sessionId, requestDto, image, userDetails.getMember());
     }
@@ -70,7 +70,7 @@ public class RoomController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 삭제 완료")})
     @DeleteMapping("/room/{session-id}")
     public ResponseDto<RoomDetailResponseDto> deleteRoom(@PathVariable("session-id") Long sessionId,
-                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return roomService.deleteRoom(sessionId, userDetails.getMember());
     }
 
@@ -79,8 +79,7 @@ public class RoomController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 입장 완료")})
     @PostMapping("/room/{session-id}/enter")
     public String enterRoom(@PathVariable("session-id") String sessionId,
-                            @AuthenticationPrincipal UserDetailsImpl userDetails) throws
-        OpenViduJavaClientException, OpenViduHttpException {
+                            @AuthenticationPrincipal UserDetailsImpl userDetails) throws OpenViduJavaClientException, OpenViduHttpException {
         return roomService.enterRoom(sessionId, userDetails.getMember());
     }
 
