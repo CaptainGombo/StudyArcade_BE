@@ -1,17 +1,25 @@
 package trillion9.studyarcade_be.email;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import trillion9.studyarcade_be.global.exception.CustomException;
+import trillion9.studyarcade_be.member.MemberRepository;
 
 import javax.mail.Message.RecipientType;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Random;
 
+import static trillion9.studyarcade_be.global.exception.ErrorCode.INVALID_USER_EXISTENCE;
+
 @Service
+@RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService{
+
+    private final MemberRepository memberRepository;
 
     @Autowired
     JavaMailSender emailSender;
@@ -64,9 +72,15 @@ public class EmailServiceImpl implements EmailService{
         }
         return key.toString();
     }
+
     @Override
     public String sendSimpleMessage(String to)throws Exception {
         // TODO Auto-generated method stub
+
+        memberRepository.findByEmail(to).ifPresent(member -> {
+            throw new CustomException(INVALID_USER_EXISTENCE);
+        });
+
         MimeMessage message = createMessage(to);
         try{ // 예외처리
             emailSender.send(message);
