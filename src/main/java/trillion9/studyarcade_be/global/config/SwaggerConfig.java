@@ -15,7 +15,10 @@ import trillion9.studyarcade_be.global.jwt.JwtUtil;
         info = @Info(title = "StudyHub API 명세서",
                 description = "StudyHub API 명세서",
                 version = "v1"),
-        servers = @Server(url = "https://studyhub.shop", description = "StudyHub HoLlYmOlY GUaCaMoLe lEtSgEtIt"))
+        servers = {
+                @Server(url = "https://studyhub.shop", description = "StudyHub HoLlYmOlY GUaCaMoLe lEtSgEtIt"),
+                @Server(url = "http://localhost:8080", description = "LocalHost")
+        })
 
 @Configuration
 public class SwaggerConfig {
