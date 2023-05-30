@@ -1,5 +1,7 @@
-package trillion9.studyarcade_be.room;
+ package trillion9.studyarcade_be.room;
 
+import io.openvidu.java.client.OpenViduHttpException;
+import io.openvidu.java.client.OpenViduJavaClientException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -16,6 +18,7 @@ import trillion9.studyarcade_be.room.dto.RoomDetailResponseDto;
 import trillion9.studyarcade_be.room.dto.RoomResponseDto;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 @Tag(name = "RoomController",description = "스터디룸 API")
 @RestController
@@ -24,6 +27,22 @@ import java.util.List;
 public class RoomController {
 
     private final RoomService roomService;
+
+    /* 스터디 룸 목록 조회 */
+    @Operation(summary = "스터디 룸 목록 조회 API", description = "스터디 룸 목록 조회")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 목록 조회 완료")})
+    @GetMapping("/main")
+    public ResponseDto<List<RoomResponseDto>> allRooms(@RequestParam("page") int page) {
+        return roomService.allRooms(page - 1);
+    }
+
+    /* 스터디 룸 정보 조회 */
+    @Operation(summary = "스터디 룸 정보 조회 API", description = "스터디 룸 정보 조회")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 정보 조회 완료")})
+    @GetMapping("/room/{session-id}")
+    public ResponseDto<RoomDetailResponseDto> infoRoom(@PathVariable("session-id") Long sessionId) {
+        return roomService.infoRoom(sessionId);
+    }
 
     /* 스터디 룸 생성 */
     @Operation(summary = "스터디 룸 생성 API", description = "스터디 룸 생성")

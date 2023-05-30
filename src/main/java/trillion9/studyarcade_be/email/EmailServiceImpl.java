@@ -75,7 +75,7 @@ public class EmailServiceImpl implements EmailService{
     }
 
     @Override
-    public String sendSimpleMessage(String to)throws Exception {
+    public String sendSimpleMessage(String to) throws Exception {
         // TODO Auto-generated method stub
 
         memberRepository.findByEmail(to).ifPresent(member -> {

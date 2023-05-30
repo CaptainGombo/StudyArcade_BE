@@ -280,13 +280,13 @@ public class RoomService {
         /* 사용자 연결 시 닉네임 전달 */
         String serverData = member.getNickname();
 
-        /*serverData을 사용하여 connectionProperties 객체를 빌드*/
+        /* serverData을 사용하여 connectionProperties 객체를 빌드 */
         ConnectionProperties connectionProperties = new ConnectionProperties.Builder()
             .type(ConnectionType.WEBRTC)
             .data(serverData)
             .build();
 
-        /*새로운 OpenVidu 세션(채팅방) 생성*/
+        /* 새로운 OpenVidu 세션(스터디 룸) 생성 */
         Session session = openvidu.createSession();
 
 
