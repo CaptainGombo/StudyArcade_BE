@@ -228,50 +228,50 @@ public class RoomService {
     //     return "Success";
     // }
 
-    /* 스터디 룸 퇴장 */
-    @Transactional
-    public String outRoom(String sessionId, Member member, Duration roomStudyTime) {
-
-        /* 방이 있는 지 확인 */
-        Room room = roomRepository.findBySessionIdAndIsDelete(sessionId, false).orElseThrow(
-            () -> new EntityNotFoundException("채팅방이 존재하지않습니다.")
-        );
-
-        /* 방에 멤버가 존재하는지 확인. */
-        RoomMember roomMember = roomMemberRepository.findByMemberIdAndSessionIdAndIsOut(member.getId(), sessionId, false).orElseThrow(
-            () -> new EntityNotFoundException("방에 있는 멤버가 아닙니다.")
-        );
-
-        /* 이미 해당 방에서 나간 유저 표시. */
-        if (roomMember.isOut()) {
-            throw new IllegalArgumentException("이미 방에서 나간 유저 입니다.");
-        }
-
-        /* 총 누적 시간 업데이트 */
-        roomMember.getMember().updateStudyTime(roomStudyTime);
-
-        /* 스터디 룸 유저 삭제 */
-        roomMember.deleteRoomMember();
-
-        // /* 스터디 룸 유저 수 확인
-        //  * 스터디 룸 유저가 0명이라면 방 논리삭제. */
-        // synchronized (chatRoom) {
-        //     /* 방 인원 카운트 - 1 */
-        //     chatRoom.updateCntUser(chatRoom.getCntUser() - 1);
-        //
-        //     if (chatRoom.getCntUser() <= 0) {
-        //         /*방 논리 삭제 + 방 삭제된 시간 기록*/
-        //         LocalDateTime roomDeleteTime = Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime();
-        //         chatRoom.deleteRoom(roomDeleteTime);
-        //         return "Success";
-        //     }
-        //
-        //     /* 스터디룸의 유저 수가 1명 이상있다면 유저 수만 변경 */
-        //     return "Success";
-        //
-        // }
-        return "Success";
-    }
+    // /* 스터디 룸 퇴장 */
+    // @Transactional
+    // public String outRoom(String sessionId, Member member, Duration roomStudyTime) {
+    //
+    //     /* 방이 있는 지 확인 */
+    //     Room room = roomRepository.findBySessionIdAndIsDelete(sessionId, false).orElseThrow(
+    //         () -> new EntityNotFoundException("채팅방이 존재하지않습니다.")
+    //     );
+    //
+    //     /* 방에 멤버가 존재하는지 확인. */
+    //     RoomMember roomMember = roomMemberRepository.findByMemberIdAndSessionIdAndIsOut(member.getId(), sessionId, false).orElseThrow(
+    //         () -> new EntityNotFoundException("방에 있는 멤버가 아닙니다.")
+    //     );
+    //
+    //     /* 이미 해당 방에서 나간 유저 표시. */
+    //     if (roomMember.isOut()) {
+    //         throw new IllegalArgumentException("이미 방에서 나간 유저 입니다.");
+    //     }
+    //
+    //     /* 총 누적 시간 업데이트 */
+    //     roomMember.getMember().updateStudyTime(roomStudyTime);
+    //
+    //     /* 스터디 룸 유저 삭제 */
+    //     roomMember.deleteRoomMember();
+    //
+    //     // /* 스터디 룸 유저 수 확인
+    //     //  * 스터디 룸 유저가 0명이라면 방 논리삭제. */
+    //     // synchronized (chatRoom) {
+    //     //     /* 방 인원 카운트 - 1 */
+    //     //     chatRoom.updateCntUser(chatRoom.getCntUser() - 1);
+    //     //
+    //     //     if (chatRoom.getCntUser() <= 0) {
+    //     //         /*방 논리 삭제 + 방 삭제된 시간 기록*/
+    //     //         LocalDateTime roomDeleteTime = Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime();
+    //     //         chatRoom.deleteRoom(roomDeleteTime);
+    //     //         return "Success";
+    //     //     }
+    //     //
+    //     //     /* 스터디룸의 유저 수가 1명 이상있다면 유저 수만 변경 */
+    //     //     return "Success";
+    //     //
+    //     // }
+    //     return "Success";
+    // }
 
     /* 스터디 룸 생성 시 세션 발급 */
     private RoomCreateResponseDto createSession(Member member) throws
