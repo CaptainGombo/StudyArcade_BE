@@ -58,20 +58,20 @@ public class RoomService {
     private String bucketName;
     private final AmazonS3 amazonS3;
 
-    @Value("${OPENVIDU_URL}")
-    private String OPENVIDU_URL;
+    // @Value("${OPENVIDU_URL}")
+    // private String OPENVIDU_URL;
+    //
+    // @Value("${OPENVIDU_SECRET}")
+    // private String OPENVIDU_SECRET;
+    //
+    // private OpenVidu openvidu;
 
-    @Value("${OPENVIDU_SECRET}")
-    private String OPENVIDU_SECRET;
+    // private Long roomMaxUser = 9L;
 
-    private OpenVidu openvidu;
-
-    private Long roomMaxUser = 9L;
-
-    @PostConstruct
-    public void init() {
-        this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
-    }
+    // @PostConstruct
+    // public void init() {
+    //     this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
+    // }
 
     /* 스터디 룸 목록 조회 */
     @Transactional(readOnly = true)
@@ -273,62 +273,62 @@ public class RoomService {
     //     return "Success";
     // }
 
-    /* 스터디 룸 생성 시 세션 발급 */
-    private RoomCreateResponseDto createSession(Member member) throws
-        OpenViduJavaClientException, OpenViduHttpException {
+    // /* 스터디 룸 생성 시 세션 발급 */
+    // private RoomCreateResponseDto createSession(Member member) throws
+    //     OpenViduJavaClientException, OpenViduHttpException {
+    //
+    //     /* 사용자 연결 시 닉네임 전달 */
+    //     String serverData = member.getNickname();
+    //
+    //     /* serverData을 사용하여 connectionProperties 객체를 빌드 */
+    //     ConnectionProperties connectionProperties = new ConnectionProperties.Builder()
+    //         .type(ConnectionType.WEBRTC)
+    //         .data(serverData)
+    //         .build();
+    //
+    //     /* 새로운 OpenVidu 세션(스터디 룸) 생성 */
+    //     Session session = openvidu.createSession();
+    //
+    //
+    //     /* 스터디룸 생성 시 방을 만들며, 방장이 들어가지게 구현하려면 아래의 코드로 토큰 바로 발급
+    //         방 생성, 방 입장(방장 입장) 로직이 나누어져 있다면 토큰 발급 필요 없음.
+    //     String token = session.createConnection(connectionProperties).getToken();
+    //     */
+    //
+    //     return RoomCreateResponseDto.builder()
+    //         .sessionId(session.getSessionId()) //리턴해주는 해당 세션아이디로 다른 유저 채팅방 입장시 요청해주시면 됩니다.
+    //         .build();
+    // }
 
-        /* 사용자 연결 시 닉네임 전달 */
-        String serverData = member.getNickname();
-
-        /* serverData을 사용하여 connectionProperties 객체를 빌드 */
-        ConnectionProperties connectionProperties = new ConnectionProperties.Builder()
-            .type(ConnectionType.WEBRTC)
-            .data(serverData)
-            .build();
-
-        /* 새로운 OpenVidu 세션(스터디 룸) 생성 */
-        Session session = openvidu.createSession();
-
-
-        /* 스터디룸 생성 시 방을 만들며, 방장이 들어가지게 구현하려면 아래의 코드로 토큰 바로 발급
-            방 생성, 방 입장(방장 입장) 로직이 나누어져 있다면 토큰 발급 필요 없음.
-        String token = session.createConnection(connectionProperties).getToken();
-        */
-
-        return RoomCreateResponseDto.builder()
-            .sessionId(session.getSessionId()) //리턴해주는 해당 세션아이디로 다른 유저 채팅방 입장시 요청해주시면 됩니다.
-            .build();
-    }
-
-    /* 스터디룸 입장 시 토큰 발급 */
-    private String createToken(Member member, String sessionId) throws
-        OpenViduJavaClientException, OpenViduHttpException {
-
-        /* 입장하는 유저의 이름을 server data에 저장 */
-        String serverData = member.getNickname();
-
-        /* serverData을 사용하여 connectionProperties 객체를 빌드 */
-        ConnectionProperties connectionProperties
-            = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).build();
-
-
-        openvidu.fetch();
-
-
-        /*Openvidu Server에 활성화되어 있는 세션(채팅방) 목록을 가지고 온다.*/
-        List<Session> activeSessionList = openvidu.getActiveSessions();
-
-
-        /* 세션 리스트에서 요청자가 입력한 세션 ID가 일치하는 세션을 찾아서 새로운 토큰을 생성
-         * 없다면, Openvidu Server에 해당 방이 존재하지 않는 것이므로, 익셉션 발생 */
-        Session session = activeSessionList.stream()
-            .filter(s -> s.getSessionId().equals(sessionId))
-            .findFirst()
-            .orElseThrow(() -> new EntityNotFoundException("채팅세션이 존재하지 않습니다."));
-
-        /*해당 채팅방에 프로퍼티스를 설정하면서 커넥션을 만들고, 방에 접속할 수 있는 토큰을 발급한다.*/
-        return session.createConnection(connectionProperties).getToken();
-    }
+    // /* 스터디룸 입장 시 토큰 발급 */
+    // private String createToken(Member member, String sessionId) throws
+    //     OpenViduJavaClientException, OpenViduHttpException {
+    //
+    //     /* 입장하는 유저의 이름을 server data에 저장 */
+    //     String serverData = member.getNickname();
+    //
+    //     /* serverData을 사용하여 connectionProperties 객체를 빌드 */
+    //     ConnectionProperties connectionProperties
+    //         = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).build();
+    //
+    //
+    //     openvidu.fetch();
+    //
+    //
+    //     /*Openvidu Server에 활성화되어 있는 세션(채팅방) 목록을 가지고 온다.*/
+    //     List<Session> activeSessionList = openvidu.getActiveSessions();
+    //
+    //
+    //     /* 세션 리스트에서 요청자가 입력한 세션 ID가 일치하는 세션을 찾아서 새로운 토큰을 생성
+    //      * 없다면, Openvidu Server에 해당 방이 존재하지 않는 것이므로, 익셉션 발생 */
+    //     Session session = activeSessionList.stream()
+    //         .filter(s -> s.getSessionId().equals(sessionId))
+    //         .findFirst()
+    //         .orElseThrow(() -> new EntityNotFoundException("채팅세션이 존재하지 않습니다."));
+    //
+    //     /*해당 채팅방에 프로퍼티스를 설정하면서 커넥션을 만들고, 방에 접속할 수 있는 토큰을 발급한다.*/
+    //     return session.createConnection(connectionProperties).getToken();
+    // }
 
     /* 이미지 업로드 */
     private String uploadImage(MultipartFile image) throws IOException {
