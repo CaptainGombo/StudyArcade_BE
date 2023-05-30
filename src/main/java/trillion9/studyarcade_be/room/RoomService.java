@@ -34,6 +34,7 @@ import java.sql.Time;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static trillion9.studyarcade_be.global.exception.ErrorCode.INVALID_USER;

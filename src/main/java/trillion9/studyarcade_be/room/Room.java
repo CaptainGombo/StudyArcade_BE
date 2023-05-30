@@ -46,7 +46,7 @@ public class Room extends Timestamp {
         this.imageUrl = imageUrl;
     }
 
-    public void updateRoom(RoomRequestDto requestDto) {
+    public void updateRoom(RoomCreateRequestDto requestDto) {
         this.roomName = requestDto.getRoomName();
         this.roomContent = requestDto.getRoomContent();
     }

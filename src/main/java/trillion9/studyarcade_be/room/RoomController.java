@@ -12,7 +12,7 @@ import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.security.UserDetailsImpl;
 import trillion9.studyarcade_be.room.dto.RoomCreateRequestDto;
 import trillion9.studyarcade_be.room.dto.RoomCreateResponseDto;
-import trillion9.studyarcade_be.room.dto.RoomRequestDto;
+import trillion9.studyarcade_be.room.dto.RoomDetailResponseDto;
 import trillion9.studyarcade_be.room.dto.RoomResponseDto;
 
 import java.io.IOException;
@@ -38,9 +38,9 @@ public class RoomController {
     /* 스터디 룸 수정 */
     @Operation(summary = "스터디 룸 수정 API", description = "스터디 룸 수정")
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 수정 완료")})
-    @PatchMapping("/room/{room-id}")
-    public ResponseDto<RoomResponseDto> updateRoom(@PathVariable Long roomId,
-                                                   @RequestBody RoomRequestDto requestDto,
+    @PatchMapping("/room/{session-id}")
+    public ResponseDto<RoomDetailResponseDto> updateRoom(@PathVariable("session-id") Long sessionId,
+                                                   @RequestBody RoomCreateRequestDto requestDto,
                                                    @RequestParam(value = "image", required = false) MultipartFile image,
                                                    @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return roomService.updateRoom(roomId, requestDto, image, userDetails.getMember());
@@ -49,25 +49,28 @@ public class RoomController {
     /* 스터디 룸 삭제 */
     @Operation(summary = "스터디 룸 삭제 API", description = "스터디 룸 삭제")
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 삭제 완료")})
-    @DeleteMapping("/room/{room-id}")
-    public ResponseDto<RoomResponseDto> deleteRoom(@PathVariable Long roomId,
+    @DeleteMapping("/room/{session-id}")
+    public ResponseDto<RoomDetailResponseDto> deleteRoom(@PathVariable("session-id") Long sessionId,
                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return roomService.deleteRoom(roomId, userDetails.getMember());
     }
 
-    /* 스터디 룸 목록 조회 */
-    @Operation(summary = "스터디 룸 목록 조회 API", description = "스터디 룸 목록 조회")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 목록 조회 완료")})
-    @GetMapping("/main")
-    public ResponseDto<List<RoomResponseDto>> allRooms() {
-        return roomService.allRooms();
+    /* 스터디 룸 입장 */
+    @Operation(summary = "스터디 룸 입장 API", description = "스터디 룸 입장")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 입장 완료")})
+    @PostMapping("/room/{session-id}/enter")
+    public String enterRoom(@PathVariable("session-id") String sessionId,
+                            @AuthenticationPrincipal UserDetailsImpl userDetails) throws
+        OpenViduJavaClientException, OpenViduHttpException {
+        return roomService.enterRoom(sessionId, userDetails.getMember());
     }
 
-    /* 스터디 룸 정보 조회 */
-    @Operation(summary = "스터디 룸 정보 조회 API", description = "스터디 룸 정보 조회")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 정보 조회 완료")})
-    @GetMapping("/room/{room-id}")
-    public ResponseDto<RoomResponseDto> infoRoom(@PathVariable Long roomId) {
-        return roomService.infoRoom(roomId);
+    /* 스터디 룸 퇴장 */
+    @Operation(summary = "스터디 룸 퇴장 API", description = "스터디 룸 퇴장")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 퇴장 완료")})
+    @DeleteMapping("/room/{session-id}/out")
+    public String outRoom(@PathVariable(name = "session-id") String sessionId,
+                          @AuthenticationPrincipal UserDetailsImpl userDetails, Duration roomStudyTime) {
+        return roomService.outRoom(sessionId, userDetails.getMember(), roomStudyTime);
     }
 }

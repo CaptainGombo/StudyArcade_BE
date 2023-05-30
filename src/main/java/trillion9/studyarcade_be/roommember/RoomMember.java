@@ -29,4 +29,16 @@ public class RoomMember {
     public void setRoomMaster(boolean roomMaster) {
         this.roomMaster = roomMaster;
     }
+
+    @Builder
+    private RoomMember(Member member, String sessionId, String roomToken, boolean roomMaster) {
+        this.member = member;
+        this.sessionId = sessionId;
+        this.roomToken = roomToken;
+        this.roomMaster = roomMaster;
+    }
+
+    public void deleteRoomMember() {
+        this.isOut = true;
+    }
 }

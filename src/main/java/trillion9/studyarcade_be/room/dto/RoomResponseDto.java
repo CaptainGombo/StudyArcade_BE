@@ -4,22 +4,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import trillion9.studyarcade_be.room.Room;
 
-import java.time.LocalDateTime;
-
 @Getter
 @NoArgsConstructor
 public class RoomResponseDto {
-    private String id;
-    private String roomName;
-    private String roomContent;
-    private String imageUrl;
-    private LocalDateTime createdAt;
+	private String roomName;
+	private String imageUrl;
 
-    public RoomResponseDto(Room room) {
-        this.id = room.getRoomId();
-        this.roomName = room.getRoomName();
-        this.roomContent = room.getRoomContent();
-        this.imageUrl = room.getImageUrl();
-        this.createdAt = room.getCreatedAt();
-    }
+	public RoomResponseDto(Room room) {
+		this.roomName = room.getRoomName();
+		this.imageUrl = room.getImageUrl();
+	}
 }
