@@ -33,7 +33,7 @@ import trillion9.studyarcade_be.roommember.RoomMemberRepository;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Time;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.util.List;
@@ -104,7 +104,7 @@ public class RoomService {
         throws Exception {
 
         /* Session Id 셋팅 */
-        RoomCreateResponseDto newToken = createNewSession(member);
+        RoomCreateResponseDto newToken = createSession(member);
 
         log.info("user 정보 : " + member.getEmail());
         log.info("user 정보 : " + member.getNickname());
@@ -277,16 +277,14 @@ public class RoomService {
     private RoomCreateResponseDto createSession(Member member) throws
         OpenViduJavaClientException, OpenViduHttpException {
 
-        /*사용자 연결 시 닉네임 전달*/
-        String serverData = member.getName();
-
+        /* 사용자 연결 시 닉네임 전달 */
+        String serverData = member.getNickname();
 
         /*serverData을 사용하여 connectionProperties 객체를 빌드*/
         ConnectionProperties connectionProperties = new ConnectionProperties.Builder()
             .type(ConnectionType.WEBRTC)
             .data(serverData)
             .build();
-
 
         /*새로운 OpenVidu 세션(채팅방) 생성*/
         Session session = openvidu.createSession();
@@ -302,5 +300,58 @@ public class RoomService {
             .build();
     }
 
+    /* 스터디룸 입장 시 토큰 발급 */
+    private String createToken(Member member, String sessionId) throws
+        OpenViduJavaClientException, OpenViduHttpException {
 
+        /* 입장하는 유저의 이름을 server data에 저장 */
+        String serverData = member.getNickname();
+
+        /* serverData을 사용하여 connectionProperties 객체를 빌드 */
+        ConnectionProperties connectionProperties
+            = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).build();
+
+
+        openvidu.fetch();
+
+
+        /*Openvidu Server에 활성화되어 있는 세션(채팅방) 목록을 가지고 온다.*/
+        List<Session> activeSessionList = openvidu.getActiveSessions();
+
+
+        /* 세션 리스트에서 요청자가 입력한 세션 ID가 일치하는 세션을 찾아서 새로운 토큰을 생성
+         * 없다면, Openvidu Server에 해당 방이 존재하지 않는 것이므로, 익셉션 발생 */
+        Session session = activeSessionList.stream()
+            .filter(s -> s.getSessionId().equals(sessionId))
+            .findFirst()
+            .orElseThrow(() -> new EntityNotFoundException("채팅세션이 존재하지 않습니다."));
+
+        /*해당 채팅방에 프로퍼티스를 설정하면서 커넥션을 만들고, 방에 접속할 수 있는 토큰을 발급한다.*/
+        return session.createConnection(connectionProperties).getToken();
+    }
+
+    /* 이미지 업로드 */
+    private String uploadImage(MultipartFile image) throws IOException {
+        // 파일명 부여
+        LocalDateTime now = LocalDateTime.now();
+        int hour = now.getHour();
+        int minute = now.getMinute();
+        int second = now.getSecond();
+        int millis = now.get(ChronoField.MILLI_OF_SECOND);
+
+        String imageName = "image" + hour + minute + second + millis;
+        String fileExtension = '.' + image.getOriginalFilename().replaceAll("^.*\\.(.*)$", "$1");
+        String fullImageName = "S3" + imageName + fileExtension;
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(image.getContentType());
+        objectMetadata.setContentLength(image.getSize());
+
+        InputStream inputStream = image.getInputStream();
+
+        amazonS3.putObject(new PutObjectRequest(bucketName, fullImageName, inputStream, objectMetadata)
+            .withCannedAcl(CannedAccessControlList.PublicRead));
+
+        return amazonS3.getUrl(bucketName, fullImageName).toString();
+    }
 }

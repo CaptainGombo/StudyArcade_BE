@@ -1,5 +1,9 @@
 package trillion9.studyarcade_be.roommember;
 
+import java.sql.Time;
+import java.time.LocalDateTime;
+
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -12,6 +16,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class RoomMember {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @MapsId
@@ -19,8 +24,17 @@ public class RoomMember {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Column
+    private String sessionId;
+
+    @Column
+    private String roomToken;
+
     @ColumnDefault("false")
     private boolean roomMaster;
+
+    @Column
+    private boolean isOut;
 
     public RoomMember(Member member) {
         this.member = member;

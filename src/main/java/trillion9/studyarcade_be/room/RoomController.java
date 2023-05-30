@@ -43,7 +43,7 @@ public class RoomController {
                                                    @RequestBody RoomCreateRequestDto requestDto,
                                                    @RequestParam(value = "image", required = false) MultipartFile image,
                                                    @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        return roomService.updateRoom(roomId, requestDto, image, userDetails.getMember());
+        return roomService.updateRoom(sessionId, requestDto, image, userDetails.getMember());
     }
 
     /* 스터디 룸 삭제 */
@@ -52,7 +52,7 @@ public class RoomController {
     @DeleteMapping("/room/{session-id}")
     public ResponseDto<RoomDetailResponseDto> deleteRoom(@PathVariable("session-id") Long sessionId,
                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return roomService.deleteRoom(roomId, userDetails.getMember());
+        return roomService.deleteRoom(sessionId, userDetails.getMember());
     }
 
     /* 스터디 룸 입장 */
