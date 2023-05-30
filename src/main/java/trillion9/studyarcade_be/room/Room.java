@@ -30,17 +30,15 @@ public class Room extends Timestamp {
     @ColumnDefault("false")
     private boolean isPrivate;
 
-    @Column
-    private String roomPassword;
-
+    // @Column
+    // private String roomPassword;
 
     @Builder
-    private Room(String roomName, String roomContent, String imageUrl, boolean isPrivate, String roomPassword) {
+    private Room(String roomId, String roomName, String roomContent, String imageUrl) {
+        this.roomId = roomId;
         this.roomName = roomName;
         this.roomContent = roomContent;
         this.imageUrl = imageUrl;
-        this.isPrivate = isPrivate;
-        this.roomPassword = roomPassword;
     }
 
     @Builder

@@ -43,7 +43,14 @@ public class RoomService {
 
     /* 스터디 룸 생성 */
     @Transactional
-    public ResponseDto<RoomResponseDto> createRoom(RoomRequestDto requestDto, MultipartFile image, Member member) throws IOException {
+    public ResponseDto<RoomCreateResponseDto> createRoom(RoomCreateRequestDto requestDto, MultipartFile image, Member member)
+        throws Exception {
+
+        /* Session Id 셋팅 */
+        RoomCreateResponseDto newToken = createNewSession(member);
+
+        log.info("user 정보 : " + member.getEmail());
+        log.info("user 정보 : " + member.getNickname());
 
         String imageUrl = (image != null || !image.isEmpty()) ? uploadImage(image) : "대표 이미지 URL";
 
