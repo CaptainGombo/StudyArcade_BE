@@ -40,55 +40,56 @@ public class RoomController {
     @Operation(summary = "스터디 룸 정보 조회 API", description = "스터디 룸 정보 조회")
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 정보 조회 완료")})
     @GetMapping("/room/{session-id}")
-    public ResponseDto<RoomDetailResponseDto> infoRoom(@PathVariable("session-id") Long sessionId) {
+    public ResponseDto<RoomDetailResponseDto> infoRoom(@PathVariable("session-id") String sessionId) {
         return roomService.infoRoom(sessionId);
     }
-
-    /* 스터디 룸 생성 */
-    @Operation(summary = "스터디 룸 생성 API", description = "스터디 룸 생성")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 생성 완료")})
-    @PostMapping("/room/create")
-    public ResponseDto<RoomCreateResponseDto> createRoom(@RequestPart(value = "content") RoomCreateRequestDto requestDto,
-                                                         @RequestPart(value = "image", required = false) MultipartFile image,
-                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
-        return roomService.createRoom(requestDto, image, userDetails.getMember());
-    }
-
-    /* 스터디 룸 수정 */
-    @Operation(summary = "스터디 룸 수정 API", description = "스터디 룸 수정")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 수정 완료")})
-    @PatchMapping("/room/{session-id}")
-    public ResponseDto<RoomDetailResponseDto> updateRoom(@PathVariable("session-id") Long sessionId,
-                                                   @RequestPart RoomCreateRequestDto requestDto,
-                                                   @RequestPart(value = "image", required = false) MultipartFile image,
-                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        return roomService.updateRoom(sessionId, requestDto, image, userDetails.getMember());
-    }
-
-    /* 스터디 룸 삭제 */
-    @Operation(summary = "스터디 룸 삭제 API", description = "스터디 룸 삭제")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 삭제 완료")})
-    @DeleteMapping("/room/{session-id}")
-    public ResponseDto<RoomDetailResponseDto> deleteRoom(@PathVariable("session-id") Long sessionId,
-                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return roomService.deleteRoom(sessionId, userDetails.getMember());
-    }
-
-    /* 스터디 룸 입장 */
-    @Operation(summary = "스터디 룸 입장 API", description = "스터디 룸 입장")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 입장 완료")})
-    @PostMapping("/room/{session-id}/enter")
-    public String enterRoom(@PathVariable("session-id") String sessionId,
-                            @AuthenticationPrincipal UserDetailsImpl userDetails) throws OpenViduJavaClientException, OpenViduHttpException {
-        return roomService.enterRoom(sessionId, userDetails.getMember());
-    }
-
-    /* 스터디 룸 퇴장 */
-    @Operation(summary = "스터디 룸 퇴장 API", description = "스터디 룸 퇴장")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 퇴장 완료")})
-    @DeleteMapping("/room/{session-id}/out")
-    public String outRoom(@PathVariable(name = "session-id") String sessionId,
-                          @AuthenticationPrincipal UserDetailsImpl userDetails, Duration roomStudyTime) {
-        return roomService.outRoom(sessionId, userDetails.getMember(), roomStudyTime);
-    }
+    //
+    // /* 스터디 룸 생성 */
+    // @Operation(summary = "스터디 룸 생성 API", description = "스터디 룸 생성")
+    // @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 생성 완료")})
+    // @PostMapping("/room/create")
+    // public ResponseDto<RoomCreateResponseDto> createRoom(@RequestPart(value = "content") RoomCreateRequestDto requestDto,
+    //                                                @RequestParam(value = "image", required = false) MultipartFile image,
+    //                                                @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
+    //     return roomService.createRoom(requestDto, image, userDetails.getMember());
+    // }
+    //
+    // /* 스터디 룸 수정 */
+    // @Operation(summary = "스터디 룸 수정 API", description = "스터디 룸 수정")
+    // @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 수정 완료")})
+    // @PatchMapping("/room/{session-id}")
+    // public ResponseDto<RoomDetailResponseDto> updateRoom(@PathVariable("session-id") String sessionId,
+    //                                                @RequestBody RoomCreateRequestDto requestDto,
+    //                                                @RequestParam(value = "image", required = false) MultipartFile image,
+    //                                                @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+    //     return roomService.updateRoom(sessionId, requestDto, image, userDetails.getMember());
+    // }
+    //
+    // /* 스터디 룸 삭제 */
+    // @Operation(summary = "스터디 룸 삭제 API", description = "스터디 룸 삭제")
+    // @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 삭제 완료")})
+    // @DeleteMapping("/room/{session-id}")
+    // public ResponseDto<RoomDetailResponseDto> deleteRoom(@PathVariable("session-id") String sessionId,
+    //                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    //     return roomService.deleteRoom(sessionId, userDetails.getMember());
+    // }
+    //
+    // /* 스터디 룸 입장 */
+    // @Operation(summary = "스터디 룸 입장 API", description = "스터디 룸 입장")
+    // @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 입장 완료")})
+    // @PostMapping("/room/{session-id}/enter")
+    // public String enterRoom(@PathVariable("session-id") String sessionId,
+    //                         @AuthenticationPrincipal UserDetailsImpl userDetails) throws
+    //     OpenViduJavaClientException, OpenViduHttpException {
+    //     return roomService.enterRoom(sessionId, userDetails.getMember());
+    // }
+    //
+    // /* 스터디 룸 퇴장 */
+    // @Operation(summary = "스터디 룸 퇴장 API", description = "스터디 룸 퇴장")
+    // @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 퇴장 완료")})
+    // @DeleteMapping("/room/{session-id}/out")
+    // public String outRoom(@PathVariable(name = "session-id") String sessionId,
+    //                       @AuthenticationPrincipal UserDetailsImpl userDetails, Duration roomStudyTime) {
+    //     return roomService.outRoom(sessionId, userDetails.getMember(), roomStudyTime);
+    // }
 }

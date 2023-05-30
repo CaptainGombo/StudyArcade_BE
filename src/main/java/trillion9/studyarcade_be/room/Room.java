@@ -1,16 +1,16 @@
 package trillion9.studyarcade_be.room;
 
-import java.time.LocalDateTime;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import trillion9.studyarcade_be.global.Timestamp;
 import trillion9.studyarcade_be.room.dto.RoomCreateRequestDto;
 
-import javax.persistence.*;
-
-import org.hibernate.annotations.ColumnDefault;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -19,7 +19,7 @@ public class Room extends Timestamp {
 
     // 세션 ID
     @Id
-    private String roomId;
+    private String sessionId;
 
     @Column(nullable = false)
     private String roomName;
@@ -46,8 +46,8 @@ public class Room extends Timestamp {
     private LocalDateTime roomDeleteTime;
 
     @Builder
-    private Room(String roomId, String roomName, String roomContent, String imageUrl, Long userCount) {
-        this.roomId = roomId;
+    private Room(String sessionId, String roomName, String roomContent, String imageUrl, Long userCount) {
+        this.sessionId = sessionId;
         this.roomName = roomName;
         this.roomContent = roomContent;
         this.imageUrl = imageUrl;
