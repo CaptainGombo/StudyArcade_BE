@@ -16,7 +16,7 @@ public class RoomDetailResponseDto {
     private LocalDateTime createdAt;
 
     public RoomDetailResponseDto(Room room) {
-        this.id = room.getRoomId();
+        this.id = room.getSessionId();
         this.roomName = room.getRoomName();
         this.roomContent = room.getRoomContent();
         this.imageUrl = room.getImageUrl();
