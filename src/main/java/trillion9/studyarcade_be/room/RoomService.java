@@ -77,7 +77,7 @@ public class RoomService {
     @Transactional(readOnly = true)
     public ResponseDto<List<RoomResponseDto>> allRooms(int page) {
         // 페이징 처리
-        Pageable pageable = PageRequest.of(page - 1, 8);
+        Pageable pageable = PageRequest.of(page , 6);
 
         // pageable을 메소드에 전달
         Page<Room> rooms = roomRepository.findAll(pageable);
