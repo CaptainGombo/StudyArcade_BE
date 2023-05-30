@@ -13,11 +13,12 @@ public class MemberRequestDto {
 
     @Email
     private String email;
-
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,15}$", message = "비밀번호는 최소 8자 이상 15자 이하이며 알파벳 대소문자와 숫자, 특수문자로 구성되어야 합니다.")
+  
+    @Pattern(regexp = "^(?=.[0-9])(?=.[a-z])(?=.[A-Z])(?=.\\W)(?=\\S+$).{8,15}$", message = "비밀번호는 최소 8자 이상 15자 이하이며 알파벳 대소문자와 숫자, 특수문자로 구성되어야 합니다.")
     private String password;
 
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,15}$", message = "비밀번호는 최소 8자 이상 15자 이하이며 알파벳 대소문자와 숫자, 특수문자로 구성되어야 합니다.")
+    @Pattern(regexp = "^(?=.[0-9])(?=.[a-z])(?=.[A-Z])(?=.\\W)(?=\\S+$).{8,15}$", message = "비밀번호는 최소 8자 이상 15자 이하이며 알파벳 대소문자와 숫자, 특수문자로 구성되어야 합니다.") 
+
     private String checkPassword;
 
     @Getter
