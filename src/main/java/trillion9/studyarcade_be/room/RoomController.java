@@ -29,7 +29,7 @@ public class RoomController {
     @Operation(summary = "스터디 룸 생성 API", description = "스터디 룸 생성")
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 생성 완료")})
     @PostMapping("/room/create")
-    public ResponseDto<RoomResponseDto> createRoom(@RequestPart(value = "content") RoomRequestDto requestDto,
+    public ResponseDto<RoomCreateResponseDto> createRoom(@RequestPart(value = "content") RoomCreateRequestDto requestDto,
                                                    @RequestParam(value = "image", required = false) MultipartFile image,
                                                    @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
         return roomService.createRoom(requestDto, image, userDetails.getMember());

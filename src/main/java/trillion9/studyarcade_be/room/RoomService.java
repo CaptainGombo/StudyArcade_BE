@@ -21,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.exception.CustomException;
 import trillion9.studyarcade_be.member.Member;
+import trillion9.studyarcade_be.room.dto.RoomCreateRequestDto;
+import trillion9.studyarcade_be.room.dto.RoomCreateResponseDto;
 import trillion9.studyarcade_be.room.dto.RoomRequestDto;
 import trillion9.studyarcade_be.room.dto.RoomResponseDto;
 import trillion9.studyarcade_be.roommember.RoomMember;
@@ -37,6 +39,9 @@ import java.util.stream.Collectors;
 import static trillion9.studyarcade_be.global.exception.ErrorCode.INVALID_USER;
 import static trillion9.studyarcade_be.global.exception.ErrorCode.ROOM_NOT_FOUND;
 
+import javax.annotation.PostConstruct;
+import javax.persistence.EntityNotFoundException;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -48,6 +53,21 @@ public class RoomService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
     private final AmazonS3 amazonS3;
+
+    @Value("${OPENVIDU_URL}")
+    private String OPENVIDU_URL;
+
+    @Value("${OPENVIDU_SECRET}")
+    private String OPENVIDU_SECRET;
+
+    private OpenVidu openvidu;
+
+    private Long roomMaxUser = 9L;
+
+    @PostConstruct
+    public void init() {
+        this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
+    }
 
     /* 스터디 룸 생성 */
     @Transactional
@@ -231,4 +251,35 @@ public class RoomService {
 
         return amazonS3.getUrl(bucketName, fullImageName).toString();
     }
+
+    /*채팅방 생성 시 세션 발급*/
+    private RoomCreateResponseDto createNewSession(Member member) throws
+        OpenViduJavaClientException, OpenViduHttpException {
+
+        /*사용자 연결 시 닉네임 전달*/
+        String serverData = member.getName();
+
+
+        /*serverData을 사용하여 connectionProperties 객체를 빌드*/
+        ConnectionProperties connectionProperties = new ConnectionProperties.Builder()
+            .type(ConnectionType.WEBRTC)
+            .data(serverData)
+            .build();
+
+
+        /*새로운 OpenVidu 세션(채팅방) 생성*/
+        Session session = openvidu.createSession();
+
+
+        /*  채팅방 생성 시 방을 만들며, 방장이 들어가지게 구현하려면 아래의 코드로 토큰 바로 발급
+            방 생성, 방 입장(방장 입장) 로직이 나누어져 있다면 토큰 발급 필요 없음.
+        String token = session.createConnection(connectionProperties).getToken();
+        */
+
+        return RoomCreateResponseDto.builder()
+            .sessionId(session.getSessionId()) //리턴해주는 해당 세션아이디로 다른 유저 채팅방 입장시 요청해주시면 됩니다.
+            .build();
+    }
+
+
 }

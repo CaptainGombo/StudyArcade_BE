@@ -32,8 +32,8 @@ public class Room extends Timestamp {
 
 
 
-    @ColumnDefault("false")
-    private boolean isPrivate;
+    // @ColumnDefault("false")
+    // private boolean isPrivate;
 
     // @Column
     // private String roomPassword;
