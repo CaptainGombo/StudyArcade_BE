@@ -25,7 +25,6 @@ public class Member {
     @Column(nullable = false)
     private String password;
 
-
     @Builder
     private Member(Long kakaoId, String nickname, String email, String password) {
         this.kakaoId = kakaoId;
