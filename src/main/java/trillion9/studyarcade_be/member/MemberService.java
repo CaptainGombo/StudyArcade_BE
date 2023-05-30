@@ -14,6 +14,7 @@ import trillion9.studyarcade_be.member.dto.MemberRequestDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static trillion9.studyarcade_be.global.exception.ErrorCode.*;
@@ -48,7 +49,7 @@ public class MemberService {
         return ResponseDto.setSuccess("회원가입 성공");
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ResponseDto<String> login(final MemberRequestDto.login loginRequestDto, final HttpServletResponse response) {
 
         String email = loginRequestDto.getEmail();
@@ -65,7 +66,7 @@ public class MemberService {
         // Token 생성
         TokenDto tokenDto = jwtUtil.createAllToken(member.getEmail());
 
-        //redis에 RT:13@gmail.com(key) / 23jijiofj2io3hi32hiongiodsninioda(value) 형태로 리프레시 토큰 저장하기
+        // redis에 RT:13@gmail.com(key) / 23jijiofj2io3hi32hiongiodsninioda(value) 형태로 리프레시 토큰 저장하기
         redisTemplate.opsForValue().set("RT:" + member.getEmail(), tokenDto.getRefreshToken(), JwtUtil.REFRESH_TOKEN_TIME, TimeUnit.MILLISECONDS);
 
         // Header에 accesstoken, refreshtoken 추가
@@ -75,7 +76,7 @@ public class MemberService {
         return ResponseDto.setSuccess("로그인 성공");
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public ResponseDto<String> logout(HttpServletRequest request, Member member) {
         String accessToken = jwtUtil.resolveToken(request, JwtUtil.ACCESS_TOKEN);
         // 로그아웃 하고 싶은 토큰이 유효한 지 먼저 검증하기
@@ -93,5 +94,11 @@ public class MemberService {
         redisTemplate.opsForValue().set("BL:" + accessToken, "", jwtUtil.getRemainingTime(accessToken), TimeUnit.MILLISECONDS);
 
         return ResponseDto.setSuccess("로그아웃 성공");
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseDto<Boolean> checkNickname(String nickname) {
+        Optional<Member> member = memberRepository.findByNickname(nickname);
+        return ResponseDto.setSuccess("닉네임 중복 확인 완료", member.isEmpty());
     }
 }

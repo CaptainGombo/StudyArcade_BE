@@ -44,13 +44,17 @@ public class MemberController {
         return  memberService.login(memberRequestDto, response);
     }
 
+    @Operation(summary = "로그아웃 API", description = "로그아웃")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "로그아웃 완료")})
     // 로그아웃
     @PostMapping("/logout")
     public ResponseDto<String> logout(HttpServletRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return  memberService.logout(request, userDetails.getMember());
     }
 
-
+    @Operation(summary = "카카오 로그인 API", description = "카카오 로그인")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "카카오 로그인 완료")})
+    // 소셜 로그인 - 카카오
     @GetMapping("/kakao/callback")
     public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         // code: 카카오 서버로부터 받은 인가 코드
@@ -62,5 +66,13 @@ public class MemberController {
         response.addCookie(cookie);
 
         return "redirect:/api/main";
+    }
+
+    @Operation(summary = "닉네임 중복 확인 API", description = "닉네임 중복 확인")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "닉네임 중복 확인 완료")})
+    // 닉네임 중복 확인
+    @GetMapping("/checkNickname")
+    public ResponseDto<Boolean> checkNickname(@PathVariable String nickname) {
+        return memberService.checkNickname(nickname);
     }
 }
