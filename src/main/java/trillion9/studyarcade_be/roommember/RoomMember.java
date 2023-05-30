@@ -22,8 +22,11 @@ public class RoomMember {
     @ColumnDefault("false")
     private boolean roomMaster;
 
-    public void setRoomMaster(boolean roomMaster, Member member) {
-        this.roomMaster = roomMaster;
+    public RoomMember(Member member) {
         this.member = member;
+    }
+
+    public void setRoomMaster(boolean roomMaster) {
+        this.roomMaster = roomMaster;
     }
 }

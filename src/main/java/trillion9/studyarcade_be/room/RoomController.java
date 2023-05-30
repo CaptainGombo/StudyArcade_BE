@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.security.UserDetailsImpl;
+import trillion9.studyarcade_be.room.dto.RoomCreateRequestDto;
+import trillion9.studyarcade_be.room.dto.RoomCreateResponseDto;
 import trillion9.studyarcade_be.room.dto.RoomRequestDto;
 import trillion9.studyarcade_be.room.dto.RoomResponseDto;
 

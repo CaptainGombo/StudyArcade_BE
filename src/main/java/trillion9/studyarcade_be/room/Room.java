@@ -14,9 +14,9 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 public class Room extends Timestamp {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long roomId;
+    private String roomId;
 
     @Column(nullable = false)
     private String roomName;
@@ -26,6 +26,11 @@ public class Room extends Timestamp {
 
     @Column
     private String imageUrl;
+
+    @Column
+    private Long userCount;
+
+
 
     @ColumnDefault("false")
     private boolean isPrivate;
@@ -41,15 +46,12 @@ public class Room extends Timestamp {
         this.imageUrl = imageUrl;
     }
 
-    @Builder
-    public Room(RoomRequestDto requestDto, String imageUrl) {
-        this.roomName = requestDto.getRoomName();
-        this.roomContent = requestDto.getRoomContent();
-        this.imageUrl = imageUrl;
-    }
-
     public void updateRoom(RoomRequestDto requestDto) {
         this.roomName = requestDto.getRoomName();
         this.roomContent = requestDto.getRoomContent();
+    }
+
+    public void updateUserCount(Long userCount) {
+        this.userCount = userCount;
     }
 }

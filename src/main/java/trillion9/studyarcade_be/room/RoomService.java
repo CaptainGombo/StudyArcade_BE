@@ -4,6 +4,13 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+
+import io.openvidu.java.client.ConnectionProperties;
+import io.openvidu.java.client.ConnectionType;
+import io.openvidu.java.client.OpenVidu;
+import io.openvidu.java.client.OpenViduHttpException;
+import io.openvidu.java.client.OpenViduJavaClientException;
+import io.openvidu.java.client.Session;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +28,7 @@ import trillion9.studyarcade_be.roommember.RoomMemberRepository;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Time;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.util.List;
@@ -55,22 +63,95 @@ public class RoomService {
         String imageUrl = (image != null || !image.isEmpty()) ? uploadImage(image) : "대표 이미지 URL";
 
         Room room = Room.builder()
-                .roomName(requestDto.getRoomName())
-                .roomContent(requestDto.getRoomContent())
-                .imageUrl(imageUrl)
-                .build();
+                        .roomId(newToken.getSessionId())
+                        .roomName(requestDto.getRoomName())
+                        .roomContent(requestDto.getRoomContent())
+                        .imageUrl(imageUrl)
+                        .build();
 
-        RoomMember roomMember = new RoomMember();
-        roomMember.setRoomMaster(true, member);
+        RoomMember roomMember = new RoomMember(member);
+        roomMember.setRoomMaster(true);
 
         roomMemberRepository.save(roomMember);
         roomRepository.save(room);
-        return ResponseDto.setSuccess("스터디 룸 생성 성공", new RoomResponseDto(room));
+
+        RoomCreateResponseDto responseDto = RoomCreateResponseDto.builder()
+                                                .sessionId(room.getRoomId())
+                                                .roomName(room.getRoomName())
+                                                .roomContent(room.getRoomContent())
+                                                .imageUrl(room.getImageUrl())
+                                                .build();
+
+        return ResponseDto.setSuccess("스터디 룸 생성 성공", responseDto);
+    }
+
+    /* 스터디 룸 입장 */
+    @Transactional
+    public String enterRoom(String sessionId, Member member)
+        throws OpenViduJavaClientException, OpenViduHttpException {
+
+        /* 해당 sessionId를 가진 스터디룸이 존재하는지 확인한다. */
+        Room room = roomRepository.findBySessionId(sessionId).orElseThrow(
+            () -> new EntityNotFoundException("해당 방이 없습니다."));
+
+
+        /* 스터디룸의 최대 인원은 9명으로 제한하고, 초과 시 예외를 발생시킨다. */
+        synchronized (room) {
+            room.updateUserCount(room.getUserCount() + 1);
+
+            if (room.getUserCount() > roomMaxUser) {
+                /* 트랜잭션에 의해 위의 updateCntUser 메서드의 user수 +1 자동으로 롤백(-1)되어서 9에 맞추어짐. */
+                throw new IllegalArgumentException("방이 가득찼습니다.");
+            }
+        }
+
+        // /*비공개 방일 경우, 비밀번호 체크를 수행한다.*/
+        // if (!room.isPrivate()) {
+        //     if (requestData == null || requestData.getPassword() == null) {    // 패스워드를 입력 안했을 때 에러 발생
+        //         throw new IllegalArgumentException("비밀번호를 입력해주세요.");
+        //     }
+        //     if (!room.getPassword().equals(requestData.getPassword())) {  // 비밀번호가 틀리면 에러 발생
+        //         throw new IllegalArgumentException("비밀번호가 틀립니다.");
+        //     }
+        // }
+
+        /* 이미 입장한 유저일 경우 예외를 발생시킨다. */
+        Optional<ChatRoomUser> alreadyEnterChatRoomUser
+            = chatRoomUserRepository.findByUserIdAndSessionIdAndIsDelete(user.getId(), SessionId, false);
+
+        if (alreadyEnterChatRoomUser.isPresent()) throw new IllegalArgumentException("이미 입장한 멤버입니다.");
+
+
+        /*방 입장 토큰 생성*/
+        String enterRoomToken = enterRoomCreateSession(member, Room.getSessionId());
+
+        ChatRoomUser chatRoomUser = ChatRoomUser.builder()
+            .sessionId(chatRoom.getSessionId())
+            .userId(user.getId())
+            .social(user.getProvider())
+            .nickname(requestData.getNickname())
+            .email(user.getEmail())
+            .profileImage(user.getProfile())
+            .enterRoomToken(enterRoomToken)
+            .roomEnterTime(Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime())
+            .roomStayDay(0L)
+            .roomStayTime(Time.valueOf("00:00:00"))
+            .mediaBackImage(requestData.getMediaBackImage())
+            .build();
+
+        /*현재 방에 접속한 사용자 저장*/
+        chatRoomUserRepository.save(chatRoomUser);
+
+        /*채팅방 정보를 저장한다.*/
+        roomRepository.save(room);
+
+        return "Success";
     }
 
     /* 스터디 룸 수정 */
     @Transactional
-    public ResponseDto<RoomResponseDto> updateRoom(Long roomId, RoomRequestDto requestDto, MultipartFile image, Member member) throws IOException  {
+    public ResponseDto<RoomResponseDto> updateRoom(Long roomId, RoomRequestDto requestDto, MultipartFile image, Member member)
+        throws IOException  {
         roomRepository.findByRoomId(roomId).orElseThrow(
                 () -> new CustomException(ROOM_NOT_FOUND)
         );
