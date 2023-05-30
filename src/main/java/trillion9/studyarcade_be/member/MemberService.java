@@ -14,6 +14,7 @@ import trillion9.studyarcade_be.member.dto.MemberRequestDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static trillion9.studyarcade_be.global.exception.ErrorCode.*;

@@ -44,6 +44,8 @@ public class MemberController {
         return  memberService.login(memberRequestDto, response);
     }
 
+    @Operation(summary = "로그아웃 API", description = "로그아웃")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "로그아웃 완료")})
     // 로그아웃
     @PostMapping("/logout")
     public ResponseDto<String> logout(HttpServletRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails){
