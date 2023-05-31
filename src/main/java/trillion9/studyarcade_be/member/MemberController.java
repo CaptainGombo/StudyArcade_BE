@@ -72,7 +72,7 @@ public class MemberController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "닉네임 중복 확인 완료")})
     // 닉네임 중복 확인
     @GetMapping("/checkNickname/{nickname}")
-    public ResponseDto<Boolean> checkNickname(@PathVariable String nickname) {
+    public ResponseDto<Boolean> checkNickname(@PathVariable("nickname") String nickname) {
         return memberService.checkNickname(nickname);
     }
 }
