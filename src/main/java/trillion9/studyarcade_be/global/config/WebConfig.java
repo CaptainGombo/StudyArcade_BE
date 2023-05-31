@@ -43,6 +43,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedHeaders("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
                 .allowedOrigins("*") // "http://localhost:3000"
-                .exposedHeaders(JwtUtil.ACCESS_TOKEN, JwtUtil.REFRESH_TOKEN);
+                .exposedHeaders(JwtUtil.ACCESS_TOKEN, JwtUtil.REFRESH_TOKEN, "Set-Cookie");
     }
 }
