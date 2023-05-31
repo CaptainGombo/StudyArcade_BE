@@ -58,7 +58,7 @@ public class RoomService {
     private String bucketName;
     private final AmazonS3 amazonS3;
 
-    //openvidu 서버 키 값 주입
+    //openvidu 서버 키 값
     @Value("${OPENVIDU_URL}")
     private String OPENVIDU_URL;
 
