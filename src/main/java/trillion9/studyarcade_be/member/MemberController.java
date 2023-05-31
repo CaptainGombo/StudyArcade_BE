@@ -64,7 +64,6 @@ public class MemberController {
         Cookie cookie = new Cookie(JwtUtil.ACCESS_TOKEN, createToken.substring(7));
         cookie.setPath("/");
         response.addCookie(cookie);
-
         return ResponseDto.setSuccess("redirect:/api/main");
     }
 
