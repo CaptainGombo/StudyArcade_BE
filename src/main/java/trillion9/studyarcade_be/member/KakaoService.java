@@ -74,7 +74,7 @@ public class KakaoService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", "263c7291b1a0c6cc3d7e3f43bbf65a79");
         body.add("client_secret", "JwxjyfhCzsiy7pJb1bQjk2qRXE3v3l6V");
-        body.add("redirect_uri", "https://studyhub.shop/api/members/kakao/callback");
+        body.add("redirect_uri", "http://localhost:3000/api/members/kakao/callback");
         body.add("code", code);
 
         // HTTP 요청 보내기
