@@ -56,7 +56,7 @@ public class MemberController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "카카오 로그인 완료")})
     // 소셜 로그인 - 카카오
     @GetMapping("/kakao/callback")
-    public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+    public ResponseDto<String> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         // code: 카카오 서버로부터 받은 인가 코드
         String createToken = kakaoService.kakaoLogin(code, response);
 
@@ -64,8 +64,7 @@ public class MemberController {
         Cookie cookie = new Cookie(JwtUtil.ACCESS_TOKEN, createToken.substring(7));
         cookie.setPath("/");
         response.addCookie(cookie);
-
-        return "redirect:/api/main";
+        return ResponseDto.setSuccess("redirect:/api/main");
     }
 
     @Operation(summary = "닉네임 중복 확인 API", description = "닉네임 중복 확인")
