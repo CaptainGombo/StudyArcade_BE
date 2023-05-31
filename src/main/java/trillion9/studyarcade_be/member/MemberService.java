@@ -73,7 +73,7 @@ public class MemberService {
         response.addHeader(JwtUtil.ACCESS_TOKEN, tokenDto.getAccessToken());
         response.addHeader(JwtUtil.REFRESH_TOKEN, tokenDto.getRefreshToken());
 
-        return ResponseDto.setSuccess("로그인 성공");
+        return ResponseDto.setSuccess("로그인 성공", member.getNickname());
     }
 
     @Transactional(readOnly = true)
