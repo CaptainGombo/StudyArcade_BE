@@ -24,7 +24,7 @@ public class RoomMember {
     private Member member;
 
     @Column
-    private String sessionId;
+    private Long sessionId;
 
     @Column
     private String roomToken;
@@ -44,7 +44,7 @@ public class RoomMember {
     }
 
     @Builder
-    private RoomMember(Member member, String sessionId, String roomToken, boolean roomMaster) {
+    private RoomMember(Member member, Long sessionId, String roomToken, boolean roomMaster) {
         this.member = member;
         this.sessionId = sessionId;
         this.roomToken = roomToken;
