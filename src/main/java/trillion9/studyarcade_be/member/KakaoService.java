@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.jwt.JwtUtil;
 import trillion9.studyarcade_be.global.jwt.RefreshToken;
 import trillion9.studyarcade_be.global.jwt.RefreshTokenRepository;
@@ -33,7 +34,7 @@ public class KakaoService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtUtil jwtUtil;
 
-    public String kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+    public ResponseDto<KakaoUserInfoDto> kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getToken(code);
 
@@ -44,10 +45,10 @@ public class KakaoService {
         Member kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
 
         // 4. JWT 토큰 반환
-        String createToken =  jwtUtil.createToken(kakaoUser.getNickname(), accessToken);
+        String createToken =  jwtUtil.createToken(kakaoUser.getEmail(), "Access_Token");
 
         // RefreshToken 생성
-        String createRefreshToken = jwtUtil.createToken(kakaoUserInfo.getEmail(), "refresh_token");
+        String createRefreshToken = jwtUtil.createToken(kakaoUserInfo.getEmail(), "Refresh_Token");
 
         // RefreshToken 을 가지고 있는지 확인
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findByMember(kakaoUser);
@@ -60,7 +61,7 @@ public class KakaoService {
         response.addHeader(JwtUtil.ACCESS_TOKEN, createToken);
         response.addHeader(JwtUtil.REFRESH_TOKEN, createRefreshToken);
 
-        return createToken;
+        return ResponseDto.setSuccess("카카오 로그인 성공", kakaoUserInfo);
     }
 
     // 1. "인가 코드"로 "액세스 토큰" 요청
