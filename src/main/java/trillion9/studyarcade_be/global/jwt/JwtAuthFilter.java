@@ -8,16 +8,12 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import trillion9.studyarcade_be.global.exception.CustomException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
-import static trillion9.studyarcade_be.global.exception.ErrorCode.INVALID_ACCESS_TOKEN;
-import static trillion9.studyarcade_be.global.exception.ErrorCode.INVALID_TOKEN;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -53,11 +49,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     String newToken = newAccessToken.substring(7);
                     setAuthentication(jwtUtil.getUserInfoFromToken(newToken));
                     log.info("새로운 토큰 생성 완료");
-                    throw new CustomException(INVALID_ACCESS_TOKEN);
+                    throw new IllegalArgumentException("Access 토큰 만료");
                 }
                 //Access & Refresh 토큰 만료시
                 else {
-                    throw new CustomException(INVALID_TOKEN);
+                    throw new IllegalArgumentException("Access & Refresh 토큰 만료");
                 }
             }
         }

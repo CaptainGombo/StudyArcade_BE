@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.exception.CustomException;
 import trillion9.studyarcade_be.global.jwt.JwtUtil;
+import trillion9.studyarcade_be.global.jwt.RefreshToken;
 import trillion9.studyarcade_be.global.jwt.RefreshTokenRepository;
 import trillion9.studyarcade_be.global.jwt.TokenDto;
 import trillion9.studyarcade_be.member.dto.MemberRequestDto;
@@ -49,7 +50,7 @@ public class MemberService {
         return ResponseDto.setSuccess("회원가입 성공");
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseDto<String> login(final MemberRequestDto.login loginRequestDto, final HttpServletResponse response) {
 
         String email = loginRequestDto.getEmail();
@@ -65,9 +66,18 @@ public class MemberService {
 
         // Token 생성
         TokenDto tokenDto = jwtUtil.createAllToken(member.getEmail());
+        // RefreshToken 있는지 확인
+        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByMember(member);
+        //있으면 새 토큰 발급 후 업데이트
+        //없으면 새로 만들고 DB에 저장
+        if(refreshToken.isPresent()) {
+            refreshTokenRepository.save(refreshToken.get().updateToken(tokenDto.getRefreshToken()));
+        } else {
+            refreshTokenRepository.saveAndFlush(RefreshToken.saveToken(tokenDto.getRefreshToken(), member));
+        }
 
         // redis에 RT:13@gmail.com(key) / 23jijiofj2io3hi32hiongiodsninioda(value) 형태로 리프레시 토큰 저장하기
-        redisTemplate.opsForValue().set("RT:" + member.getEmail(), tokenDto.getRefreshToken(), JwtUtil.REFRESH_TOKEN_TIME, TimeUnit.MILLISECONDS);
+//         redisTemplate.opsForValue().set("RT:" + member.getEmail(), tokenDto.getRefreshToken(), JwtUtil.REFRESH_TOKEN_TIME, TimeUnit.MILLISECONDS);
 
         // Header에 accesstoken, refreshtoken 추가
         response.addHeader(JwtUtil.ACCESS_TOKEN, tokenDto.getAccessToken());
