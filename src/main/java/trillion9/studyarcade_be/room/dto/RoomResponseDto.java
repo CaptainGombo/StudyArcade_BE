@@ -7,7 +7,7 @@ import trillion9.studyarcade_be.room.Room;
 @Getter
 @NoArgsConstructor
 public class RoomResponseDto {
-	private String sessionId;
+	private Long sessionId;
 	private String roomName;
 	private String imageUrl;
 

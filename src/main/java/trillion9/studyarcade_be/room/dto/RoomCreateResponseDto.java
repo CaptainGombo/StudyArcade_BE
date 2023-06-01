@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 public class RoomCreateResponseDto {
-	private String sessionId;
+	private Long sessionId;
 	private String roomName;
 	private String roomContent;
 	private String imageUrl;
@@ -18,7 +18,7 @@ public class RoomCreateResponseDto {
 	private LocalDateTime createdAt;
 
 	@Builder
-	private RoomCreateResponseDto(String sessionId, String roomName, String roomContent, String imageUrl, LocalDateTime createdAt) {
+	private RoomCreateResponseDto(Long sessionId, String roomName, String roomContent, String imageUrl, LocalDateTime createdAt) {
 		this.sessionId = sessionId;
 		this.roomName = roomName;
 		this.roomContent = roomContent;
