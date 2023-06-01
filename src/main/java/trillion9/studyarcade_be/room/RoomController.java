@@ -36,14 +36,6 @@ public class RoomController {
         return roomService.allRooms(page - 1);
     }
 
-    /* 스터디 룸 정보 조회 */
-    @Operation(summary = "스터디 룸 정보 조회 API", description = "스터디 룸 정보 조회")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 정보 조회 완료")})
-    @GetMapping("/room/{session-id}")
-    public ResponseDto<RoomDetailResponseDto> infoRoom(@PathVariable("session-id") Long sessionId) {
-        return roomService.infoRoom(sessionId);
-    }
-
     /* 스터디 룸 생성 */
     @Operation(summary = "스터디 룸 생성 API", description = "스터디 룸 생성")
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 생성 완료")})

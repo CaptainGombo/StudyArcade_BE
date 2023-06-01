@@ -92,15 +92,6 @@ public class RoomService {
         return ResponseDto.setSuccess("스터디 룸 목록 조회 성공", roomResponseDtos);
     }
 
-    /* 스터디 룸 정보 조회 */
-    @Transactional(readOnly = true)
-    public ResponseDto<RoomDetailResponseDto> infoRoom(Long sessionId) {
-        Room room = roomRepository.findBySessionId(sessionId).orElseThrow(
-            () -> new CustomException(ROOM_NOT_FOUND)
-        );
-        return ResponseDto.setSuccess("스터디 룸 정보 조회 성공", new RoomDetailResponseDto(room));
-    }
-
     /* 스터디 룸 생성 */
     @Transactional
     public ResponseDto<RoomCreateResponseDto> createRoom(RoomCreateRequestDto requestDto, MultipartFile image, Member member)
