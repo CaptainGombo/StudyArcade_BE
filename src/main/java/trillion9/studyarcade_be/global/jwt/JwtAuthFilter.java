@@ -1,21 +1,22 @@
 package trillion9.studyarcade_be.global.jwt;
 
-import java.io.IOException;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import trillion9.studyarcade_be.global.exception.CustomException;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import static trillion9.studyarcade_be.global.exception.ErrorCode.INVALID_TOKEN;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -54,7 +55,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 }
                 //Access & Refresh 토큰 만료시
                 else {
-                    throw new IllegalArgumentException("Token이 없습니다");
+                    throw new CustomException(INVALID_TOKEN);
                 }
             }
         }
