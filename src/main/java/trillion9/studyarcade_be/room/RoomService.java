@@ -53,6 +53,7 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
     private final RoomMemberRepository roomMemberRepository;
+    private final EntityManager entityManager;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
@@ -92,7 +93,7 @@ public class RoomService {
 
     /* 스터디 룸 정보 조회 */
     @Transactional(readOnly = true)
-    public ResponseDto<RoomDetailResponseDto> infoRoom(String sessionId) {
+    public ResponseDto<RoomDetailResponseDto> infoRoom(Long sessionId) {
         Room room = roomRepository.findBySessionId(sessionId).orElseThrow(
             () -> new CustomException(ROOM_NOT_FOUND)
         );
@@ -110,7 +111,16 @@ public class RoomService {
         log.info("user 정보 : " + member.getEmail());
         log.info("user 정보 : " + member.getNickname());
 
-        String imageUrl = (image != null || !image.isEmpty()) ? uploadImage(image) : "대표 이미지 URL";
+        String imageUrl = (image == null || image.isEmpty()) ? "대표 이미지 URL" : uploadImage(image);
+
+        // String imageUrl;
+        // if (image == null) {
+        //     imageUrl = "대표 이미지 URL";
+        // } else if (image.isEmpty()) {
+        //     imageUrl = "대표 이미지 URL";
+        // } else {
+        //     imageUrl = uploadImage(image);
+        // }
 
         Room room = Room.builder()
                         .sessionId(newToken.getSessionId())
@@ -119,7 +129,8 @@ public class RoomService {
                         .imageUrl(imageUrl)
                         .build();
 
-        RoomMember roomMember = new RoomMember(member);
+        RoomMember roomMember = new RoomMember();
+        roomMember.setMember(entityManager.merge(member));
         roomMember.setRoomMaster(true);
 
         roomMemberRepository.save(roomMember);
@@ -231,7 +242,7 @@ public class RoomService {
 
     /* 스터디 룸 퇴장 */
     @Transactional
-    public String outRoom(String sessionId, Member member, Duration roomStudyTime) {
+    public String outRoom(Long sessionId, Member member, Duration roomStudyTime) {
 
         /* 방이 있는 지 확인 */
         Room room = roomRepository.findBySessionIdAndIsDelete(sessionId, false).orElseThrow(

@@ -19,8 +19,7 @@ public class RoomMember {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @MapsId
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -54,5 +53,9 @@ public class RoomMember {
 
     public void deleteRoomMember() {
         this.isOut = true;
+    }
+
+    public void setMember(Member member) {
+        this.member = member;
     }
 }

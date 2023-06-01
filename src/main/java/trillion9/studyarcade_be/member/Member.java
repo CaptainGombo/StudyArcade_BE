@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import trillion9.studyarcade_be.roommember.RoomMember;
 
 import javax.persistence.*;
 
@@ -14,7 +15,6 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 public class Member {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")

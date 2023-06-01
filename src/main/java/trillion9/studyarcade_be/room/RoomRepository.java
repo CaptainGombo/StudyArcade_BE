@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
-    Optional<Room> findBySessionId(String sessionId);
+    Optional<Room> findBySessionId(Long sessionId);
 
     List<Room> findAllByOrderByCreatedAtDesc();
 
 
-	Optional<Room> findBySessionIdAndIsDelete(String sessionId, boolean isDelete);
+	Optional<Room> findBySessionIdAndIsDelete(Long sessionId, boolean isDelete);
 
 	Page<Room> findAll(Pageable pageable);
 }
