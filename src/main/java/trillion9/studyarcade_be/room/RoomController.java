@@ -40,7 +40,7 @@ public class RoomController {
     /* 스터디 룸 생성 */
     @Operation(summary = "스터디 룸 생성 API", description = "스터디 룸 생성")
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 생성 완료")})
-    @PostMapping(value = "/room/create", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/room/create", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE, "application/json", "multipart/form-data"})
     public ResponseDto<RoomCreateResponseDto> createRoom(@RequestPart(value = "content") RoomCreateRequestDto requestDto,
                                                          @RequestPart(value = "image", required = false) MultipartFile image,
                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
@@ -50,7 +50,7 @@ public class RoomController {
     /* 스터디 룸 수정 */
     @Operation(summary = "스터디 룸 수정 API", description = "스터디 룸 수정")
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 수정 완료")})
-    @PatchMapping(value = "/room/{session-id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PatchMapping(value = "/room/{session-id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE, "application/json", "multipart/form-data"})
     public ResponseDto<RoomDetailResponseDto> updateRoom(@PathVariable("session-id") Long sessionId,
                                                          @RequestPart RoomCreateRequestDto requestDto,
                                                          @RequestPart(value = "image", required = false) MultipartFile image,
