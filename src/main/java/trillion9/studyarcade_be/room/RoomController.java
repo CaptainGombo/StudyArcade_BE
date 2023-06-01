@@ -1,25 +1,26 @@
  package trillion9.studyarcade_be.room;
 
-import io.openvidu.java.client.OpenViduHttpException;
-import io.openvidu.java.client.OpenViduJavaClientException;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import trillion9.studyarcade_be.global.ResponseDto;
-import trillion9.studyarcade_be.global.security.UserDetailsImpl;
-import trillion9.studyarcade_be.room.dto.RoomCreateRequestDto;
-import trillion9.studyarcade_be.room.dto.RoomCreateResponseDto;
-import trillion9.studyarcade_be.room.dto.RoomDetailResponseDto;
-import trillion9.studyarcade_be.room.dto.RoomResponseDto;
+ import io.openvidu.java.client.OpenViduHttpException;
+ import io.openvidu.java.client.OpenViduJavaClientException;
+ import io.swagger.v3.oas.annotations.Operation;
+ import io.swagger.v3.oas.annotations.responses.ApiResponse;
+ import io.swagger.v3.oas.annotations.responses.ApiResponses;
+ import io.swagger.v3.oas.annotations.tags.Tag;
+ import lombok.RequiredArgsConstructor;
+ import org.springframework.http.MediaType;
+ import org.springframework.security.core.annotation.AuthenticationPrincipal;
+ import org.springframework.web.bind.annotation.*;
+ import org.springframework.web.multipart.MultipartFile;
+ import trillion9.studyarcade_be.global.ResponseDto;
+ import trillion9.studyarcade_be.global.security.UserDetailsImpl;
+ import trillion9.studyarcade_be.room.dto.RoomCreateRequestDto;
+ import trillion9.studyarcade_be.room.dto.RoomCreateResponseDto;
+ import trillion9.studyarcade_be.room.dto.RoomDetailResponseDto;
+ import trillion9.studyarcade_be.room.dto.RoomResponseDto;
 
-import java.io.IOException;
-import java.time.Duration;
-import java.util.List;
+ import java.io.IOException;
+ import java.time.Duration;
+ import java.util.List;
 @Tag(name = "RoomController",description = "스터디룸 API")
 @RestController
 @RequiredArgsConstructor
@@ -47,7 +48,7 @@ public class RoomController {
     /* 스터디 룸 생성 */
     @Operation(summary = "스터디 룸 생성 API", description = "스터디 룸 생성")
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 생성 완료")})
-    @PostMapping("/room/create")
+    @PostMapping(value = "/room/create", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseDto<RoomCreateResponseDto> createRoom(@RequestPart(value = "content") RoomCreateRequestDto requestDto,
                                                          @RequestPart(value = "image", required = false) MultipartFile image,
                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
@@ -57,7 +58,7 @@ public class RoomController {
     /* 스터디 룸 수정 */
     @Operation(summary = "스터디 룸 수정 API", description = "스터디 룸 수정")
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 수정 완료")})
-    @PatchMapping("/room/{session-id}")
+    @PatchMapping(value = "/room/{session-id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseDto<RoomDetailResponseDto> updateRoom(@PathVariable("session-id") Long sessionId,
                                                          @RequestPart RoomCreateRequestDto requestDto,
                                                          @RequestPart(value = "image", required = false) MultipartFile image,
