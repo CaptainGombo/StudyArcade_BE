@@ -69,7 +69,7 @@ public class RoomController {
     @Operation(summary = "스터디 룸 삭제 API", description = "스터디 룸 삭제")
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 삭제 완료")})
     @DeleteMapping("/room/{session-id}")
-    public ResponseDto<RoomDetailResponseDto> deleteRoom(@PathVariable("session-id") String sessionId,
+    public ResponseDto<RoomDetailResponseDto> deleteRoom(@PathVariable("session-id") Long sessionId,
                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return roomService.deleteRoom(sessionId, userDetails.getMember());
     }
