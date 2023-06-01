@@ -3,11 +3,13 @@ package trillion9.studyarcade_be.global.jwt;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -49,11 +51,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     String newToken = newAccessToken.substring(7);
                     setAuthentication(jwtUtil.getUserInfoFromToken(newToken));
                     log.info("새로운 토큰 생성 완료");
-                    throw new IllegalArgumentException("Access 토큰 만료");
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Access 토큰 만료");
                 }
                 //Access & Refresh 토큰 만료시
                 else {
-                    throw new IllegalArgumentException("Access & Refresh 토큰 만료");
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Access & Refresh 토큰 만료");
                 }
             }
         }
