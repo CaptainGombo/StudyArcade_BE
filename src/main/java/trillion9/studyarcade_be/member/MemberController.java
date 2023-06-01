@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.security.UserDetailsImpl;
+import trillion9.studyarcade_be.member.dto.KakaoUserInfoDto;
 import trillion9.studyarcade_be.member.dto.MemberRequestDto;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,11 +54,8 @@ public class MemberController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "카카오 로그인 완료")})
     // 소셜 로그인 - 카카오
     @GetMapping("/kakao/callback")
-    public ResponseDto<String> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
-        // code: 카카오 서버로부터 받은 인가 코드
-        String createToken = kakaoService.kakaoLogin(code, response);
-
-        return ResponseDto.setSuccess("redirect:/api/main");
+    public ResponseDto<KakaoUserInfoDto> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        return kakaoService.kakaoLogin(code, response);
     }
 
     @Operation(summary = "닉네임 중복 확인 API", description = "닉네임 중복 확인")
