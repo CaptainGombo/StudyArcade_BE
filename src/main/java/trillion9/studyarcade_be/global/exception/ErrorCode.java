@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     /* 400 BAD_REQUEST */
+    INVALID_ACCESS_TOKEN(HttpStatus.BAD_REQUEST, "액세스 토큰이 유효하지 않습니다"),
     INVALID_TOKEN(HttpStatus.BAD_REQUEST, "토큰이 유효하지 않습니다"),
     INVALID_USER(HttpStatus.BAD_REQUEST, "작성자만 삭제/수정할 수 있습니다."),
     INVALID_USER_EXISTENCE(HttpStatus.BAD_REQUEST, "중복된 email 입니다."),
