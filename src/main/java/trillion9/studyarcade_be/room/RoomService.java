@@ -4,15 +4,9 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-
-import io.openvidu.java.client.ConnectionProperties;
-import io.openvidu.java.client.ConnectionType;
-import io.openvidu.java.client.OpenVidu;
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
-import io.openvidu.java.client.Session;
 import lombok.RequiredArgsConstructor;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -31,6 +25,8 @@ import trillion9.studyarcade_be.room.dto.RoomResponseDto;
 import trillion9.studyarcade_be.roommember.RoomMember;
 import trillion9.studyarcade_be.roommember.RoomMemberRepository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Duration;
@@ -42,10 +38,6 @@ import java.util.stream.Collectors;
 
 import static trillion9.studyarcade_be.global.exception.ErrorCode.INVALID_USER;
 import static trillion9.studyarcade_be.global.exception.ErrorCode.ROOM_NOT_FOUND;
-
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
 
 @Slf4j
 @Service
@@ -105,15 +97,6 @@ public class RoomService {
 
         String imageUrl = (image == null || image.isEmpty()) ? "대표 이미지 URL" : uploadImage(image);
 
-        // String imageUrl;
-        // if (image == null) {
-        //     imageUrl = "대표 이미지 URL";
-        // } else if (image.isEmpty()) {
-        //     imageUrl = "대표 이미지 URL";
-        // } else {
-        //     imageUrl = uploadImage(image);
-        // }
-
         Room room = Room.builder()
                         // .sessionId(newToken.getSessionId())
                         .roomName(requestDto.getRoomName())
@@ -129,6 +112,7 @@ public class RoomService {
         roomRepository.save(room);
 
         RoomCreateResponseDto responseDto = RoomCreateResponseDto.builder()
+
                                                 .sessionId(room.getSessionId())
                                                 .roomName(room.getRoomName())
                                                 .roomContent(room.getRoomContent())
