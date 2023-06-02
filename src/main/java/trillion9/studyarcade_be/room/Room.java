@@ -33,7 +33,7 @@ public class Room extends Timestamp {
     @Column
     private String imageUrl;
 
-    @Column
+    @ColumnDefault("0")
     private Long userCount;
 
     // @ColumnDefault("false")

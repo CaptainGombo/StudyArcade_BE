@@ -9,14 +9,14 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class RoomDetailResponseDto {
-    private Long id;
+    private Long sessionId;
     private String roomName;
     private String roomContent;
     private String imageUrl;
     private LocalDateTime createdAt;
 
     public RoomDetailResponseDto(Room room) {
-        this.id = room.getSessionId();
+        this.sessionId = room.getSessionId();
         this.roomName = room.getRoomName();
         this.roomContent = room.getRoomContent();
         this.imageUrl = room.getImageUrl();

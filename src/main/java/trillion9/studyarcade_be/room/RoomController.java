@@ -52,7 +52,7 @@ public class RoomController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 수정 완료")})
     @PatchMapping(value = "/rooms/{session-id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE, "application/json", "multipart/form-data"})
     public ResponseDto<RoomDetailResponseDto> updateRoom(@PathVariable("session-id") Long sessionId,
-                                                         @RequestPart RoomCreateRequestDto requestDto,
+                                                         @RequestPart(value = "content") RoomCreateRequestDto requestDto,
                                                          @RequestPart(value = "image", required = false) MultipartFile image,
                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return roomService.updateRoom(sessionId, requestDto, image, userDetails.getMember());
