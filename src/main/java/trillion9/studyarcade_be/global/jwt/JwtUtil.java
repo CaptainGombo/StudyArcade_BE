@@ -6,6 +6,7 @@ import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
-import java.util.Optional;
 
 @Slf4j
 @Component
@@ -36,7 +36,7 @@ public class JwtUtil {
     public static final long REFRESH_TOKEN_TIME = 3 * 60 * 1000L; //RefreshToken Time 3 min
     private final UserDetailsServiceImpl userDetailsService;
     private final MemberRepository memberRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -113,11 +113,10 @@ public class JwtUtil {
         Member member = memberRepository.findByEmail(getUserInfoFromToken(token)).orElseThrow(
                 () -> new NullPointerException(HttpStatus.BAD_REQUEST.getReasonPhrase())
         );
-        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByMember(member);
+        String refreshToken = redisTemplate.opsForValue().get("RT:" + member.getEmail());
 
         // 사용자의 Refresh 토큰 가져오기
-        return refreshToken.isPresent() && token.equals(refreshToken.get().getRefreshToken().substring(7));
-
+        return refreshToken != null && token.equals(refreshToken.substring(7));
     }
 
     // 토큰에서 사용자 정보 가져오기
