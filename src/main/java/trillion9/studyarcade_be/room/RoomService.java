@@ -52,21 +52,23 @@ public class RoomService {
     private String bucketName;
     private final AmazonS3 amazonS3;
 
-     //openvidu 서버 키 값
-     @Value("${OPENVIDU_URL}")
-     private String OPENVIDU_URL;
+//      //openvidu 서버 키 값
+//      @Value("${OPENVIDU_URL}")
+//      private String OPENVIDU_URL;
 
-     @Value("${OPENVIDU_SECRET}")
-     private String OPENVIDU_SECRET;
+//      @Value("${OPENVIDU_SECRET}")
+//      private String OPENVIDU_SECRET;
 
-     private OpenVidu openvidu;
+//      private OpenVidu openvidu;
 
     private Long roomMaxUser = 9L;
 
-     @PostConstruct
-     public void init() {
-         this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
-     }
+
+    //
+    // @PostConstruct
+    // public void init() {
+    //     this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
+    // }
 
     /* 스터디 룸 목록 조회 */
     @Transactional(readOnly = true)
