@@ -14,7 +14,7 @@ import trillion9.studyarcade_be.global.jwt.JwtUtil;
 @OpenAPIDefinition(
         info = @Info(title = "StudyHub API 명세서",
                 description = "StudyHub API 명세서",
-                version = "v1"),
+                version = "v2"),
         servers = {
                 @Server(url = "https://studyhub.shop", description = "StudyHub HoLlYmOlY GUaCaMoLe lEtSgEtIt"),
                 @Server(url = "http://localhost:8080", description = "LocalHost")
@@ -25,7 +25,7 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
         io.swagger.v3.oas.models.info.Info info = new io.swagger.v3.oas.models.info.Info()
-                .version("v1.0.0")
+                .version("v2.0.0")
                 .title("StudyHub")
                 .description("Api Description");
 
