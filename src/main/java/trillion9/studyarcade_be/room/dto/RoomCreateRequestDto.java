@@ -1,7 +1,5 @@
 package trillion9.studyarcade_be.room.dto;
 
-
-import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotBlank;import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

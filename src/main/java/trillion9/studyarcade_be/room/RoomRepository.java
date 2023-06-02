@@ -12,7 +12,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 
     List<Room> findAllByOrderByCreatedAtDesc();
 
-
 	Optional<Room> findBySessionIdAndIsDelete(Long sessionId, boolean isDelete);
 
 	Page<Room> findAll(Pageable pageable);
