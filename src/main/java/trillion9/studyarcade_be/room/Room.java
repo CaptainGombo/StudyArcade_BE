@@ -70,4 +70,8 @@ public class Room extends Timestamp {
     public void updateUserCount(Long userCount) {
         this.userCount = userCount;
     }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

@@ -11,6 +11,7 @@
  import org.springframework.security.core.annotation.AuthenticationPrincipal;
  import org.springframework.web.bind.annotation.*;
  import org.springframework.web.multipart.MultipartFile;
+ import reactor.util.annotation.Nullable;
  import trillion9.studyarcade_be.global.ResponseDto;
  import trillion9.studyarcade_be.global.security.UserDetailsImpl;
  import trillion9.studyarcade_be.room.dto.RoomCreateRequestDto;
@@ -82,7 +83,7 @@ public class RoomController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 퇴장 완료")})
     @DeleteMapping("/rooms/{session-id}/out")
     public String outRoom(@PathVariable(name = "session-id") Long sessionId,
-                          @AuthenticationPrincipal UserDetailsImpl userDetails, Duration roomStudyTime) {
-        return roomService.outRoom(sessionId, userDetails.getMember(), roomStudyTime);
+                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return roomService.outRoom(sessionId, userDetails.getMember());
     }
 }
