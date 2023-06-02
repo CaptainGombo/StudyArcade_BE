@@ -60,21 +60,21 @@ public class RoomService {
     private String bucketName;
     private final AmazonS3 amazonS3;
 
-     //openvidu 서버 키 값
-     @Value("${OPENVIDU_URL}")
-     private String OPENVIDU_URL;
-
-     @Value("${OPENVIDU_SECRET}")
-     private String OPENVIDU_SECRET;
-
-     private OpenVidu openvidu;
+//     //openvidu 서버 키 값
+//     @Value("${OPENVIDU_URL}")
+//     private String OPENVIDU_URL;
+//
+//     @Value("${OPENVIDU_SECRET}")
+//     private String OPENVIDU_SECRET;
+//
+//     private OpenVidu openvidu;
 
     private Long roomMaxUser = 9L;
 
-     @PostConstruct
-     public void init() {
-         this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
-     }
+//     @PostConstruct
+//     public void init() {
+//         this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
+//     }
 
     /* 스터디 룸 목록 조회 */
     @Transactional(readOnly = true)
@@ -97,8 +97,8 @@ public class RoomService {
     public ResponseDto<RoomCreateResponseDto> createRoom(RoomCreateRequestDto requestDto, MultipartFile image, Member member)
         throws Exception {
 
-         /* Session Id 셋팅 */
-         RoomCreateResponseDto newToken = createSession(member);
+//         /* SessionId 셋팅 */
+//         RoomCreateResponseDto newToken = createSession(member);
 
         log.info("user 정보 : " + member.getEmail());
         log.info("user 정보 : " + member.getNickname());
@@ -134,22 +134,17 @@ public class RoomService {
     @Transactional
     public ResponseDto<RoomDetailResponseDto> updateRoom(Long sessionId, RoomCreateRequestDto requestDto, MultipartFile image, Member member)
         throws IOException  {
-        roomRepository.findBySessionId(sessionId).orElseThrow(
+        Room room = roomRepository.findBySessionId(sessionId).orElseThrow(
                 () -> new CustomException(ROOM_NOT_FOUND)
         );
 
-        roomMemberRepository.findByMemberIdAndRoomMaster(member, true).orElseThrow(
+        roomMemberRepository.findByMemberIdAndSessionIdAndRoomMaster(member.getId(), sessionId, true).orElseThrow(
                 () -> new CustomException(INVALID_USER)
         );
 
         String imageUrl = (image == null || image.isEmpty()) ? "대표 이미지 URL" : uploadImage(image);
 
-        Room room = Room.builder()
-                .roomName(requestDto.getRoomName())
-                .roomContent(requestDto.getRoomContent())
-                .imageUrl(imageUrl)
-                .build();
-
+        room.setImageUrl(imageUrl);
         room.updateRoom(requestDto);
 
         return ResponseDto.setSuccess("스터디 룸 수정 성공", new RoomDetailResponseDto(room));
@@ -162,7 +157,7 @@ public class RoomService {
                 () -> new CustomException(ROOM_NOT_FOUND)
         );
 
-        roomMemberRepository.findByMemberIdAndRoomMaster(member, true).orElseThrow(
+        roomMemberRepository.findByMemberIdAndSessionIdAndRoomMaster(member.getId(), sessionId, true).orElseThrow(
                 () -> new CustomException(INVALID_USER)
         );
 
@@ -227,7 +222,7 @@ public class RoomService {
 
     /* 스터디 룸 퇴장 */
     @Transactional
-    public String outRoom(Long sessionId, Member member, Duration roomStudyTime) {
+    public String outRoom(Long sessionId, Member member) {
 
         /* 방이 있는 지 확인 */
         Room room = roomRepository.findBySessionIdAndIsDelete(sessionId, false).orElseThrow(
@@ -250,12 +245,12 @@ public class RoomService {
         /* 스터디 룸 유저 삭제 */
         roomMember.deleteRoomMember();
 
-        // /* 스터디 룸 유저 수 확인
-        //  * 스터디 룸 유저가 0명이라면 방 논리삭제. */
-        // synchronized (chatRoom) {
-        //     /* 방 인원 카운트 - 1 */
-        //     chatRoom.updateCntUser(chatRoom.getCntUser() - 1);
-        //
+//         /* 스터디 룸 유저 수 확인
+//          * 스터디 룸 유저가 0명이라면 방 논리삭제. */
+//         synchronized (chatRoom) {
+        /* 방 인원 카운트 - 1 */
+        room.updateUserCount(room.getUserCount() - 1);
+
         //     if (chatRoom.getCntUser() <= 0) {
         //         /*방 논리 삭제 + 방 삭제된 시간 기록*/
         //         LocalDateTime roomDeleteTime = Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime();
@@ -270,62 +265,62 @@ public class RoomService {
         return "Success";
     }
 
-     /* 스터디 룸 생성 시 세션 발급 */
-     private RoomCreateResponseDto createSession(Member member) throws
-         OpenViduJavaClientException, OpenViduHttpException {
-
-         /* 사용자 연결 시 닉네임 전달 */
-         String serverData = member.getNickname();
-
-         /* serverData을 사용하여 connectionProperties 객체를 빌드 */
-         ConnectionProperties connectionProperties = new ConnectionProperties.Builder()
-             .type(ConnectionType.WEBRTC)
-             .data(serverData)
-             .build();
-
-         /* 새로운 OpenVidu 세션(스터디 룸) 생성 */
-         Session session = openvidu.createSession();
-
-
-         /* 스터디룸 생성 시 방을 만들며, 방장이 들어가지게 구현하려면 아래의 코드로 토큰 바로 발급
-             방 생성, 방 입장(방장 입장) 로직이 나누어져 있다면 토큰 발급 필요 없음.
-         String token = session.createConnection(connectionProperties).getToken();
-         */
-
-         return RoomCreateResponseDto.builder()
+//     /* 스터디 룸 생성 시 세션 발급 */
+//     private RoomCreateResponseDto createSession(Member member) throws
+//         OpenViduJavaClientException, OpenViduHttpException {
+//
+//         /* 사용자 연결 시 닉네임 전달 */
+//         String serverData = member.getNickname();
+//
+//         /* serverData을 사용하여 connectionProperties 객체를 빌드 */
+//         ConnectionProperties connectionProperties = new ConnectionProperties.Builder()
+//             .type(ConnectionType.WEBRTC)
+//             .data(serverData)
+//             .build();
+//
+//         /* 새로운 OpenVidu 세션(스터디 룸) 생성 */
+//         Session session = openvidu.createSession();
+//
+//
+//         /* 스터디룸 생성 시 방을 만들며, 방장이 들어가지게 구현하려면 아래의 코드로 토큰 바로 발급
+//             방 생성, 방 입장(방장 입장) 로직이 나누어져 있다면 토큰 발급 필요 없음.
+//         String token = session.createConnection(connectionProperties).getToken();
+//         */
+//
+//         return RoomCreateResponseDto.builder()
 //             .sessionId(session.getSessionId()) //리턴해주는 해당 세션아이디로 다른 유저 채팅방 입장시 요청해주시면 됩니다.
-             .build();
-     }
+//             .build();
+//     }
 
-    // /* 스터디룸 입장 시 토큰 발급 */
-    // private String createToken(Member member, String sessionId) throws
-    //     OpenViduJavaClientException, OpenViduHttpException {
-    //
-    //     /* 입장하는 유저의 이름을 server data에 저장 */
-    //     String serverData = member.getNickname();
-    //
-    //     /* serverData을 사용하여 connectionProperties 객체를 빌드 */
-    //     ConnectionProperties connectionProperties
-    //         = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).build();
-    //
-    //
-    //     openvidu.fetch();
-    //
-    //
-    //     /*Openvidu Server에 활성화되어 있는 세션(채팅방) 목록을 가지고 온다.*/
-    //     List<Session> activeSessionList = openvidu.getActiveSessions();
-    //
-    //
-    //     /* 세션 리스트에서 요청자가 입력한 세션 ID가 일치하는 세션을 찾아서 새로운 토큰을 생성
-    //      * 없다면, Openvidu Server에 해당 방이 존재하지 않는 것이므로, 익셉션 발생 */
-    //     Session session = activeSessionList.stream()
-    //         .filter(s -> s.getSessionId().equals(sessionId))
-    //         .findFirst()
-    //         .orElseThrow(() -> new EntityNotFoundException("채팅세션이 존재하지 않습니다."));
-    //
-    //     /*해당 채팅방에 프로퍼티스를 설정하면서 커넥션을 만들고, 방에 접속할 수 있는 토큰을 발급한다.*/
-    //     return session.createConnection(connectionProperties).getToken();
-    // }
+//     /* 스터디룸 입장 시 토큰 발급 */
+//     private String createToken(Member member, String sessionId) throws
+//         OpenViduJavaClientException, OpenViduHttpException {
+//
+//         /* 입장하는 유저의 이름을 server data에 저장 */
+//         String serverData = member.getNickname();
+//
+//         /* serverData을 사용하여 connectionProperties 객체를 빌드 */
+//         ConnectionProperties connectionProperties
+//             = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).build();
+//
+//
+//         openvidu.fetch();
+//
+//
+//         /*Openvidu Server에 활성화되어 있는 세션(채팅방) 목록을 가지고 온다.*/
+//         List<Session> activeSessionList = openvidu.getActiveSessions();
+//
+//
+//         /* 세션 리스트에서 요청자가 입력한 세션 ID가 일치하는 세션을 찾아서 새로운 토큰을 생성
+//          * 없다면, Openvidu Server에 해당 방이 존재하지 않는 것이므로, 익셉션 발생 */
+//         Session session = activeSessionList.stream()
+//             .filter(s -> s.getSessionId().equals(sessionId))
+//             .findFirst()
+//             .orElseThrow(() -> new EntityNotFoundException("채팅세션이 존재하지 않습니다."));
+//
+//         /*해당 채팅방에 프로퍼티스를 설정하면서 커넥션을 만들고, 방에 접속할 수 있는 토큰을 발급한다.*/
+//         return session.createConnection(connectionProperties).getToken();
+//     }
 
     /* 이미지 업로드 */
     private String uploadImage(MultipartFile image) throws IOException {
