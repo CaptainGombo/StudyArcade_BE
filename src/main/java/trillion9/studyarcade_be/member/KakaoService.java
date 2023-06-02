@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -17,13 +18,11 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.jwt.JwtUtil;
-import trillion9.studyarcade_be.global.jwt.RefreshToken;
-import trillion9.studyarcade_be.global.jwt.RefreshTokenRepository;
 import trillion9.studyarcade_be.member.dto.KakaoUserInfoDto;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -31,7 +30,7 @@ import java.util.UUID;
 public class KakaoService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final RedisTemplate<String, String> redisTemplate;
     private final JwtUtil jwtUtil;
 
     public ResponseDto<KakaoUserInfoDto> kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
@@ -50,14 +49,9 @@ public class KakaoService {
         // RefreshToken 생성
         String createRefreshToken = jwtUtil.createToken(kakaoUserInfo.getEmail(), "Refresh_Token");
 
-        // RefreshToken 을 가지고 있는지 확인
-        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByMember(kakaoUser);
-        // 있으면 새 토큰 발급 후 업데이트 / 없으면 새로 만들고 DB에 저장
-        if(refreshToken.isPresent()) {
-            refreshTokenRepository.save(refreshToken.get().updateToken(createRefreshToken));
-        } else {
-            refreshTokenRepository.saveAndFlush(RefreshToken.saveToken(createRefreshToken, kakaoUser));
-        }
+        // TTL 세팅과 함께 새 토큰으로 업데이트 및 저장
+        redisTemplate.opsForValue().set("RT:" + kakaoUser.getEmail(), createRefreshToken, JwtUtil.REFRESH_TOKEN_TIME, TimeUnit.MILLISECONDS);
+
         response.addHeader(JwtUtil.ACCESS_TOKEN, createToken);
         response.addHeader(JwtUtil.REFRESH_TOKEN, createRefreshToken);
 
