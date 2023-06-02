@@ -13,6 +13,7 @@ public class RoomResponseDto {
 	private String roomName;
 	private String roomContent;
 	private String imageUrl;
+	private Long userCount;
 	private LocalDateTime createdAt;
 
 	public RoomResponseDto(Room room) {
@@ -20,6 +21,7 @@ public class RoomResponseDto {
 		this.roomName = room.getRoomName();
 		this.roomContent = room.getRoomContent();
 		this.imageUrl = room.getImageUrl();
+		this.userCount = room.getUserCount();
 		this.createdAt = room.getCreatedAt();
 	}
 }
