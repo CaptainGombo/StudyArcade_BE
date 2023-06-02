@@ -62,6 +62,7 @@ public class RoomService {
     // private OpenVidu openvidu;
     //
     private Long roomMaxUser = 9L;
+
     //
     // @PostConstruct
     // public void init() {
