@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import trillion9.studyarcade_be.global.exception.DelegateAuthenticationEntryPoint;
 import trillion9.studyarcade_be.global.jwt.JwtAuthFilter;
 import trillion9.studyarcade_be.global.jwt.JwtUtil;
 
@@ -23,6 +24,7 @@ import trillion9.studyarcade_be.global.jwt.JwtUtil;
 public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
     private final RedisTemplate<String, String> redisTemplate;
+    private final DelegateAuthenticationEntryPoint delegateAuthenticationEntryPoint;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -57,10 +59,11 @@ public class WebSecurityConfig {
                 // JWT 인증/인가를 사용하기 위한 설정
                 .and().addFilterBefore(new JwtAuthFilter(jwtUtil, redisTemplate), UsernamePasswordAuthenticationFilter.class);
 
-        // 이 설정을 해주지 않으면 밑의 cors가 적용되지 않는다
+        // cors 적용
         http.cors();
 
         // 401 Error 처리, Authorization 즉, 인증과정에서 실패할 시 처리
+        http.exceptionHandling().authenticationEntryPoint(delegateAuthenticationEntryPoint);
         //http.exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint);
 
         return http.build();
