@@ -16,7 +16,7 @@ import trillion9.studyarcade_be.global.jwt.JwtUtil;
                 description = "StudyHub API 명세서",
                 version = "v2"),
         servers = {
-                @Server(url = "https://studyhub.shop", description = "StudyHub HoLlYmOlY GUaCaMoLe lEtSgEtIt"),
+                @Server(url = "http://15.164.189.73:8080", description = "StudyHub HoLlYmOlY GUaCaMoLe lEtSgEtIt"),
                 @Server(url = "http://localhost:8080", description = "LocalHost")
         })
 
