@@ -36,14 +36,13 @@ public class WebConfig implements WebMvcConfigurer {
 //        registry.addConverter(new CategoryRequestConverter());
 //    }
 
-    //WebMvcConfigurer 사용해서 CORS 세팅
+    // WebMvcConfigurer 사용해서 CORS 세팅
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedHeaders("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
                 .allowedOrigins("*") // "http://localhost:3000"
-                .exposedHeaders(JwtUtil.ACCESS_TOKEN, JwtUtil.REFRESH_TOKEN,
-                        "Set-Cookie", "Refresh_token", "Access_token", "refresh_token", "access_token");
+                .exposedHeaders(JwtUtil.ACCESS_TOKEN, JwtUtil.REFRESH_TOKEN);
     }
 }

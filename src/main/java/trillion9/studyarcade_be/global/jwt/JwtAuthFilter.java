@@ -8,7 +8,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -20,7 +19,7 @@ import java.io.IOException;
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
+
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final RedisTemplate<String, String> redisTemplate;
@@ -28,8 +27,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+//        if (true) throw new CustomException(ErrorCode.INVALID_TOKEN);
         String accessToken = jwtUtil.resolveToken(request, JwtUtil.ACCESS_TOKEN);
         String refreshToken = jwtUtil.resolveToken(request, JwtUtil.REFRESH_TOKEN);
+
         if(accessToken != null) {
             //Access 토큰 유효 시, security context에 인증 정보 저장
             if(jwtUtil.validateToken(accessToken)){
@@ -50,7 +51,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 //Security context에 인증 정보 저장
                 String newToken = newAccessToken.substring(7);
                 setAuthentication(jwtUtil.getUserInfoFromToken(newToken));
-                log.info("새로운 토큰 생성 완료");
+                log.info("New Token Issued");
 
             } else if (refreshToken == null) {
                 jwtExceptionHandler(response, "Access Token Expired", HttpStatus.BAD_REQUEST.value());
