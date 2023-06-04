@@ -110,6 +110,6 @@ public class MemberService {
         Member member = memberRepository.findByEmail(jwtUtil.getUserInfoFromToken(refreshToken)).orElseThrow(
                 () -> new NullPointerException(HttpStatus.BAD_REQUEST.getReasonPhrase())
         );
-        return ResponseDto.setSuccess(jwtUtil.createToken(member.getEmail(), JwtUtil.REFRESH_TOKEN));
+        return ResponseDto.setSuccess(jwtUtil.createToken(member.getEmail(), JwtUtil.ACCESS_TOKEN));
     }
 }
