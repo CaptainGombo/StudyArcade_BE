@@ -2,7 +2,6 @@ package trillion9.studyarcade_be.member;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -107,9 +106,6 @@ public class MemberService {
         if (!jwtUtil.validateRefreshToken(refreshToken)) {
             throw new CustomException(INVALID_TOKEN);
         }
-        Member member = memberRepository.findByEmail(jwtUtil.getUserInfoFromToken(refreshToken)).orElseThrow(
-                () -> new NullPointerException(HttpStatus.BAD_REQUEST.getReasonPhrase())
-        );
-        return ResponseDto.setSuccess(jwtUtil.createToken(member.getEmail(), JwtUtil.ACCESS_TOKEN));
+        return ResponseDto.setSuccess(jwtUtil.createToken(jwtUtil.getUserInfoFromToken(refreshToken), JwtUtil.ACCESS_TOKEN));
     }
 }
