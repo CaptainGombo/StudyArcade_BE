@@ -106,6 +106,6 @@ public class MemberService {
         if (!jwtUtil.validateRefreshToken(refreshToken)) {
             throw new CustomException(INVALID_TOKEN);
         }
-        return ResponseDto.setSuccess(jwtUtil.createToken(jwtUtil.getUserInfoFromToken(refreshToken), JwtUtil.ACCESS_TOKEN));
+        return ResponseDto.setSuccess("New Access Token", jwtUtil.createToken(jwtUtil.getUserInfoFromToken(refreshToken), JwtUtil.ACCESS_TOKEN));
     }
 }
