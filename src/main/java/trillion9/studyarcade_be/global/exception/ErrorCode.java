@@ -19,11 +19,10 @@ public enum ErrorCode {
     INVALID_FILE_EXTENSION(HttpStatus.BAD_REQUEST, "지원하지 않는 확장자 입니다."),
 
     /* 401 UNAUTHORIZED */
-    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않습니다"),
     AUTHORIZATION_ERROR(HttpStatus.UNAUTHORIZED, "유효하지 않은 접근 방식입니다."),
 
     /* 403 FORBIDDEN */
-    UNAUTHORIZED_USER(HttpStatus.FORBIDDEN, "현재 내 계정 정보가 존재하지 않습니다"),
+    INVALID_TOKEN(HttpStatus.FORBIDDEN, "토큰이 유효하지 않습니다"),
 
     /* 404 NOT_FOUND */
     POST_TITLE_NOT_FOUND(HttpStatus.NOT_FOUND, "글의 제목이 없습니다."),

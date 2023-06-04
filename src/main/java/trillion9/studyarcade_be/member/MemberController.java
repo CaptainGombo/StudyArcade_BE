@@ -65,4 +65,12 @@ public class MemberController {
     public ResponseDto<Boolean> checkNickname(@PathVariable("nickname") String nickname) {
         return memberService.checkNickname(nickname);
     }
+
+    @Operation(summary = "Access 토큰 재발급 API", description = "Access 토큰 재발급")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "Access 토큰 재발급 완료")})
+    // Access 토큰 재발급
+    @GetMapping("/refresh-token")
+    public ResponseDto<String> newAccessToken(HttpServletRequest request) {
+        return memberService.newAccessToken(request);
+    }
 }
