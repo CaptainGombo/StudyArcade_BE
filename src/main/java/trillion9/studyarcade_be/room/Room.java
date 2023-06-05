@@ -7,7 +7,10 @@ import org.hibernate.annotations.ColumnDefault;
 import trillion9.studyarcade_be.global.Timestamp;
 import trillion9.studyarcade_be.room.dto.RoomCreateRequestDto;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -20,7 +23,6 @@ public class Room extends Timestamp {
     private Long id;
 
     // 세션 ID
-
     private String sessionId;
 
     @Column(nullable = false)
@@ -47,8 +49,11 @@ public class Room extends Timestamp {
     @Column
     private LocalDateTime roomDeleteTime;
 
+    @Column
+    private LocalDate expirationDate;
+
     @Builder
-    private Room(String sessionId, String roomName, String roomContent, String imageUrl, Long userCount, boolean secret, String roomPassword) {
+    private Room(String sessionId, String roomName, String roomContent, String imageUrl, Long userCount, boolean secret, String roomPassword, LocalDate expirationDate) {
         this.sessionId = sessionId;
         this.roomName = roomName;
         this.roomContent = roomContent;
@@ -56,6 +61,7 @@ public class Room extends Timestamp {
         this.userCount = userCount;
         this.secret = secret;
         this.roomPassword = roomPassword;
+        this.expirationDate = expirationDate;
     }
 
     public void deleteRoom(LocalDateTime roomDeleteTime) {
