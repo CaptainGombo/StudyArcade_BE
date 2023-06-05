@@ -178,7 +178,7 @@ public class RoomService {
         }
 
          /* 비공개 방일 경우, 비밀번호 체크를 수행한다. */
-         if (!room.isSecret()) {
+         if (room.isSecret()) {
              if (requestDto == null || requestDto.getRoomPassword() == null) {    // 패스워드를 입력 안했을 때 에러 발생
                  throw new IllegalArgumentException("비밀번호를 입력해주세요.");
              }
