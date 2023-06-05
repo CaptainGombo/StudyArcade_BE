@@ -16,3 +16,10 @@ spring:
     open-in-view: true
     hibernate:
       ddl-auto: update
+
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
