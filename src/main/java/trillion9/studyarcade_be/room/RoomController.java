@@ -14,10 +14,7 @@
  import reactor.util.annotation.Nullable;
  import trillion9.studyarcade_be.global.ResponseDto;
  import trillion9.studyarcade_be.global.security.UserDetailsImpl;
- import trillion9.studyarcade_be.room.dto.RoomCreateRequestDto;
- import trillion9.studyarcade_be.room.dto.RoomCreateResponseDto;
- import trillion9.studyarcade_be.room.dto.RoomDetailResponseDto;
- import trillion9.studyarcade_be.room.dto.RoomResponseDto;
+ import trillion9.studyarcade_be.room.dto.*;
 
  import java.io.IOException;
  import java.time.Duration;
@@ -72,10 +69,11 @@ public class RoomController {
     @Operation(summary = "스터디 룸 입장 API", description = "스터디 룸 입장")
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 입장 완료")})
     @PostMapping("/rooms/{session-id}/enter")
-    public String enterRoom(@PathVariable("session-id") String sessionId,
+    public String enterRoom(@RequestBody RoomEnterRequestDto requestDto,
+                            @PathVariable("session-id") String sessionId,
                             @AuthenticationPrincipal UserDetailsImpl userDetails) throws
         OpenViduJavaClientException, OpenViduHttpException {
-        return roomService.enterRoom(sessionId, userDetails.getMember());
+        return roomService.enterRoom(requestDto, sessionId, userDetails.getMember());
     }
 
     /* 스터디 룸 퇴장 */
