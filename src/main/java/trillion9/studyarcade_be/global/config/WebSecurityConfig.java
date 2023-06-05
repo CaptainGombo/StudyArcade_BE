@@ -14,7 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import trillion9.studyarcade_be.global.exception.DelegateAuthenticationEntryPoint;
+import trillion9.studyarcade_be.global.exception.CustomAuthenticationEntryPoint;
 import trillion9.studyarcade_be.global.jwt.JwtAuthFilter;
 import trillion9.studyarcade_be.global.jwt.JwtUtil;
 
@@ -24,7 +24,7 @@ import trillion9.studyarcade_be.global.jwt.JwtUtil;
 public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
     private final RedisTemplate<String, String> redisTemplate;
-    private final DelegateAuthenticationEntryPoint delegateAuthenticationEntryPoint;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -63,13 +63,12 @@ public class WebSecurityConfig {
         http.cors();
 
         // 401 Error 처리, Authorization 즉, 인증과정에서 실패할 시 처리
-        http.exceptionHandling().authenticationEntryPoint(delegateAuthenticationEntryPoint);
-        //http.exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint);
+        // http.exceptionHandling().authenticationEntryPoint(customAuthenticationEntryPoint);
 
         return http.build();
     }
 
-//      이렇게 Spring Security만 사용해서 CORS를 적용할 수 있습니다
+//    // cors 세팅
 //    @Bean
 //    public CorsConfigurationSource corsConfigurationSource(){
 //
