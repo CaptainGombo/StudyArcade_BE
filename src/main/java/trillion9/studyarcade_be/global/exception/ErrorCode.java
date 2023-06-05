@@ -24,6 +24,8 @@ public enum ErrorCode {
     /* 403 FORBIDDEN */
     INVALID_TOKEN(HttpStatus.FORBIDDEN, "토큰이 유효하지 않습니다"),
 
+
+
     /* 404 NOT_FOUND */
     POST_TITLE_NOT_FOUND(HttpStatus.NOT_FOUND, "글의 제목이 없습니다."),
     POST_CONTENT_NOT_FOUND(HttpStatus.NOT_FOUND, "글의 내용이 없습니다."),
