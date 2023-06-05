@@ -9,10 +9,6 @@ import java.util.Optional;
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
     Optional<Room> findBySessionId(String sessionId);
-
-    List<Room> findAllByOrderByCreatedAtDesc();
-
-	  Optional<Room> findBySessionIdAndIsDelete(String sessionId, boolean isDelete);
-
-	  Page<Room> findAll(Pageable pageable);
+    Optional<Room> findBySessionIdAndIsDelete(String sessionId, boolean isDelete);
+    Page<Room> findAll(Pageable pageable);
 }
