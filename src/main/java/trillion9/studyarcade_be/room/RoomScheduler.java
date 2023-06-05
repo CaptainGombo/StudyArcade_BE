@@ -3,6 +3,7 @@ package trillion9.studyarcade_be.room;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import trillion9.studyarcade_be.room.repository.RoomRepository;
 
 import java.time.LocalDate;
 import java.util.List;

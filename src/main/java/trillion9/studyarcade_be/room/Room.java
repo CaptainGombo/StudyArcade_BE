@@ -7,9 +7,7 @@ import org.hibernate.annotations.ColumnDefault;
 import trillion9.studyarcade_be.global.Timestamp;
 import trillion9.studyarcade_be.room.dto.RoomCreateRequestDto;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
