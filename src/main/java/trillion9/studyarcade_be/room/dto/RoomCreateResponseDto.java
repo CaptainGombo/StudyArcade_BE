@@ -11,6 +11,7 @@ public class RoomCreateResponseDto {
 	private String roomName;
 	private String roomContent;
 	private String imageUrl;
+	private boolean secret;
 	// private String category;
 	// private String roomPassword;
 
@@ -18,11 +19,12 @@ public class RoomCreateResponseDto {
 	private LocalDateTime createdAt;
 
 	@Builder
-	private RoomCreateResponseDto(String sessionId, String roomName, String roomContent, String imageUrl, LocalDateTime createdAt) {
+	private RoomCreateResponseDto(String sessionId, String roomName, String roomContent, String imageUrl, LocalDateTime createdAt, boolean secret) {
 		this.sessionId = sessionId;
 		this.roomName = roomName;
 		this.roomContent = roomContent;
 		this.imageUrl = imageUrl;
 		this.createdAt = createdAt;
+		this.secret = secret;
 	}
 }
