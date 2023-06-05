@@ -15,11 +15,10 @@ public class RoomCreateRequestDto {
 
 	// @NotBlank(message = "카테고리를 선택해 주세요!")
 	// private String category;
-	//
-	// @NotNull(message = "방의 상태를 설정해 주세요!")
-	// private boolean isPrivate;
-	//
-	// private String roomPassword;
+
+	 private boolean isPrivate;
+
+	 private String roomPassword;
 
 	// @AssertTrue
 	// public boolean isCategory() {

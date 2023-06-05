@@ -17,10 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.exception.CustomException;
 import trillion9.studyarcade_be.member.Member;
-import trillion9.studyarcade_be.room.dto.RoomCreateRequestDto;
-import trillion9.studyarcade_be.room.dto.RoomCreateResponseDto;
-import trillion9.studyarcade_be.room.dto.RoomDetailResponseDto;
-import trillion9.studyarcade_be.room.dto.RoomResponseDto;
+import trillion9.studyarcade_be.room.dto.*;
 import trillion9.studyarcade_be.roommember.RoomMember;
 import trillion9.studyarcade_be.roommember.RoomMemberRepository;
 
@@ -99,6 +96,7 @@ public class RoomService {
                         .sessionId(newToken.getSessionId())
                         .roomName(requestDto.getRoomName())
                         .roomContent(requestDto.getRoomContent())
+                        .roomPassword(requestDto.getRoomPassword())
                         .userCount(1L)
                         .imageUrl(imageUrl)
                         .build();
@@ -159,7 +157,7 @@ public class RoomService {
 
     /* 스터디 룸 입장 */
     @Transactional
-    public String enterRoom(String sessionId, Member member)
+    public String enterRoom(RoomEnterRequestDto requestDto, String sessionId, Member member)
         throws OpenViduJavaClientException, OpenViduHttpException {
 
         /* 해당 sessionId를 가진 스터디룸이 존재하는지 확인한다. */
@@ -177,15 +175,15 @@ public class RoomService {
             }
         }
 
-        // /* 비공개 방일 경우, 비밀번호 체크를 수행한다. */
-        // if (!room.isPrivat()) {
-        //     if (requestData == null || requestData.getPassword() == null) {    // 패스워드를 입력 안했을 때 에러 발생
-        //         throw new IllegalArgumentException("비밀번호를 입력해주세요.");
-        //     }
-        //     if (!room.getPassword().equals(requestData.getPassword())) {  // 비밀번호가 틀리면 에러 발생
-        //         throw new IllegalArgumentException("비밀번호가 틀립니다.");
-        //     }
-        // }
+         /* 비공개 방일 경우, 비밀번호 체크를 수행한다. */
+         if (!room.isPrivate()) {
+             if (requestDto == null || requestDto.getRoomPassword() == null) {    // 패스워드를 입력 안했을 때 에러 발생
+                 throw new IllegalArgumentException("비밀번호를 입력해주세요.");
+             }
+             if (!room.getRoomPassword().equals(requestDto.getRoomPassword())) {  // 비밀번호가 틀리면 에러 발생
+                 throw new IllegalArgumentException("비밀번호가 틀립니다.");
+             }
+         }
 
         /* 이미 입장한 유저일 경우 예외를 발생시킨다. */
         Optional<RoomMember> alreadyEnterChatRoomUser
@@ -194,7 +192,7 @@ public class RoomService {
         if (alreadyEnterChatRoomUser.isPresent()) throw new IllegalArgumentException("이미 입장한 멤버입니다.");
 
         /* 방 입장 토큰 생성 */
-        // String roomToken = createToken(member, room.getSessionId());
+//        String roomToken = createToken(member, room.getSessionId());
 
         RoomMember roomMember = RoomMember.builder()
             .member(member)
