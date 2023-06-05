@@ -49,6 +49,10 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
+    public enum JwtCode {
+        ACCESS, EXPIRED, INVALID
+    }
+
     // header 토큰을 가져오기
     public String resolveToken(HttpServletRequest request, String type) {
         if(type.equals(ACCESS_TOKEN)){
@@ -137,4 +141,24 @@ public class JwtUtil {
         return expirationTime - currentTime;
     }
 
+    /* Socket Access 토큰의 유효성을 검증한다.*/
+    public String socketResolveToken(String bearerToken) {
+        log.info("resolve Token ...");
+
+        if (bearerToken != null && bearerToken.startsWith("Bearer-")) {
+            // Bearer- 제외 토큰 값만 리턴
+            return bearerToken.substring(7);
+        }
+
+        // 토큰이 없다면 null 리턴
+        return null;
+    }
+
+    // 헤더가 없는 토큰 추출
+    public String resolveToken(String token) {
+        if (StringUtils.hasText(token) && token.startsWith(BEARER_PREFIX)) {
+            return token.substring(7);
+        }
+        return null;
+    }
 }
