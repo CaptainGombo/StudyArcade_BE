@@ -19,7 +19,7 @@ public class Room extends Timestamp {
 
     // 세션 ID
     @Id
-    private Long sessionId;
+    private String sessionId;
 
     @Column(nullable = false)
     private String roomName;
@@ -46,7 +46,7 @@ public class Room extends Timestamp {
     private LocalDateTime roomDeleteTime;
 
     @Builder
-    private Room(Long sessionId, String roomName, String roomContent, String imageUrl, Long userCount) {
+    private Room(String sessionId, String roomName, String roomContent, String imageUrl, Long userCount) {
         this.sessionId = sessionId;
         this.roomName = roomName;
         this.roomContent = roomContent;

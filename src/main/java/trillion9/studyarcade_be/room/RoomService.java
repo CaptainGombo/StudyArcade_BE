@@ -98,7 +98,7 @@ public class RoomService {
         String imageUrl = (image == null || image.isEmpty()) ? "대표 이미지 URL" : uploadImage(image);
 
         Room room = Room.builder()
-                        // .sessionId(newToken.getSessionId())
+                        .sessionId(newToken.getSessionId())
                         .roomName(requestDto.getRoomName())
                         .roomContent(requestDto.getRoomContent())
                         .userCount(1L)
@@ -124,7 +124,7 @@ public class RoomService {
 
     /* 스터디 룸 수정 */
     @Transactional
-    public ResponseDto<RoomDetailResponseDto> updateRoom(Long sessionId, RoomCreateRequestDto requestDto, MultipartFile image, Member member)
+    public ResponseDto<RoomDetailResponseDto> updateRoom(String sessionId, RoomCreateRequestDto requestDto, MultipartFile image, Member member)
         throws IOException  {
         Room room = roomRepository.findBySessionId(sessionId).orElseThrow(
                 () -> new CustomException(ROOM_NOT_FOUND)
@@ -144,7 +144,7 @@ public class RoomService {
 
     /* 스터디 룸 삭제 */
     @Transactional
-    public ResponseDto<RoomDetailResponseDto> deleteRoom(Long sessionId, Member member) {
+    public ResponseDto<RoomDetailResponseDto> deleteRoom(String sessionId, Member member) {
         Room room = roomRepository.findBySessionId(sessionId).orElseThrow(
                 () -> new CustomException(ROOM_NOT_FOUND)
         );
@@ -159,7 +159,7 @@ public class RoomService {
 
     /* 스터디 룸 입장 */
     @Transactional
-    public String enterRoom(Long sessionId, Member member)
+    public String enterRoom(String sessionId, Member member)
         throws OpenViduJavaClientException, OpenViduHttpException {
 
         /* 해당 sessionId를 가진 스터디룸이 존재하는지 확인한다. */
@@ -214,7 +214,7 @@ public class RoomService {
 
     /* 스터디 룸 퇴장 */
     @Transactional
-    public String outRoom(Long sessionId, Member member) {
+    public String outRoom(String sessionId, Member member) {
 
         /* 방이 있는 지 확인 */
         Room room = roomRepository.findBySessionIdAndIsDelete(sessionId, false).orElseThrow(
@@ -280,7 +280,7 @@ public class RoomService {
          */
 
          return RoomCreateResponseDto.builder()
-//             .sessionId(session.getSessionId()) //리턴해주는 해당 세션아이디로 다른 유저 채팅방 입장시 요청해주시면 됩니다.
+             .sessionId(session.getSessionId()) //리턴해주는 해당 세션아이디로 다른 유저 채팅방 입장시 요청해주시면 됩니다.
              .build();
      }
 

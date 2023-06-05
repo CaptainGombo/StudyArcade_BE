@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class RoomDetailResponseDto {
-    private Long sessionId;
+    private String sessionId;
     private String roomName;
     private String roomContent;
     private String imageUrl;
