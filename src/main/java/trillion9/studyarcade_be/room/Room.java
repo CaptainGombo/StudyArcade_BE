@@ -7,9 +7,7 @@ import org.hibernate.annotations.ColumnDefault;
 import trillion9.studyarcade_be.global.Timestamp;
 import trillion9.studyarcade_be.room.dto.RoomCreateRequestDto;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
@@ -17,8 +15,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Room extends Timestamp {
 
-    // 세션 ID
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    // 세션 ID
+
     private String sessionId;
 
     @Column(nullable = false)
