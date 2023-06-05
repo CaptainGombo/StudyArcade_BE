@@ -96,9 +96,10 @@ public class RoomService {
                         .sessionId(newToken.getSessionId())
                         .roomName(requestDto.getRoomName())
                         .roomContent(requestDto.getRoomContent())
-                        .roomPassword(requestDto.getRoomPassword())
                         .userCount(1L)
                         .imageUrl(imageUrl)
+                        .secret(requestDto.isSecret())
+                        .roomPassword(requestDto.getRoomPassword())
                         .build();
 
         RoomMember roomMember = RoomMember.builder()
@@ -115,6 +116,7 @@ public class RoomService {
                                                 .roomName(room.getRoomName())
                                                 .roomContent(room.getRoomContent())
                                                 .imageUrl(room.getImageUrl())
+                                                .secret(requestDto.isSecret())
                                                 .build();
 
         return ResponseDto.setSuccess("스터디 룸 생성 성공", responseDto);
@@ -176,7 +178,7 @@ public class RoomService {
         }
 
          /* 비공개 방일 경우, 비밀번호 체크를 수행한다. */
-         if (!room.isPrivate()) {
+         if (!room.isSecret()) {
              if (requestDto == null || requestDto.getRoomPassword() == null) {    // 패스워드를 입력 안했을 때 에러 발생
                  throw new IllegalArgumentException("비밀번호를 입력해주세요.");
              }

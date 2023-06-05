@@ -16,7 +16,7 @@ public class RoomCreateRequestDto {
 	// @NotBlank(message = "카테고리를 선택해 주세요!")
 	// private String category;
 
-	 private boolean isPrivate;
+	 private boolean secret;
 
 	 private String roomPassword;
 

@@ -69,7 +69,7 @@ public class RoomController {
     @Operation(summary = "스터디 룸 입장 API", description = "스터디 룸 입장")
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 입장 완료")})
     @PostMapping("/rooms/{session-id}/enter")
-    public String enterRoom(@RequestBody RoomEnterRequestDto requestDto,
+    public String enterRoom(@RequestBody @Nullable RoomEnterRequestDto requestDto,
                             @PathVariable("session-id") String sessionId,
                             @AuthenticationPrincipal UserDetailsImpl userDetails) throws
         OpenViduJavaClientException, OpenViduHttpException {

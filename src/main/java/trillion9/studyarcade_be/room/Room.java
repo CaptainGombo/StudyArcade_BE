@@ -33,11 +33,11 @@ public class Room extends Timestamp {
     @ColumnDefault("0")
     private Long userCount;
 
-     @ColumnDefault("false")
-     private boolean isPrivate;
+    @ColumnDefault("false")
+    private boolean secret;
 
-     @Column
-     private String roomPassword;
+    @Column
+    private String roomPassword;
 
     @ColumnDefault("false")
     private boolean isDelete;
@@ -46,13 +46,14 @@ public class Room extends Timestamp {
     private LocalDateTime roomDeleteTime;
 
     @Builder
-    private Room(String sessionId, String roomName, String roomContent, String roomPassword, String imageUrl, Long userCount) {
+    private Room(String sessionId, String roomName, String roomContent, String imageUrl, Long userCount, boolean secret, String roomPassword) {
         this.sessionId = sessionId;
         this.roomName = roomName;
         this.roomContent = roomContent;
-        this.roomPassword = roomPassword;
         this.imageUrl = imageUrl;
         this.userCount = userCount;
+        this.secret = secret;
+        this.roomPassword = roomPassword;
     }
 
     public void deleteRoom(LocalDateTime roomDeleteTime) {
