@@ -37,10 +37,6 @@ public class RoomMember {
         this.member = member;
     }
 
-    public void setRoomMaster(boolean roomMaster) {
-        this.roomMaster = roomMaster;
-    }
-
     @Builder
     private RoomMember(Member member, String sessionId, String roomToken, boolean roomMaster) {
         this.member = member;
@@ -51,9 +47,5 @@ public class RoomMember {
 
     public void deleteRoomMember() {
         this.isOut = true;
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
     }
 }
