@@ -4,8 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import io.openvidu.java.client.OpenViduHttpException;
-import io.openvidu.java.client.OpenViduJavaClientException;
+import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +24,7 @@ import trillion9.studyarcade_be.room.dto.RoomResponseDto;
 import trillion9.studyarcade_be.roommember.RoomMember;
 import trillion9.studyarcade_be.roommember.RoomMemberRepository;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
@@ -52,21 +52,21 @@ public class RoomService {
     private String bucketName;
     private final AmazonS3 amazonS3;
 
-//     //openvidu 서버 키 값
-//     @Value("${OPENVIDU_URL}")
-//     private String OPENVIDU_URL;
-//
-//     @Value("${OPENVIDU_SECRET}")
-//     private String OPENVIDU_SECRET;
-//
-//     private OpenVidu openvidu;
+     //openvidu 서버 키 값
+     @Value("${OPENVIDU_URL}")
+     private String OPENVIDU_URL;
+
+     @Value("${OPENVIDU_SECRET}")
+     private String OPENVIDU_SECRET;
+
+     private OpenVidu openvidu;
 
     private Long roomMaxUser = 9L;
 
-//     @PostConstruct
-//     public void init() {
-//         this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
-//     }
+     @PostConstruct
+     public void init() {
+         this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
+     }
 
     /* 스터디 룸 목록 조회 */
     @Transactional(readOnly = true)
@@ -89,8 +89,8 @@ public class RoomService {
     public ResponseDto<RoomCreateResponseDto> createRoom(RoomCreateRequestDto requestDto, MultipartFile image, Member member)
         throws Exception {
 
-//         /* SessionId 셋팅 */
-//         RoomCreateResponseDto newToken = createSession(member);
+         /* SessionId 셋팅 */
+         RoomCreateResponseDto newToken = createSession(member);
 
         log.info("user 정보 : " + member.getEmail());
         log.info("user 정보 : " + member.getNickname());
@@ -257,32 +257,32 @@ public class RoomService {
         return "Success";
     }
 
-//     /* 스터디 룸 생성 시 세션 발급 */
-//     private RoomCreateResponseDto createSession(Member member) throws
-//         OpenViduJavaClientException, OpenViduHttpException {
-//
-//         /* 사용자 연결 시 닉네임 전달 */
-//         String serverData = member.getNickname();
-//
-//         /* serverData을 사용하여 connectionProperties 객체를 빌드 */
-//         ConnectionProperties connectionProperties = new ConnectionProperties.Builder()
-//             .type(ConnectionType.WEBRTC)
-//             .data(serverData)
-//             .build();
-//
-//         /* 새로운 OpenVidu 세션(스터디 룸) 생성 */
-//         Session session = openvidu.createSession();
-//
-//
-//         /* 스터디룸 생성 시 방을 만들며, 방장이 들어가지게 구현하려면 아래의 코드로 토큰 바로 발급
-//             방 생성, 방 입장(방장 입장) 로직이 나누어져 있다면 토큰 발급 필요 없음.
-//         String token = session.createConnection(connectionProperties).getToken();
-//         */
-//
-//         return RoomCreateResponseDto.builder()
+     /* 스터디 룸 생성 시 세션 발급 */
+     private RoomCreateResponseDto createSession(Member member) throws
+         OpenViduJavaClientException, OpenViduHttpException {
+
+         /* 사용자 연결 시 닉네임 전달 */
+         String serverData = member.getNickname();
+
+         /* serverData을 사용하여 connectionProperties 객체를 빌드 */
+         ConnectionProperties connectionProperties = new ConnectionProperties.Builder()
+             .type(ConnectionType.WEBRTC)
+             .data(serverData)
+             .build();
+
+         /* 새로운 OpenVidu 세션(스터디 룸) 생성 */
+         Session session = openvidu.createSession();
+
+
+         /* 스터디룸 생성 시 방을 만들며, 방장이 들어가지게 구현하려면 아래의 코드로 토큰 바로 발급
+             방 생성, 방 입장(방장 입장) 로직이 나누어져 있다면 토큰 발급 필요 없음.
+         String token = session.createConnection(connectionProperties).getToken();
+         */
+
+         return RoomCreateResponseDto.builder()
 //             .sessionId(session.getSessionId()) //리턴해주는 해당 세션아이디로 다른 유저 채팅방 입장시 요청해주시면 됩니다.
-//             .build();
-//     }
+             .build();
+     }
 
 //     /* 스터디룸 입장 시 토큰 발급 */
 //     private String createToken(Member member, String sessionId) throws
