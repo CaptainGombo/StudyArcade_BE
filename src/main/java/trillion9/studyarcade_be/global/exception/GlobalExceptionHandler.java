@@ -4,7 +4,6 @@ import com.amazonaws.services.s3.model.AmazonS3Exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,12 +26,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> uncheckedError(Exception e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
-
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<?> authError(AuthenticationException e){
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
 
     @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
     public ResponseEntity<ErrorResponse> signValidException(MethodArgumentNotValidException exception) {

@@ -9,8 +9,6 @@ import trillion9.studyarcade_be.room.dto.RoomCreateRequestDto;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 
@@ -21,7 +19,6 @@ public class Room extends Timestamp {
 
     // 세션 ID
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sessionId;
 
     @Column(nullable = false)
