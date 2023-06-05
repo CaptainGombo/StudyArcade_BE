@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
-    Optional<Room> findBySessionId(Long sessionId);
+    Optional<Room> findBySessionId(String sessionId);
 
     List<Room> findAllByOrderByCreatedAtDesc();
 
-	Optional<Room> findBySessionIdAndIsDelete(Long sessionId, boolean isDelete);
+	Optional<Room> findBySessionIdAndIsDelete(String sessionId, boolean isDelete);
 
 	Page<Room> findAll(Pageable pageable);
 }
