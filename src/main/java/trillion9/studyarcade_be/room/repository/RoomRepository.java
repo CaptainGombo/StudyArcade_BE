@@ -13,7 +13,5 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 
     Optional<Room> findBySessionIdAndIsDelete(String sessionId, boolean isDelete);
 
-    Page<Room> findAll(Pageable pageable);
-
     List<Room> findByExpirationDateBefore(LocalDate currentDate);
 }
