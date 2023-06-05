@@ -18,19 +18,18 @@ import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.exception.CustomException;
 import trillion9.studyarcade_be.member.Member;
 import trillion9.studyarcade_be.room.dto.*;
+import trillion9.studyarcade_be.room.repository.RoomFilterImpl;
+import trillion9.studyarcade_be.room.repository.RoomRepository;
 import trillion9.studyarcade_be.roommember.RoomMember;
 import trillion9.studyarcade_be.roommember.RoomMemberRepository;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static trillion9.studyarcade_be.global.exception.ErrorCode.INVALID_USER;
 import static trillion9.studyarcade_be.global.exception.ErrorCode.ROOM_NOT_FOUND;
@@ -42,7 +41,7 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
     private final RoomMemberRepository roomMemberRepository;
-    private final EntityManager entityManager;
+    private final RoomFilterImpl roomFilter;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
@@ -65,16 +64,17 @@ public class RoomService {
 
     /* 스터디 룸 목록 조회 */
     @Transactional(readOnly = true)
-    public ResponseDto<List<RoomResponseDto>> allRooms(int page) {
+    public ResponseDto<Page<RoomResponseDto>> allRooms(int page) {
         // 페이징 처리
         Pageable pageable = PageRequest.of(page , 6);
 
-        // pageable을 메소드에 전달
-        Page<Room> rooms = roomRepository.findAll(pageable);
+        Page<RoomResponseDto> roomResponseDtos = roomFilter.findAllRoom(pageable);
 
-        List<RoomResponseDto> roomResponseDtos = rooms.getContent().stream()
-            .map(RoomResponseDto::new)
-            .collect(Collectors.toList());
+//        Page<Room> rooms = roomRepository.findAll(pageable);
+//
+//        List<RoomResponseDto> roomResponseDtos = rooms.getContent().stream()
+//            .map(RoomResponseDto::new)
+//            .collect(Collectors.toList());
 
         return ResponseDto.setSuccess("스터디 룸 목록 조회 성공", roomResponseDtos);
     }
@@ -85,7 +85,7 @@ public class RoomService {
         throws Exception {
 
          /* SessionId 셋팅 */
-         RoomCreateResponseDto newToken = createSession(member);
+//         RoomCreateResponseDto newToken = createSession(member);
 
         log.info("user 정보 : " + member.getEmail());
         log.info("user 정보 : " + member.getNickname());
@@ -93,7 +93,7 @@ public class RoomService {
         String imageUrl = (image == null || image.isEmpty()) ? "대표 이미지 URL" : uploadImage(image);
 
         Room room = Room.builder()
-                        .sessionId(newToken.getSessionId())
+//                        .sessionId(newToken.getSessionId())
                         .roomName(requestDto.getRoomName())
                         .roomContent(requestDto.getRoomContent())
                         .userCount(1L)
@@ -105,7 +105,7 @@ public class RoomService {
 
         RoomMember roomMember = RoomMember.builder()
                                 .member(member)
-                                .sessionId(newToken.getSessionId())
+//                                .sessionId(newToken.getSessionId())
                                 .roomMaster(true)
                                 .build();
 
@@ -113,7 +113,7 @@ public class RoomService {
         roomRepository.save(room);
 
         RoomCreateResponseDto responseDto = RoomCreateResponseDto.builder()
-                                                .sessionId(room.getSessionId())
+//                                                .sessionId(room.getSessionId())
                                                 .roomName(room.getRoomName())
                                                 .roomContent(room.getRoomContent())
                                                 .imageUrl(room.getImageUrl())

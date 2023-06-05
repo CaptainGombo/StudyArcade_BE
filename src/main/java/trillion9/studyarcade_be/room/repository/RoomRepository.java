@@ -1,8 +1,7 @@
-package trillion9.studyarcade_be.room;
+package trillion9.studyarcade_be.room.repository;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import trillion9.studyarcade_be.room.Room;
 
 import java.time.LocalDate;
 import java.util.List;

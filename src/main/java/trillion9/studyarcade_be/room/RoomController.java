@@ -1,5 +1,20 @@
-package trillion9.studyarcade_be.room;
+ package trillion9.studyarcade_be.room;
 
+ import io.openvidu.java.client.OpenViduHttpException;
+ import io.openvidu.java.client.OpenViduJavaClientException;
+ import io.swagger.v3.oas.annotations.Operation;
+ import io.swagger.v3.oas.annotations.responses.ApiResponse;
+ import io.swagger.v3.oas.annotations.responses.ApiResponses;
+ import io.swagger.v3.oas.annotations.tags.Tag;
+ import lombok.RequiredArgsConstructor;
+ import org.springframework.data.domain.Page;
+ import org.springframework.http.MediaType;
+ import org.springframework.security.core.annotation.AuthenticationPrincipal;
+ import org.springframework.web.bind.annotation.*;
+ import org.springframework.web.multipart.MultipartFile;
+ import trillion9.studyarcade_be.global.ResponseDto;
+ import trillion9.studyarcade_be.global.security.UserDetailsImpl;
+ import trillion9.studyarcade_be.room.dto.*;
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,7 +46,7 @@ public class RoomController {
     @Operation(summary = "스터디 룸 목록 조회 API", description = "스터디 룸 목록 조회")
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 목록 조회 완료")})
     @GetMapping("/main")
-    public ResponseDto<List<RoomResponseDto>> allRooms(@RequestParam("page") int page) {
+    public ResponseDto<Page<RoomResponseDto>> allRooms(@RequestParam("page") int page) {
         return roomService.allRooms(page - 1);
     }
 

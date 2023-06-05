@@ -18,8 +18,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Room extends Timestamp {
 
-    // 세션 ID
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    // 세션 ID
     private String sessionId;
 
     @Column(nullable = false)
