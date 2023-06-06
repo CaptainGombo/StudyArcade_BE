@@ -9,6 +9,8 @@ import trillion9.studyarcade_be.member.MemberRepository;
 import trillion9.studyarcade_be.member.StudyTime;
 import trillion9.studyarcade_be.member.StudyTimeRepository;
 import trillion9.studyarcade_be.room.repository.RoomRepository;
+import trillion9.studyarcade_be.roommember.RoomMember;
+import trillion9.studyarcade_be.roommember.RoomMemberRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,12 +20,14 @@ public class RoomScheduler {
     private final RoomRepository roomRepository;
     private final MemberRepository memberRepository;
     private final StudyTimeRepository studyTimeRepository;
+    private final RoomMemberRepository roomMemberRepository;
 
     @Autowired
-    public RoomScheduler(RoomRepository roomRepository, MemberRepository memberRepository, StudyTimeRepository studyTimeRepository) {
+    public RoomScheduler(RoomRepository roomRepository, MemberRepository memberRepository, StudyTimeRepository studyTimeRepository, RoomMemberRepository roomMemberRepository) {
         this.roomRepository = roomRepository;
         this.memberRepository = memberRepository;
         this.studyTimeRepository = studyTimeRepository;
+        this.roomMemberRepository = roomMemberRepository;
     }
 
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행되도록 설정
@@ -31,6 +35,13 @@ public class RoomScheduler {
     public void manageRoomAndStudyTime() {
         LocalDate currentDate = LocalDate.now();
         List<Room> expiredRooms = roomRepository.findByExpirationDateBefore(currentDate);
+
+        for (Room room : expiredRooms) {
+            List<RoomMember> roomMembers = roomMemberRepository.findBySessionId(room.getSessionId());
+            if (!roomMembers.isEmpty()) {
+                roomMemberRepository.deleteAll(roomMembers);
+            }
+        }
 
         roomRepository.deleteAll(expiredRooms);
 
