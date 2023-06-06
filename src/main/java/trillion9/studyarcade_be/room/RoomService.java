@@ -101,6 +101,7 @@ public class RoomService {
                         .imageUrl(imageUrl)
                         .secret(requestDto.isSecret())
                         .roomPassword(requestDto.getRoomPassword())
+                        .expirationDate(requestDto.getExpirationDate())
                         .build();
 
         RoomMember roomMember = RoomMember.builder()

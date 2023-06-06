@@ -3,6 +3,8 @@ package trillion9.studyarcade_be.room.dto;
 import javax.validation.constraints.NotBlank;import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
+
 @Getter
 @RequiredArgsConstructor
 public class RoomCreateRequestDto {
@@ -19,6 +21,8 @@ public class RoomCreateRequestDto {
 	 private boolean secret;
 
 	 private String roomPassword;
+
+	 private LocalDate expirationDate;
 
 	// @AssertTrue
 	// public boolean isCategory() {
