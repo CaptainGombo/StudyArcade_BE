@@ -28,7 +28,7 @@ public class RoomFilterImpl implements RoomFilter {
         if (category != null && !category.isEmpty()) {
             String[] categories = category.split(",");
             for (String cat : categories) {
-                booleanBuilder.or(room.categories.contains(cat));
+                booleanBuilder.or(room.category.contains(cat));
             }
         }
 
