@@ -7,9 +7,8 @@ import org.hibernate.annotations.ColumnDefault;
 import trillion9.studyarcade_be.global.Timestamp;
 import trillion9.studyarcade_be.room.dto.RoomCreateRequestDto;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -17,8 +16,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Room extends Timestamp {
 
-    // 세션 ID
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    // 세션 ID
     private String sessionId;
 
     @Column(nullable = false)
@@ -33,11 +35,11 @@ public class Room extends Timestamp {
     @ColumnDefault("0")
     private Long userCount;
 
-    // @ColumnDefault("false")
-    // private boolean isPrivate;
+    @ColumnDefault("false")
+    private boolean secret;
 
-    // @Column
-    // private String roomPassword;
+    @Column
+    private String roomPassword;
 
     @ColumnDefault("false")
     private boolean isDelete;
@@ -45,13 +47,19 @@ public class Room extends Timestamp {
     @Column
     private LocalDateTime roomDeleteTime;
 
+    @Column
+    private LocalDate expirationDate;
+
     @Builder
-    private Room(String sessionId, String roomName, String roomContent, String imageUrl, Long userCount) {
+    private Room(String sessionId, String roomName, String roomContent, String imageUrl, Long userCount, boolean secret, String roomPassword, LocalDate expirationDate) {
         this.sessionId = sessionId;
         this.roomName = roomName;
         this.roomContent = roomContent;
         this.imageUrl = imageUrl;
         this.userCount = userCount;
+        this.secret = secret;
+        this.roomPassword = roomPassword;
+        this.expirationDate = expirationDate;
     }
 
     public void deleteRoom(LocalDateTime roomDeleteTime) {

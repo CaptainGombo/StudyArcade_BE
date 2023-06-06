@@ -7,6 +7,7 @@
  import io.swagger.v3.oas.annotations.responses.ApiResponses;
  import io.swagger.v3.oas.annotations.tags.Tag;
  import lombok.RequiredArgsConstructor;
+ import org.springframework.data.domain.Page;
  import org.springframework.http.MediaType;
  import org.springframework.security.core.annotation.AuthenticationPrincipal;
  import org.springframework.web.bind.annotation.*;
@@ -14,14 +15,9 @@
  import reactor.util.annotation.Nullable;
  import trillion9.studyarcade_be.global.ResponseDto;
  import trillion9.studyarcade_be.global.security.UserDetailsImpl;
- import trillion9.studyarcade_be.room.dto.RoomCreateRequestDto;
- import trillion9.studyarcade_be.room.dto.RoomCreateResponseDto;
- import trillion9.studyarcade_be.room.dto.RoomDetailResponseDto;
- import trillion9.studyarcade_be.room.dto.RoomResponseDto;
+ import trillion9.studyarcade_be.room.dto.*;
 
  import java.io.IOException;
- import java.time.Duration;
- import java.util.List;
 @Tag(name = "RoomController",description = "스터디룸 API")
 @RestController
 @RequiredArgsConstructor
@@ -34,7 +30,7 @@ public class RoomController {
     @Operation(summary = "스터디 룸 목록 조회 API", description = "스터디 룸 목록 조회")
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 목록 조회 완료")})
     @GetMapping("/main")
-    public ResponseDto<List<RoomResponseDto>> allRooms(@RequestParam("page") int page) {
+    public ResponseDto<Page<RoomResponseDto>> allRooms(@RequestParam("page") int page) {
         return roomService.allRooms(page - 1);
     }
 
@@ -72,10 +68,11 @@ public class RoomController {
     @Operation(summary = "스터디 룸 입장 API", description = "스터디 룸 입장")
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 입장 완료")})
     @PostMapping("/rooms/{session-id}/enter")
-    public String enterRoom(@PathVariable("session-id") String sessionId,
+    public String enterRoom(@RequestBody @Nullable RoomEnterRequestDto requestDto,
+                            @PathVariable("session-id") String sessionId,
                             @AuthenticationPrincipal UserDetailsImpl userDetails) throws
         OpenViduJavaClientException, OpenViduHttpException {
-        return roomService.enterRoom(sessionId, userDetails.getMember());
+        return roomService.enterRoom(requestDto, sessionId, userDetails.getMember());
     }
 
     /* 스터디 룸 퇴장 */

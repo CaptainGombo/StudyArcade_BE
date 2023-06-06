@@ -2,6 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.12'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'trillion9'
@@ -33,6 +35,7 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
     //Spring Security
     testImplementation 'org.springframework.security:spring-security-test'
@@ -70,7 +73,36 @@ dependencies {
     //gson
     implementation 'com.google.code.gson:gson:2.9.0'
 
+    // queryDSL 설정
+    implementation "com.querydsl:querydsl-jpa:5.0.0"
+    implementation "com.querydsl:querydsl-apt:5.0.0"
+    implementation "com.querydsl:querydsl-core:5.0.0"
+    implementation "com.querydsl:querydsl-collections"
 
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0" // querydsl JPAAnnotationProcessor 사용 지정
+    annotationProcessor "javax.annotation:javax.annotation-api" // java.lang.NoClassDefFoundError (javax.annotation.Generated) 대응 코드
+    annotationProcessor "javax.persistence:javax.persistence-api" // java.lang.NoClassDefFoundError (javax.annotation.Entity) 대응 코드
+
+}
+
+// Qtype 생성 경로
+def querydslDir = "$buildDir/generated/querydsl"
+
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+sourceSets {
+    main.java.srcDir querydslDir
+}
+compileQuerydsl{
+    options.annotationProcessorPath = configurations.querydsl
+}
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    querydsl.extendsFrom compileClasspath
 }
 
 tasks.named('test') {

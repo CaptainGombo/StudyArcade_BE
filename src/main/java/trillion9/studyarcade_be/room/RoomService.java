@@ -17,15 +17,13 @@ import org.springframework.web.multipart.MultipartFile;
 import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.exception.CustomException;
 import trillion9.studyarcade_be.member.Member;
-import trillion9.studyarcade_be.room.dto.RoomCreateRequestDto;
-import trillion9.studyarcade_be.room.dto.RoomCreateResponseDto;
-import trillion9.studyarcade_be.room.dto.RoomDetailResponseDto;
-import trillion9.studyarcade_be.room.dto.RoomResponseDto;
+import trillion9.studyarcade_be.room.dto.*;
+import trillion9.studyarcade_be.room.repository.RoomFilterImpl;
+import trillion9.studyarcade_be.room.repository.RoomRepository;
 import trillion9.studyarcade_be.roommember.RoomMember;
 import trillion9.studyarcade_be.roommember.RoomMemberRepository;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +31,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static trillion9.studyarcade_be.global.exception.ErrorCode.INVALID_USER;
 import static trillion9.studyarcade_be.global.exception.ErrorCode.ROOM_NOT_FOUND;
@@ -45,7 +42,7 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
     private final RoomMemberRepository roomMemberRepository;
-    private final EntityManager entityManager;
+    private final RoomFilterImpl roomFilter;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
@@ -68,16 +65,17 @@ public class RoomService {
 
     /* 스터디 룸 목록 조회 */
     @Transactional(readOnly = true)
-    public ResponseDto<List<RoomResponseDto>> allRooms(int page) {
+    public ResponseDto<Page<RoomResponseDto>> allRooms(int page) {
         // 페이징 처리
         Pageable pageable = PageRequest.of(page , 6);
 
-        // pageable을 메소드에 전달
-        Page<Room> rooms = roomRepository.findAll(pageable);
+        Page<RoomResponseDto> roomResponseDtos = roomFilter.findAllRoom(pageable);
 
-        List<RoomResponseDto> roomResponseDtos = rooms.getContent().stream()
-            .map(RoomResponseDto::new)
-            .collect(Collectors.toList());
+//        Page<Room> rooms = roomRepository.findAll(pageable);
+//
+//        List<RoomResponseDto> roomResponseDtos = rooms.getContent().stream()
+//            .map(RoomResponseDto::new)
+//            .collect(Collectors.toList());
 
         return ResponseDto.setSuccess("스터디 룸 목록 조회 성공", roomResponseDtos);
     }
@@ -88,7 +86,7 @@ public class RoomService {
         throws Exception {
 
          /* SessionId 셋팅 */
-         RoomCreateResponseDto newToken = createSession(member);
+//         RoomCreateResponseDto newToken = createSession(member);
 
         log.info("user 정보 : " + member.getEmail());
         log.info("user 정보 : " + member.getNickname());
@@ -96,16 +94,19 @@ public class RoomService {
         String imageUrl = (image == null || image.isEmpty()) ? "대표 이미지 URL" : uploadImage(image);
 
         Room room = Room.builder()
-                        .sessionId(newToken.getSessionId())
+//                        .sessionId(newToken.getSessionId())
                         .roomName(requestDto.getRoomName())
                         .roomContent(requestDto.getRoomContent())
                         .userCount(1L)
                         .imageUrl(imageUrl)
+                        .secret(requestDto.isSecret())
+                        .roomPassword(requestDto.getRoomPassword())
+                        .expirationDate(requestDto.getExpirationDate())
                         .build();
 
         RoomMember roomMember = RoomMember.builder()
                                 .member(member)
-                                .sessionId(newToken.getSessionId())
+//                                .sessionId(newToken.getSessionId())
                                 .roomMaster(true)
                                 .build();
 
@@ -113,10 +114,11 @@ public class RoomService {
         roomRepository.save(room);
 
         RoomCreateResponseDto responseDto = RoomCreateResponseDto.builder()
-                                                .sessionId(room.getSessionId())
+//                                                .sessionId(room.getSessionId())
                                                 .roomName(room.getRoomName())
                                                 .roomContent(room.getRoomContent())
                                                 .imageUrl(room.getImageUrl())
+                                                .secret(requestDto.isSecret())
                                                 .build();
 
         return ResponseDto.setSuccess("스터디 룸 생성 성공", responseDto);
@@ -159,7 +161,7 @@ public class RoomService {
 
     /* 스터디 룸 입장 */
     @Transactional
-    public String enterRoom(String sessionId, Member member)
+    public String enterRoom(RoomEnterRequestDto requestDto, String sessionId, Member member)
         throws OpenViduJavaClientException, OpenViduHttpException {
 
         /* 해당 sessionId를 가진 스터디룸이 존재하는지 확인한다. */
@@ -177,15 +179,15 @@ public class RoomService {
             }
         }
 
-        // /* 비공개 방일 경우, 비밀번호 체크를 수행한다. */
-        // if (!room.isPrivat()) {
-        //     if (requestData == null || requestData.getPassword() == null) {    // 패스워드를 입력 안했을 때 에러 발생
-        //         throw new IllegalArgumentException("비밀번호를 입력해주세요.");
-        //     }
-        //     if (!room.getPassword().equals(requestData.getPassword())) {  // 비밀번호가 틀리면 에러 발생
-        //         throw new IllegalArgumentException("비밀번호가 틀립니다.");
-        //     }
-        // }
+         /* 비공개 방일 경우, 비밀번호 체크를 수행한다. */
+         if (room.isSecret()) {
+             if (requestDto == null || requestDto.getRoomPassword() == null) {    // 패스워드를 입력 안했을 때 에러 발생
+                 throw new IllegalArgumentException("비밀번호를 입력해주세요.");
+             }
+             if (!room.getRoomPassword().equals(requestDto.getRoomPassword())) {  // 비밀번호가 틀리면 에러 발생
+                 throw new IllegalArgumentException("비밀번호가 틀립니다.");
+             }
+         }
 
         /* 이미 입장한 유저일 경우 예외를 발생시킨다. */
         Optional<RoomMember> alreadyEnterChatRoomUser
@@ -194,7 +196,7 @@ public class RoomService {
         if (alreadyEnterChatRoomUser.isPresent()) throw new IllegalArgumentException("이미 입장한 멤버입니다.");
 
         /* 방 입장 토큰 생성 */
-        // String roomToken = createToken(member, room.getSessionId());
+//        String roomToken = createToken(member, room.getSessionId());
 
         RoomMember roomMember = RoomMember.builder()
             .member(member)

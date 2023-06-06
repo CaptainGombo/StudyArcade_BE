@@ -1,9 +1,10 @@
-package trillion9.studyarcade_be.room;
+package trillion9.studyarcade_be.room.repository;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import trillion9.studyarcade_be.room.Room;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
@@ -12,5 +13,5 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 
     Optional<Room> findBySessionIdAndIsDelete(String sessionId, boolean isDelete);
 
-    Page<Room> findAll(Pageable pageable);
+    List<Room> findByExpirationDateBefore(LocalDate currentDate);
 }
