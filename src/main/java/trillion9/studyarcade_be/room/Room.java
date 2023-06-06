@@ -28,7 +28,7 @@ public class Room extends Timestamp {
     private String roomContent;
 
     @Column
-    private String categories;
+    private String category;
 
     @Column
     private String imageUrl;
@@ -52,11 +52,11 @@ public class Room extends Timestamp {
     private LocalDate expirationDate;
 
     @Builder
-    private Room(String sessionId, String roomName, String roomContent, String categories, String imageUrl, Long userCount, boolean secret, String roomPassword, LocalDate expirationDate) {
+    private Room(String sessionId, String roomName, String roomContent, String category, String imageUrl, Long userCount, boolean secret, String roomPassword, LocalDate expirationDate) {
         this.sessionId = sessionId;
         this.roomName = roomName;
         this.roomContent = roomContent;
-        this.categories = categories;
+        this.category = category;
         this.imageUrl = imageUrl;
         this.userCount = userCount;
         this.secret = secret;

@@ -93,7 +93,7 @@ public class RoomService {
                         .userCount(1L)
                         .imageUrl(imageUrl)
                         .secret(requestDto.isSecret())
-                        .categories(requestDto.getCategory())
+                        .category(requestDto.getCategory())
                         .roomPassword(requestDto.getRoomPassword())
                         .expirationDate(requestDto.getExpirationDate())
                         .build();
@@ -112,8 +112,8 @@ public class RoomService {
                                                 .roomName(room.getRoomName())
                                                 .roomContent(room.getRoomContent())
                                                 .imageUrl(room.getImageUrl())
-                                                .secret(requestDto.isSecret())
-                                                .category(room.getCategories())
+                                                .secret(room.isSecret())
+                                                .category(room.getCategory())
                                                 .build();
 
         return ResponseDto.setSuccess("스터디 룸 생성 성공", responseDto);
