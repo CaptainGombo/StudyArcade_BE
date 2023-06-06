@@ -28,16 +28,17 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		// stomp 접속 주소 url => /ws-stomp
-		registry.addEndpoint("/ws-stomp") // 연결될 엔드포인트
-			.setAllowedOriginPatterns("*").withSockJS(); // SocketJS 를 연결한다는 설정
+		registry.addEndpoint("/ws") // 연결될 엔드포인트
+			.setAllowedOriginPatterns("*");
+			// .withSockJS(); // SocketJS 를 연결한다는 설정
 	}
 
 	@Override
 	public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
 		registration.setMessageSizeLimit(50 * 1024 * 1024);
 	}
-	@Override
-	public void configureClientInboundChannel(ChannelRegistration registration) {
-		registration.interceptors(stompHandler);
-	}
+	// @Override
+	// public void configureClientInboundChannel(ChannelRegistration registration) {
+	// 	registration.interceptors(stompHandler);
+	// }
 }
