@@ -79,7 +79,7 @@ public class RoomService {
         throws Exception {
 
          /* SessionId 셋팅 */
-//         RoomCreateResponseDto newToken = createSession(member);
+        RoomCreateResponseDto newToken = createSession(member);
 
         log.info("user 정보 : " + member.getEmail());
         log.info("user 정보 : " + member.getNickname());
@@ -87,7 +87,7 @@ public class RoomService {
         String imageUrl = (image == null || image.isEmpty()) ? "대표 이미지 URL" : uploadImage(image);
 
         Room room = Room.builder()
-//                        .sessionId(newToken.getSessionId())
+                        .sessionId(newToken.getSessionId())
                         .roomName(requestDto.getRoomName())
                         .roomContent(requestDto.getRoomContent())
                         .userCount(1L)
@@ -99,7 +99,7 @@ public class RoomService {
 
         RoomMember roomMember = RoomMember.builder()
                                 .member(member)
-//                                .sessionId(newToken.getSessionId())
+                                .sessionId(newToken.getSessionId())
                                 .roomMaster(true)
                                 .build();
 
@@ -107,7 +107,7 @@ public class RoomService {
         roomRepository.save(room);
 
         RoomCreateResponseDto responseDto = RoomCreateResponseDto.builder()
-//                                                .sessionId(room.getSessionId())
+                                                .sessionId(room.getSessionId())
                                                 .roomName(room.getRoomName())
                                                 .roomContent(room.getRoomContent())
                                                 .imageUrl(room.getImageUrl())
@@ -227,23 +227,9 @@ public class RoomService {
         /* 스터디 룸 유저 삭제 */
         roomMemberRepository.delete(roomMember);
 
-//         /* 스터디 룸 유저 수 확인
-//          * 스터디 룸 유저가 0명이라면 방 논리삭제. */
-//         synchronized (chatRoom) {
         /* 방 인원 카운트 - 1 */
         room.updateUserCount(room.getUserCount() - 1);
 
-        //     if (chatRoom.getCntUser() <= 0) {
-        //         /*방 논리 삭제 + 방 삭제된 시간 기록*/
-        //         LocalDateTime roomDeleteTime = Timestamp.valueOf(LocalDateTime.now()).toLocalDateTime();
-        //         chatRoom.deleteRoom(roomDeleteTime);
-        //         return "Success";
-        //     }
-        //
-        //     /* 스터디룸의 유저 수가 1명 이상있다면 유저 수만 변경 */
-        //     return "Success";
-        //
-        // }
         return "Success";
     }
 
