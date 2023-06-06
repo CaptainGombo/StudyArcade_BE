@@ -33,7 +33,7 @@ public class JwtUtil {
     public static final String REFRESH_TOKEN = "Refresh_Token";
 
     public static final long ACCESS_TOKEN_TIME = 1 * 60 * 1000L;   //AccessToken Time 1 hour
-    public static final long REFRESH_TOKEN_TIME = 2 * 60 * 60 * 1000L; //RefreshToken Time 1 day
+    public static final long REFRESH_TOKEN_TIME = 2 * 60 * 1000L; //RefreshToken Time 1 day
     private final UserDetailsServiceImpl userDetailsService;
     private final MemberRepository memberRepository;
     private final RedisTemplate<String, String> redisTemplate;
