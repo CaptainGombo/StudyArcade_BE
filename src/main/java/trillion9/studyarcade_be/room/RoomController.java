@@ -9,32 +9,15 @@
  import lombok.RequiredArgsConstructor;
  import org.springframework.data.domain.Page;
  import org.springframework.http.MediaType;
- import org.springframework.lang.Nullable;
  import org.springframework.security.core.annotation.AuthenticationPrincipal;
  import org.springframework.web.bind.annotation.*;
  import org.springframework.web.multipart.MultipartFile;
+ import reactor.util.annotation.Nullable;
  import trillion9.studyarcade_be.global.ResponseDto;
  import trillion9.studyarcade_be.global.security.UserDetailsImpl;
  import trillion9.studyarcade_be.room.dto.*;
-import io.openvidu.java.client.OpenViduHttpException;
-import io.openvidu.java.client.OpenViduJavaClientException;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import reactor.util.annotation.Nullable;
-import trillion9.studyarcade_be.global.ResponseDto;
-import trillion9.studyarcade_be.global.security.UserDetailsImpl;
-import trillion9.studyarcade_be.room.dto.*;
 
-import java.io.IOException;
-import java.time.Duration;
-import java.util.List;
+ import java.io.IOException;
 @Tag(name = "RoomController",description = "스터디룸 API")
 @RestController
 @RequiredArgsConstructor
