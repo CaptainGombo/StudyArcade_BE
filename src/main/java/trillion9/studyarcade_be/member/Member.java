@@ -29,6 +29,9 @@ public class Member {
     @Column
     private Long totalStudyTime;
 
+    @Column
+    private String title;
+
     @Builder
     private Member(Long kakaoId, String nickname, String email, String password) {
         this.kakaoId = kakaoId;
@@ -49,5 +52,22 @@ public class Member {
     public void updateTotalStudyTime() {
         this.totalStudyTime += this.dailyStudyTime;
         this.dailyStudyTime = 0L;
+        updateTitle();
     }
+
+    private void updateTitle() {
+        if (this.totalStudyTime >= 1000 * 60 * 60) {
+            this.title = "Lv5";
+        } else if (this.totalStudyTime >= 501 * 60 * 60) {
+            this.title = "Lv4";
+        } else if (this.totalStudyTime >= 201 * 60 * 60) {
+            this.title = "Lv3";
+        } else if (this.totalStudyTime >= 51 * 60 * 60) {
+            this.title = "Lv2";
+        } else {
+            this.title = "Lv1";
+        }
+    }
+
+
 }

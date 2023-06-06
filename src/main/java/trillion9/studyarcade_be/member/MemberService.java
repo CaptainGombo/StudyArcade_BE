@@ -108,4 +108,5 @@ public class MemberService {
         }
         return ResponseDto.setSuccess("New Access Token", jwtUtil.createToken(jwtUtil.getUserInfoFromToken(refreshToken), JwtUtil.ACCESS_TOKEN));
     }
+
 }
