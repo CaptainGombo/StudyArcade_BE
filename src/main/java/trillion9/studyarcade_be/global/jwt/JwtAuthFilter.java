@@ -33,34 +33,38 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if(accessToken != null) {
             //Access 토큰 유효 시, security context에 인증 정보 저장
-            if(jwtUtil.validateToken(accessToken)){
+            if(jwtUtil.validateToken(accessToken)) {
                 // Redis에 해당 accessToken logout 여부를 확인
                 String isLogout = redisTemplate.opsForValue().get("BL:" + accessToken);
                 // 로그아웃이 없는(되어 있지 않은) 경우 해당 토큰은 정상적으로 작동하기
                 if (ObjectUtils.isEmpty(isLogout)) {
                     setAuthentication(jwtUtil.getUserInfoFromToken(accessToken));
                 }
-            }
-            // Access 토큰 만료 & Refresh 토큰 유효
-            else if (refreshToken != null && Boolean.TRUE.equals(jwtUtil.validateRefreshToken(refreshToken))) {
-                String userEmail = jwtUtil.getUserInfoFromToken(refreshToken);
-                //new accessToken 발급
-                String newAccessToken = jwtUtil.createToken(userEmail, JwtUtil.ACCESS_TOKEN);
-                //헤더에 새로운 Access 토큰 넣기
-                response.setHeader(JwtUtil.ACCESS_TOKEN, newAccessToken);
-                //Security context에 인증 정보 저장
-                String newToken = newAccessToken.substring(7);
-                setAuthentication(jwtUtil.getUserInfoFromToken(newToken));
-                log.info("New Token Issued");
-
-            } else if (refreshToken == null) {
-                jwtExceptionHandler(response, "Access Token Expired", HttpStatus.BAD_REQUEST.value());
-                return;
             } else {
-                //Access & Refresh 토큰 만료시
-                jwtExceptionHandler(response, "Access & Refresh Token Expired", HttpStatus.BAD_REQUEST.value());
+                jwtExceptionHandler(response, "Access Token Expired", HttpStatus.FORBIDDEN.value());
                 return;
             }
+
+//            // Access 토큰 만료 & Refresh 토큰 유효
+//            else if (refreshToken != null && Boolean.TRUE.equals(jwtUtil.validateRefreshToken(refreshToken))) {
+//                String userEmail = jwtUtil.getUserInfoFromToken(refreshToken);
+//                //new accessToken 발급
+//                String newAccessToken = jwtUtil.createToken(userEmail, JwtUtil.ACCESS_TOKEN);
+//                //헤더에 새로운 Access 토큰 넣기
+//                response.setHeader(JwtUtil.ACCESS_TOKEN, newAccessToken);
+//                //Security context에 인증 정보 저장
+//                String newToken = newAccessToken.substring(7);
+//                setAuthentication(jwtUtil.getUserInfoFromToken(newToken));
+//                log.info("New Token Issued");
+//
+//            } else if (refreshToken == null) {
+//                jwtExceptionHandler(response, "Access Token Expired", HttpStatus.FORBIDDEN.value());
+//                return;
+//            } else {
+//                //Access & Refresh 토큰 만료시
+//                jwtExceptionHandler(response, "Access & Refresh Token Expired", HttpStatus.FORBIDDEN.value());
+//                return;
+//            }
         }
         filterChain.doFilter(request,response);
     }

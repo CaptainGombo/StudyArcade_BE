@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.exception.CustomException;
+import trillion9.studyarcade_be.global.jwt.JwtAuthFilter;
 import trillion9.studyarcade_be.global.jwt.JwtUtil;
 import trillion9.studyarcade_be.global.jwt.TokenDto;
 import trillion9.studyarcade_be.member.dto.MemberRequestDto;
@@ -24,6 +25,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final JwtAuthFilter jwtAuthFilter;
     private final RedisTemplate<String, String> redisTemplate;
 
     @Transactional
@@ -104,9 +106,11 @@ public class MemberService {
     public ResponseDto<String> newAccessToken(HttpServletRequest request) {
         String refreshToken = jwtUtil.resolveToken(request, JwtUtil.REFRESH_TOKEN);
         if (!jwtUtil.validateRefreshToken(refreshToken)) {
-            throw new CustomException(INVALID_TOKEN);
+            throw new CustomException(INVALID_REFRESH_TOKEN);
         }
-        return ResponseDto.setSuccess("New Access Token", jwtUtil.createToken(jwtUtil.getUserInfoFromToken(refreshToken), JwtUtil.ACCESS_TOKEN));
-    }
 
+        String newAccessToken = jwtUtil.createToken(jwtUtil.getUserInfoFromToken(refreshToken), JwtUtil.ACCESS_TOKEN);
+        jwtAuthFilter.setAuthentication(jwtUtil.getUserInfoFromToken(newAccessToken.substring(7)));
+        return ResponseDto.setSuccess("New Access Token", newAccessToken);
+    }
 }

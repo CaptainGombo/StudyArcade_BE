@@ -22,9 +22,7 @@ public enum ErrorCode {
     AUTHORIZATION_ERROR(HttpStatus.UNAUTHORIZED, "유효하지 않은 접근 방식입니다."),
 
     /* 403 FORBIDDEN */
-    INVALID_TOKEN(HttpStatus.FORBIDDEN, "토큰이 유효하지 않습니다"),
-
-
+    INVALID_REFRESH_TOKEN(HttpStatus.FORBIDDEN, "Refresh Token Expired"),
 
     /* 404 NOT_FOUND */
     POST_TITLE_NOT_FOUND(HttpStatus.NOT_FOUND, "글의 제목이 없습니다."),
