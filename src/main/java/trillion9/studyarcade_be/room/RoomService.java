@@ -65,17 +65,10 @@ public class RoomService {
 
     /* 스터디 룸 목록 조회 */
     @Transactional(readOnly = true)
-    public ResponseDto<Page<RoomResponseDto>> allRooms(int page) {
+    public ResponseDto<Page<RoomResponseDto>> allRooms(int page, String category, String keyword) {
         // 페이징 처리
         Pageable pageable = PageRequest.of(page , 6);
-
-        Page<RoomResponseDto> roomResponseDtos = roomFilter.findAllRoom(pageable);
-
-//        Page<Room> rooms = roomRepository.findAll(pageable);
-//
-//        List<RoomResponseDto> roomResponseDtos = rooms.getContent().stream()
-//            .map(RoomResponseDto::new)
-//            .collect(Collectors.toList());
+        Page<RoomResponseDto> roomResponseDtos = roomFilter.findRooms(pageable, category, keyword);
 
         return ResponseDto.setSuccess("스터디 룸 목록 조회 성공", roomResponseDtos);
     }

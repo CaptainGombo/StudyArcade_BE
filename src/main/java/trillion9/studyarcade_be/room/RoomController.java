@@ -18,7 +18,8 @@
  import trillion9.studyarcade_be.room.dto.*;
 
  import java.io.IOException;
-@Tag(name = "RoomController",description = "스터디룸 API")
+
+ @Tag(name = "RoomController",description = "스터디룸 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -30,8 +31,10 @@ public class RoomController {
     @Operation(summary = "스터디 룸 목록 조회 API", description = "스터디 룸 목록 조회")
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 목록 조회 완료")})
     @GetMapping("/main")
-    public ResponseDto<Page<RoomResponseDto>> allRooms(@RequestParam("page") int page) {
-        return roomService.allRooms(page - 1);
+    public ResponseDto<Page<RoomResponseDto>> allRooms(@RequestParam("page") int page,
+                                                       @RequestParam(value = "category", required = false) String category,
+                                                       @RequestParam(value = "keyword", required = false) String keyword) {
+        return roomService.allRooms(page - 1, category, keyword);
     }
 
     /* 스터디 룸 생성 */

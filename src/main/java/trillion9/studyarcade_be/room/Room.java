@@ -30,6 +30,9 @@ public class Room extends Timestamp {
     private String roomContent;
 
     @Column
+    private String categories;
+
+    @Column
     private String imageUrl;
 
     @ColumnDefault("0")
