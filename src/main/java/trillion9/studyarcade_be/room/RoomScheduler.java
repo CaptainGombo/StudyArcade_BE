@@ -3,6 +3,11 @@ package trillion9.studyarcade_be.room;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import trillion9.studyarcade_be.member.Member;
+import trillion9.studyarcade_be.member.MemberRepository;
+import trillion9.studyarcade_be.member.StudyTime;
+import trillion9.studyarcade_be.member.StudyTimeRepository;
 import trillion9.studyarcade_be.room.repository.RoomRepository;
 
 import java.time.LocalDate;
@@ -11,17 +16,41 @@ import java.util.List;
 @Component
 public class RoomScheduler {
     private final RoomRepository roomRepository;
+    private final MemberRepository memberRepository;
+    private final StudyTimeRepository studyTimeRepository;
 
     @Autowired
-    public RoomScheduler(RoomRepository roomRepository) {
+    public RoomScheduler(RoomRepository roomRepository, MemberRepository memberRepository, StudyTimeRepository studyTimeRepository) {
         this.roomRepository = roomRepository;
+        this.memberRepository = memberRepository;
+        this.studyTimeRepository = studyTimeRepository;
     }
 
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행되도록 설정
-    public void deleteExpiredRooms() {
+    @Transactional
+    public void manageRoomAndStudyTime() {
         LocalDate currentDate = LocalDate.now();
         List<Room> expiredRooms = roomRepository.findByExpirationDateBefore(currentDate);
 
         roomRepository.deleteAll(expiredRooms);
+
+        // 하루에 공부한 시간 저장
+        List<Member> members =  memberRepository.findAll();
+
+        for (Member member : members) {
+            Long hour = member.getDailyStudyTime() / 3600;
+            Long minute = (member.getDailyStudyTime() % 3600) / 60;
+
+            String timeFormat = String.format("%02d:%02d", hour, minute);
+
+            LocalDate previousDate = currentDate.minusDays(1);
+
+            StudyTime dailyStudyTime = new StudyTime(member.getId(), previousDate, timeFormat);
+
+            studyTimeRepository.save(dailyStudyTime);
+
+            // 멤버의 dailyStudyTime을 totalStudyTime에 더하고 0으로 리셋
+            member.updateTotalStudyTime();
+        }
     }
 }

@@ -184,7 +184,7 @@ public class RoomService {
 
         /* 이미 입장한 유저일 경우 예외를 발생시킨다. */
         Optional<RoomMember> alreadyEnterChatRoomUser
-            = roomMemberRepository.findByMemberIdAndSessionIdAndIsOut(member.getId(), sessionId, false);
+            = roomMemberRepository.findByMemberIdAndSessionId(member.getId(), sessionId);
 
         if (alreadyEnterChatRoomUser.isPresent()) throw new IllegalArgumentException("이미 입장한 멤버입니다.");
 
@@ -209,7 +209,7 @@ public class RoomService {
 
     /* 스터디 룸 퇴장 */
     @Transactional
-    public String outRoom(String sessionId, Member member) {
+    public String outRoom(String sessionId, Long studyTime, Member member) {
 
         /* 방이 있는 지 확인 */
         Room room = roomRepository.findBySessionIdAndIsDelete(sessionId, false).orElseThrow(
@@ -217,20 +217,15 @@ public class RoomService {
         );
 
         /* 방에 멤버가 존재하는지 확인. */
-        RoomMember roomMember = roomMemberRepository.findByMemberIdAndSessionIdAndIsOut(member.getId(), sessionId, false).orElseThrow(
+        RoomMember roomMember = roomMemberRepository.findByMemberIdAndSessionId(member.getId(), sessionId).orElseThrow(
             () -> new EntityNotFoundException("방에 있는 멤버가 아닙니다.")
         );
 
-        /* 이미 해당 방에서 나간 유저 표시. */
-        if (roomMember.isOut()) {
-            throw new IllegalArgumentException("이미 방에서 나간 유저 입니다.");
-        }
-
-        // /* 총 누적 시간 업데이트 */
-        // // roomMember.getMember().updateStudyTime(roomStudyTime);
+        // 하루 누적 시간 업데이트
+        member.updateStudyTime(studyTime);
 
         /* 스터디 룸 유저 삭제 */
-        roomMember.deleteRoomMember();
+        roomMemberRepository.delete(roomMember);
 
 //         /* 스터디 룸 유저 수 확인
 //          * 스터디 룸 유저가 0명이라면 방 논리삭제. */
