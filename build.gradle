@@ -35,6 +35,7 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
     //Spring Security
     testImplementation 'org.springframework.security:spring-security-test'
@@ -79,8 +80,9 @@ dependencies {
     implementation "com.querydsl:querydsl-collections"
 
     annotationProcessor "com.querydsl:querydsl-apt:5.0.0" // querydsl JPAAnnotationProcessor 사용 지정
-    annotationProcessor "jakarta.annotation:jakarta.annotation-api" // java.lang.NoClassDefFoundError (javax.annotation.Generated) 대응 코드
-    annotationProcessor "jakarta.persistence:jakarta.persistence-api" // java.lang.NoClassDefFoundError (javax.annotation.Entity) 대응 코드
+    annotationProcessor "javax.annotation:javax.annotation-api" // java.lang.NoClassDefFoundError (javax.annotation.Generated) 대응 코드
+    annotationProcessor "javax.persistence:javax.persistence-api" // java.lang.NoClassDefFoundError (javax.annotation.Entity) 대응 코드
+
 }
 
 // Qtype 생성 경로
