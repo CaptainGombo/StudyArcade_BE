@@ -1,28 +1,24 @@
 package trillion9.studyarcade_be.room.dto;
 
-import javax.validation.constraints.NotBlank;import lombok.Getter;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 
 @Getter
 @RequiredArgsConstructor
 public class RoomCreateRequestDto {
-
 	@NotBlank(message = "스터디룸 이름을 입력해 주세요!")
 	private String roomName;
 
 	@NotBlank(message = "스터디룸 설명을 입력해 주세요!")
 	private String roomContent;
 
-	// @NotBlank(message = "카테고리를 선택해 주세요!")
-	// private String category;
-
-	 private boolean secret;
-
-	 private String roomPassword;
-
-	 private LocalDate expirationDate;
+	private String category;
+	private boolean secret;
+	private String roomPassword;
+	private LocalDate expirationDate;
 
 	// @AssertTrue
 	// public boolean isCategory() {

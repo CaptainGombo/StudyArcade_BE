@@ -66,6 +66,4 @@ public class RedisRepositoryConfig {
 		redisTemplate.setConnectionFactory(redisConnectionFactory());
 		return redisTemplate;
 	}
-
-
 }

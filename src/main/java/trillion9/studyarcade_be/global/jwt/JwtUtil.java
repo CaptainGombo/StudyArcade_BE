@@ -49,10 +49,6 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public enum JwtCode {
-        ACCESS, EXPIRED, INVALID
-    }
-
     // header 토큰을 가져오기
     public String resolveToken(HttpServletRequest request, String type) {
         if(type.equals(ACCESS_TOKEN)){

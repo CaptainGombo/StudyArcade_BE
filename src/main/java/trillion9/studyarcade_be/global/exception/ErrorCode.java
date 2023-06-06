@@ -1,11 +1,9 @@
 package trillion9.studyarcade_be.global.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-@AllArgsConstructor
 public enum ErrorCode {
 
     /* 400 BAD_REQUEST */

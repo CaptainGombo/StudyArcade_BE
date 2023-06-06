@@ -93,6 +93,7 @@ public class RoomService {
                         .userCount(1L)
                         .imageUrl(imageUrl)
                         .secret(requestDto.isSecret())
+                        .categories(requestDto.getCategory())
                         .roomPassword(requestDto.getRoomPassword())
                         .expirationDate(requestDto.getExpirationDate())
                         .build();
@@ -112,6 +113,7 @@ public class RoomService {
                                                 .roomContent(room.getRoomContent())
                                                 .imageUrl(room.getImageUrl())
                                                 .secret(requestDto.isSecret())
+                                                .category(room.getCategories())
                                                 .build();
 
         return ResponseDto.setSuccess("스터디 룸 생성 성공", responseDto);
@@ -134,7 +136,7 @@ public class RoomService {
         room.setImageUrl(imageUrl);
         room.updateRoom(requestDto);
 
-        return ResponseDto.setSuccess("스터디 룸 수정 성공", new RoomDetailResponseDto(room));
+        return ResponseDto.setSuccess("스터디 룸 수정 성공");
     }
 
     /* 스터디 룸 삭제 */

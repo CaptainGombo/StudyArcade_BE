@@ -15,5 +15,4 @@ public class ChatController {
 	public void message(ChatRequestDto message) {
 		ChatService.message(message);
 	}
-
 }

@@ -1,7 +1,6 @@
 package trillion9.studyarcade_be.email;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -20,9 +19,7 @@ import static trillion9.studyarcade_be.global.exception.ErrorCode.INVALID_USER_E
 public class EmailServiceImpl implements EmailService{
 
     private final MemberRepository memberRepository;
-
-    @Autowired
-    JavaMailSender emailSender;
+    private final JavaMailSender emailSender;
 
     public static final String ePw = createKey();
 

@@ -19,13 +19,16 @@ public class Member {
 
     @Column(nullable = false, unique = true)
     private String nickname;
+
     @Column(nullable = false, unique = true)
     private String email;
+
     @Column(nullable = false)
     private String password;
 
     @Column
     private Long dailyStudyTime;
+
     @Column
     private Long totalStudyTime;
 
@@ -33,11 +36,12 @@ public class Member {
     private String title;
 
     @Builder
-    private Member(Long kakaoId, String nickname, String email, String password) {
+    private Member(Long kakaoId, String nickname, String email, String password, String title) {
         this.kakaoId = kakaoId;
         this.nickname = nickname;
         this.email = email;
         this.password = password;
+        this.title = title;
     }
 
     public Member kakaoIdUpdate(Long kakaoId) {
@@ -68,6 +72,4 @@ public class Member {
             this.title = "Lv1";
         }
     }
-
-
 }
