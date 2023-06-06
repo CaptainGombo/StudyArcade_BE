@@ -17,5 +17,4 @@ public class ChatService {
 		// Websocket에 발행된 메시지를 redis로 발행(publish)
 		redisTemplate.convertAndSend(channelTopic.getTopic(), message);
 	}
-
 }

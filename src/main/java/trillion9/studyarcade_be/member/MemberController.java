@@ -73,6 +73,4 @@ public class MemberController {
     public ResponseDto<String> newAccessToken(HttpServletRequest request) {
         return memberService.newAccessToken(request);
     }
-
-
 }

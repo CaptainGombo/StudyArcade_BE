@@ -23,5 +23,4 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         return new UserDetailsImpl(member, member.getEmail());
     }
-
 }

@@ -1,9 +1,9 @@
 package trillion9.studyarcade_be.room.dto;
 
-import java.time.LocalDateTime;
-
 import lombok.Builder;
 import lombok.Getter;
+
+import java.time.LocalDateTime;
 
 @Getter
 public class RoomCreateResponseDto {
@@ -12,19 +12,17 @@ public class RoomCreateResponseDto {
 	private String roomContent;
 	private String imageUrl;
 	private boolean secret;
-	// private String category;
-	// private String roomPassword;
-
-	// 방 생성 시간
+	private String category;
 	private LocalDateTime createdAt;
 
 	@Builder
-	private RoomCreateResponseDto(String sessionId, String roomName, String roomContent, String imageUrl, LocalDateTime createdAt, boolean secret) {
+	private RoomCreateResponseDto(String sessionId, String roomName, String roomContent, String imageUrl, boolean secret, String category, LocalDateTime createdAt) {
 		this.sessionId = sessionId;
 		this.roomName = roomName;
 		this.roomContent = roomContent;
 		this.imageUrl = imageUrl;
-		this.createdAt = createdAt;
 		this.secret = secret;
+		this.category = category;
+		this.createdAt = createdAt;
 	}
 }

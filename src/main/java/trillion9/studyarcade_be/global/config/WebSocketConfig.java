@@ -1,15 +1,13 @@
 package trillion9.studyarcade_be.global.config;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import trillion9.studyarcade_be.global.StompHandler;
 
 @Slf4j
@@ -18,6 +16,7 @@ import trillion9.studyarcade_be.global.StompHandler;
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	private final StompHandler stompHandler; // jwt 인증
+
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
 		// 메시지를 구독하는 요청 url => 즉 메시지 받을 때
@@ -37,6 +36,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
 		registration.setMessageSizeLimit(50 * 1024 * 1024);
 	}
+
 	// @Override
 	// public void configureClientInboundChannel(ChannelRegistration registration) {
 	// 	registration.interceptors(stompHandler);

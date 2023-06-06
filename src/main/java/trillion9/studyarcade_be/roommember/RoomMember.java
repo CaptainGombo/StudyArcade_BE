@@ -30,10 +30,6 @@ public class RoomMember {
     @ColumnDefault("false")
     private boolean roomMaster;
 
-    public RoomMember(Member member) {
-        this.member = member;
-    }
-
     @Builder
     private RoomMember(Member member, String sessionId, String roomToken, boolean roomMaster) {
         this.member = member;

@@ -13,12 +13,12 @@ import trillion9.studyarcade_be.global.exception.CustomException;
 import trillion9.studyarcade_be.global.exception.ErrorCode;
 import trillion9.studyarcade_be.global.jwt.JwtUtil;
 
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class StompHandler implements ChannelInterceptor {
 	private final JwtUtil jwtUtil;
+
 	@Override
 	public Message<?> preSend(Message<?> message, MessageChannel channel) {
 		StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
@@ -51,7 +51,6 @@ public class StompHandler implements ChannelInterceptor {
 				}
 			}
 		}
-
 		return message;
 	}
 }
