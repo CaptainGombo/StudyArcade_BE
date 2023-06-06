@@ -83,7 +83,8 @@ public class RoomController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 퇴장 완료")})
     @DeleteMapping("/rooms/{session-id}/out")
     public String outRoom(@PathVariable(name = "session-id") String sessionId,
+                          @RequestParam(name = "studytime") Long studyTime,
                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return roomService.outRoom(sessionId, userDetails.getMember());
+        return roomService.outRoom(sessionId, studyTime, userDetails.getMember());
     }
 }

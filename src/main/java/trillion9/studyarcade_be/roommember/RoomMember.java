@@ -30,9 +30,6 @@ public class RoomMember {
     @ColumnDefault("false")
     private boolean roomMaster;
 
-    @Column
-    private boolean isOut;
-
     public RoomMember(Member member) {
         this.member = member;
     }
@@ -43,9 +40,5 @@ public class RoomMember {
         this.sessionId = sessionId;
         this.roomToken = roomToken;
         this.roomMaster = roomMaster;
-    }
-
-    public void deleteRoomMember() {
-        this.isOut = true;
     }
 }

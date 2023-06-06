@@ -1,13 +1,8 @@
 package trillion9.studyarcade_be.member;
 
-import java.sql.Time;
-import java.time.Duration;
-import java.time.LocalDateTime;
-
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import trillion9.studyarcade_be.roommember.RoomMember;
 
 import javax.persistence.*;
 
@@ -30,7 +25,9 @@ public class Member {
     private String password;
 
     @Column
-    private Duration totalStudyTime;
+    private Long dailyStudyTime;
+    @Column
+    private Long totalStudyTime;
 
     @Builder
     private Member(Long kakaoId, String nickname, String email, String password) {
@@ -45,7 +42,12 @@ public class Member {
         return this;
     }
 
-public void updateStudyTime(Duration roomStudyTime) {
-        this.totalStudyTime = this.totalStudyTime.plus(roomStudyTime);
+    public void updateStudyTime(Long roomStudyTime) {
+        this.dailyStudyTime += roomStudyTime;
+    }
+
+    public void updateTotalStudyTime() {
+        this.totalStudyTime += this.dailyStudyTime;
+        this.dailyStudyTime = 0L;
     }
 }
