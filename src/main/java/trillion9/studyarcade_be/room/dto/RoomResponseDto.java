@@ -1,5 +1,7 @@
 package trillion9.studyarcade_be.room.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -7,6 +9,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class RoomResponseDto {
 	private String sessionId;
 	private String roomName;
