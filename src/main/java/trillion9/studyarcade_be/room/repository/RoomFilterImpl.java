@@ -1,5 +1,6 @@
 package trillion9.studyarcade_be.room.repository;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -19,15 +20,36 @@ public class RoomFilterImpl implements RoomFilter {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<RoomResponseDto> findAllRoom(Pageable pageable) {
+    public Page<RoomResponseDto> findRooms(Pageable pageable, String category, String keyword) {
+        QRoom room = QRoom.room;
+
+        BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+        if (category != null && !category.isEmpty()) {
+            String[] categories = category.split(" ");
+            for (String cat : categories) {
+                booleanBuilder.or(room.categories.contains(cat));
+            }
+        }
+
+        if (keyword != null && !keyword.isEmpty()) {
+            String[] keywords = keyword.split("\\s+|[^\\p{IsAlphabetic}\\p{IsDigit}]+");
+            for (String key : keywords) {
+                booleanBuilder.or(room.roomName.contains(key))
+                              .or(room.roomContent.contains(key));
+            }
+        }
+
         List<RoomResponseDto> roomResponseDtos = queryFactory.select(Projections.constructor(
-                RoomResponseDto.class, QRoom.room))
-                .from(QRoom.room)
-                .orderBy(QRoom.room.createdAt.desc()) // 최신 순
+                RoomResponseDto.class, room))
+                .from(room)
+                .orderBy(room.createdAt.desc()) // 최신 순
+                .where(booleanBuilder)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
         return new PageImpl<>(roomResponseDtos, pageable, roomResponseDtos.size());
     }
+
 }
