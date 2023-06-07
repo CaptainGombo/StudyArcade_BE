@@ -50,6 +50,9 @@ public class Member {
     }
 
     public void updateStudyTime(Long roomStudyTime) {
+        if (this.dailyStudyTime == null) {
+            this.dailyStudyTime = 0L;
+        }
         this.dailyStudyTime += roomStudyTime;
     }
 
