@@ -11,9 +11,13 @@ import trillion9.studyarcade_be.global.jwt.JwtAuthFilter;
 import trillion9.studyarcade_be.global.jwt.JwtUtil;
 import trillion9.studyarcade_be.global.jwt.TokenDto;
 import trillion9.studyarcade_be.member.dto.MemberRequestDto;
+import trillion9.studyarcade_be.member.dto.MyPageResponseDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -23,6 +27,7 @@ import static trillion9.studyarcade_be.global.exception.ErrorCode.*;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final StudyTimeRepository studyTimeRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final JwtAuthFilter jwtAuthFilter;
@@ -112,5 +117,35 @@ public class MemberService {
         String newAccessToken = jwtUtil.createToken(jwtUtil.getUserInfoFromToken(refreshToken), JwtUtil.ACCESS_TOKEN);
         jwtAuthFilter.setAuthentication(jwtUtil.getUserInfoFromToken(newAccessToken.substring(7)));
         return ResponseDto.setSuccess("New Access Token", newAccessToken);
+    }
+
+    public ResponseDto<MyPageResponseDto> myPage(Member member) {
+        MyPageResponseDto myPageResponseDto = new MyPageResponseDto();
+
+        // 회원의 모든 공부 시간 조회
+        List<StudyTime> studyTimes = studyTimeRepository.findAllByMemberId(member.getId());
+
+        // 공부 시간을 저장할 HashMap 생성
+        HashMap<LocalDate, String> dailyStudyTimeMap = new HashMap<>();
+
+        // 공부 시간을 날짜별로 계산하여 HashMap에 저장
+        for (StudyTime studyTime : studyTimes) {
+            LocalDate date = studyTime.getDailyDate();
+            String dailyStudyTime = studyTime.getDailyStudyTime();
+
+            dailyStudyTimeMap.put(date, dailyStudyTime);
+        }
+
+        // 회원 정보 설정
+        MyPageResponseDto responseDto = MyPageResponseDto.builder()
+                .email(member.getEmail())
+                .nickname(member.getNickname())
+                .dailyStudyTime(member.getDailyStudyTime())
+                .totalStudyTime(member.getTotalStudyTime())
+                .title(member.getTitle())
+                .memberStudyTime(dailyStudyTimeMap)
+                .build();
+
+        return ResponseDto.setSuccess("마이페이지 조회 성공", responseDto);
     }
 }
