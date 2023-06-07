@@ -21,6 +21,6 @@ public class StudyTime {
     private LocalDate dailyDate;
 
     @Column
-    private String dailyStudyTime;
+    private Long dailyStudyTime;
 }
 

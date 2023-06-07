@@ -49,14 +49,12 @@ public class RoomScheduler {
         List<Member> members =  memberRepository.findAll();
 
         for (Member member : members) {
-            Long hour = member.getDailyStudyTime() / 3600;
-            Long minute = (member.getDailyStudyTime() % 3600) / 60;
 
-            String timeFormat = String.format("%02d:%02d", hour, minute);
+            Long minute = member.getDailyStudyTime()  / 60;
 
             LocalDate previousDate = currentDate.minusDays(1);
 
-            StudyTime dailyStudyTime = new StudyTime(member.getId(), previousDate, timeFormat);
+            StudyTime dailyStudyTime = new StudyTime(member.getId(), previousDate, minute);
 
             studyTimeRepository.save(dailyStudyTime);
 

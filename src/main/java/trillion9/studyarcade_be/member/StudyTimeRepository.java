@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface StudyTimeRepository extends JpaRepository<StudyTime, Long> {
     List<StudyTime> findAllByMemberId(Long memberId);
-
 }
