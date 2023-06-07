@@ -143,7 +143,7 @@ public class KakaoService {
                 // email: kakao email
                 String email = kakaoUserInfo.getEmail();
 
-                kakaoUser = Member.builder().nickname(kakaoUserInfo.getNickname())
+                kakaoUser = Member.builder().nickname(tempNickname)
                         .kakaoId(kakaoId)
                         .password(encodedPassword)
                         .email(email)

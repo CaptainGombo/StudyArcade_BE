@@ -34,7 +34,7 @@ public class Room extends Timestamp {
     private String imageUrl;
 
     @ColumnDefault("0")
-    private Long userCount;
+    private int userCount;
 
     @ColumnDefault("false")
     private boolean secret;
@@ -52,7 +52,7 @@ public class Room extends Timestamp {
     private LocalDate expirationDate;
 
     @Builder
-    private Room(String sessionId, String roomName, String roomContent, String category, String imageUrl, Long userCount, boolean secret, String roomPassword, LocalDate expirationDate) {
+    private Room(String sessionId, String roomName, String roomContent, String category, String imageUrl, int userCount, boolean secret, String roomPassword, LocalDate expirationDate) {
         this.sessionId = sessionId;
         this.roomName = roomName;
         this.roomContent = roomContent;
@@ -69,12 +69,13 @@ public class Room extends Timestamp {
         this.roomDeleteTime = roomDeleteTime;
     }
 
-    public void updateRoom(RoomCreateRequestDto requestDto) {
+    public void updateRoom(RoomCreateRequestDto requestDto, String imageUrl) {
         this.roomName = requestDto.getRoomName();
         this.roomContent = requestDto.getRoomContent();
+        this.imageUrl = imageUrl;
     }
 
-    public void updateUserCount(Long userCount) {
+    public void updateUserCount(int userCount) {
         this.userCount = userCount;
     }
 

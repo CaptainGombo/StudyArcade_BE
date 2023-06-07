@@ -22,6 +22,7 @@ import trillion9.studyarcade_be.room.repository.RoomFilterImpl;
 import trillion9.studyarcade_be.room.repository.RoomRepository;
 import trillion9.studyarcade_be.roommember.RoomMember;
 import trillion9.studyarcade_be.roommember.RoomMemberRepository;
+import trillion9.studyarcade_be.roommember.RoomMemberResponseDto;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityNotFoundException;
@@ -56,7 +57,7 @@ public class RoomService {
     private String OPENVIDU_SECRET;
     private OpenVidu openvidu;
 
-    private Long roomMaxUser = 9L;
+    private int roomMaxUser = 9;
 
     @PostConstruct
     public void init() {
@@ -90,7 +91,7 @@ public class RoomService {
                         .sessionId(newToken.getSessionId())
                         .roomName(requestDto.getRoomName())
                         .roomContent(requestDto.getRoomContent())
-                        .userCount(1L)
+                        .userCount(1)
                         .imageUrl(imageUrl)
                         .secret(requestDto.isSecret())
                         .category(requestDto.getCategory())
@@ -119,9 +120,37 @@ public class RoomService {
         return ResponseDto.setSuccess("스터디 룸 생성 성공", responseDto);
     }
 
+    /*채팅방 + 채팅방에 속한 유저 정보 불러오기*/
+    @Transactional
+    public ResponseDto<RoomDetailResponseDto> getRoomData(String sessionId, Member member) {
+
+        /*방이 있는 지 확인*/
+        Room room = roomRepository.findBySessionIdAndIsDelete(sessionId, false).orElseThrow(
+                () -> new EntityNotFoundException("해당 방이 없습니다."));
+
+        /*해당 방에 해당 유저가 접속해 있는 상태여아
+         * 방유저 정보 불러오기 API를 사용할 수 있다.*/
+        roomMemberRepository.findByMemberIdAndSessionId(member.getId(), sessionId).orElseThrow(
+                () -> new IllegalArgumentException("방에 유저가 존재하지 않습니다.")
+        );
+
+        /*채팅방 유저들 Entity*/
+        List<RoomMember> roomMemberList =
+                roomMemberRepository.findAllBySessionId(room.getSessionId());
+
+        /*채팅방 유저들 Dto*/
+        List<RoomMemberResponseDto> roomMemberResponseDtos = roomMemberList.stream()
+                                                                .map(RoomMemberResponseDto::new)
+                                                                .toList();
+
+        RoomDetailResponseDto roomDetailResponseDto = new RoomDetailResponseDto(room, roomMemberResponseDtos);
+
+        return ResponseDto.setSuccess("스터디룸 정보 조회 성공", roomDetailResponseDto);
+    }
+
     /* 스터디 룸 수정 */
     @Transactional
-    public ResponseDto<RoomDetailResponseDto> updateRoom(String sessionId, RoomCreateRequestDto requestDto, MultipartFile image, Member member)
+    public ResponseDto<String> updateRoom(String sessionId, RoomCreateRequestDto requestDto, MultipartFile image, Member member)
         throws IOException  {
         Room room = roomRepository.findBySessionId(sessionId).orElseThrow(
                 () -> new CustomException(ROOM_NOT_FOUND)
@@ -133,15 +162,14 @@ public class RoomService {
 
         String imageUrl = (image == null || image.isEmpty()) ? "대표 이미지 URL" : uploadImage(image);
 
-        room.setImageUrl(imageUrl);
-        room.updateRoom(requestDto);
+        room.updateRoom(requestDto, imageUrl);
 
         return ResponseDto.setSuccess("스터디 룸 수정 성공");
     }
 
     /* 스터디 룸 삭제 */
     @Transactional
-    public ResponseDto<RoomDetailResponseDto> deleteRoom(String sessionId, Member member) {
+    public ResponseDto<String> deleteRoom(String sessionId, Member member) {
         Room room = roomRepository.findBySessionId(sessionId).orElseThrow(
                 () -> new CustomException(ROOM_NOT_FOUND)
         );
@@ -156,7 +184,7 @@ public class RoomService {
 
     /* 스터디 룸 입장 */
     @Transactional
-    public String enterRoom(RoomEnterRequestDto requestDto, String sessionId, Member member)
+    public ResponseDto<String> enterRoom(RoomEnterRequestDto requestDto, String sessionId, Member member)
         throws OpenViduJavaClientException, OpenViduHttpException {
 
         /* 해당 sessionId를 가진 스터디룸이 존재하는지 확인한다. */
@@ -191,14 +219,14 @@ public class RoomService {
         if (alreadyEnterChatRoomUser.isPresent()) throw new IllegalArgumentException("이미 입장한 멤버입니다.");
 
         /* 방 입장 토큰 생성 */
-//        String roomToken = createToken(member, room.getSessionId());
+        String roomToken = createToken(member, room.getSessionId());
 
         RoomMember roomMember = RoomMember.builder()
-            .member(member)
-            .sessionId(sessionId)
-            .roomMaster(false)
-            // .roomToken(roomToken)
-            .build();
+                .member(member)
+                .sessionId(sessionId)
+                .roomMaster(false)
+                .roomToken(roomToken)
+                .build();
 
         /* 현재 방에 접속한 사용자 저장 */
         roomMemberRepository.save(roomMember);
@@ -206,12 +234,12 @@ public class RoomService {
         /* 채팅방 정보를 저장한다. */
         roomRepository.save(room);
 
-        return "Success";
+        return ResponseDto.setSuccess("스터디 룸 입장 성공");
     }
 
     /* 스터디 룸 퇴장 */
     @Transactional
-    public String outRoom(String sessionId, Long studyTime, Member member) {
+    public ResponseDto<String> outRoom(String sessionId, Long studyTime, Member member) {
 
         /* 방이 있는 지 확인 */
         Room room = roomRepository.findBySessionIdAndIsDelete(sessionId, false).orElseThrow(
@@ -232,7 +260,7 @@ public class RoomService {
         /* 방 인원 카운트 - 1 */
         room.updateUserCount(room.getUserCount() - 1);
 
-        return "Success";
+        return ResponseDto.setSuccess("스터디 룸 퇴장 성공");
     }
 
      /* 스터디 룸 생성 시 세션 발급 */
@@ -251,12 +279,10 @@ public class RoomService {
          /* 새로운 OpenVidu 세션(스터디 룸) 생성 */
          Session session = openvidu.createSession();
 
-
          /* 스터디룸 생성 시 방을 만들며, 방장이 들어가지게 구현하려면 아래의 코드로 토큰 바로 발급
              방 생성, 방 입장(방장 입장) 로직이 나누어져 있다면 토큰 발급 필요 없음.
           */
          String token = session.createConnection(connectionProperties).getToken();
-
 
          return RoomCreateResponseDto.builder()
              .sessionId(session.getSessionId()) //리턴해주는 해당 세션아이디로 다른 유저 채팅방 입장시 요청해주시면 됩니다.
@@ -274,13 +300,10 @@ public class RoomService {
         ConnectionProperties connectionProperties
             = new ConnectionProperties.Builder().type(ConnectionType.WEBRTC).data(serverData).build();
 
-
         openvidu.fetch();
-
 
         /*Openvidu Server에 활성화되어 있는 세션(채팅방) 목록을 가지고 온다.*/
         List<Session> activeSessionList = openvidu.getActiveSessions();
-
 
         /* 세션 리스트에서 요청자가 입력한 세션 ID가 일치하는 세션을 찾아서 새로운 토큰을 생성
          * 없다면, Openvidu Server에 해당 방이 존재하지 않는 것이므로, 익셉션 발생 */
