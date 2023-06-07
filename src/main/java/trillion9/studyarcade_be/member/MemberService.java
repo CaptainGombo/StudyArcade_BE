@@ -126,12 +126,12 @@ public class MemberService {
         List<StudyTime> studyTimes = studyTimeRepository.findAllByMemberId(member.getId());
 
         // 공부 시간을 저장할 HashMap 생성
-        HashMap<LocalDate, String> dailyStudyTimeMap = new HashMap<>();
+        HashMap<LocalDate, Long> dailyStudyTimeMap = new HashMap<>();
 
         // 공부 시간을 날짜별로 계산하여 HashMap에 저장
         for (StudyTime studyTime : studyTimes) {
             LocalDate date = studyTime.getDailyDate();
-            String dailyStudyTime = studyTime.getDailyStudyTime();
+            Long dailyStudyTime = studyTime.getDailyStudyTime();
 
             dailyStudyTimeMap.put(date, dailyStudyTime);
         }

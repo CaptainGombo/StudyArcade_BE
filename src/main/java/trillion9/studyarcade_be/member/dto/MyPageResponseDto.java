@@ -16,10 +16,10 @@ public class MyPageResponseDto {
     private Long totalStudyTime;
     private String title;
 
-    private Map<LocalDate, String> memberStudyTime;
+    private Map<LocalDate, Long> memberStudyTime;
 
     @Builder
-    private MyPageResponseDto(String nickname, String email, Long dailyStudyTime, Long totalStudyTime, String title, Map<LocalDate, String> memberStudyTime) {
+    private MyPageResponseDto(String nickname, String email, Long dailyStudyTime, Long totalStudyTime, String title, Map<LocalDate, Long> memberStudyTime) {
         this.nickname = nickname;
         this.email = email;
         this.dailyStudyTime = dailyStudyTime;
