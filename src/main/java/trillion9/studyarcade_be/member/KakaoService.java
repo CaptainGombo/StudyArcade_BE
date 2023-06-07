@@ -143,7 +143,14 @@ public class KakaoService {
                 // email: kakao email
                 String email = kakaoUserInfo.getEmail();
 
-                kakaoUser = Member.builder().nickname(kakaoUserInfo.getNickname())
+                //임시 닉네임 발급
+                String tempNickname;
+                do {
+                    tempNickname = "user" + UUID.randomUUID().toString();
+                } while (memberRepository.findByNickname(tempNickname).isPresent());
+
+
+                kakaoUser = Member.builder().nickname(tempNickname)
                         .kakaoId(kakaoId)
                         .password(encodedPassword)
                         .email(email)
