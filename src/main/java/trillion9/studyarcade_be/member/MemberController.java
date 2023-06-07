@@ -12,6 +12,7 @@ import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.security.UserDetailsImpl;
 import trillion9.studyarcade_be.member.dto.KakaoUserInfoDto;
 import trillion9.studyarcade_be.member.dto.MemberRequestDto;
+import trillion9.studyarcade_be.member.dto.MyPageResponseDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -72,5 +73,10 @@ public class MemberController {
     @GetMapping("/refresh-token")
     public ResponseDto<String> newAccessToken(HttpServletRequest request) {
         return memberService.newAccessToken(request);
+    }
+
+    @GetMapping("/mypage")
+    public ResponseDto<MyPageResponseDto> myPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return memberService.myPage(userDetails.getMember());
     }
 }
