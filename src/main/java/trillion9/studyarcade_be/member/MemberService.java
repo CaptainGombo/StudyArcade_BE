@@ -1,6 +1,7 @@
 package trillion9.studyarcade_be.member;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ import trillion9.studyarcade_be.studytime.StudyTimeRepository;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -26,6 +27,7 @@ import static trillion9.studyarcade_be.global.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MemberService {
     private final MemberRepository memberRepository;
     private final StudyTimeRepository studyTimeRepository;
@@ -127,7 +129,7 @@ public class MemberService {
         LocalDate now = LocalDate.now();
 
         // 마지막 7일 통계
-        HashMap<String, Long> dailyStudyChart = new HashMap<>();
+        LinkedHashMap<String, Long> dailyStudyChart = new LinkedHashMap<>();
         List<Object[]> dailyStudyTime = studyTimeRepository.findStudyTimeByDateRange(member.getId(), now.minusDays(7), now);
         for (Object[] obj : dailyStudyTime) {
             String day = String.valueOf(obj[0]);
@@ -136,7 +138,7 @@ public class MemberService {
         }
 
         // 마지막 7주 통계
-        HashMap<String, Long> weeklyStudyChart = new HashMap<>();
+        LinkedHashMap<String, Long> weeklyStudyChart = new LinkedHashMap<>();
         List<Object[]>  weeklyStudyTime = studyTimeRepository.findStudyTimeByWeekRange(member.getId(), now.minusWeeks(7), now);
         for (Object[] obj : weeklyStudyTime) {
             String week = String.valueOf(obj[0]);
@@ -145,7 +147,7 @@ public class MemberService {
         }
 
         // 마지막 7달 통계
-        HashMap<String, Long> monthlyStudyChart = new HashMap<>();
+        LinkedHashMap<String, Long> monthlyStudyChart = new LinkedHashMap<>();
         List<Object[]>  monthlyStudyTime = studyTimeRepository.findStudyTimeByMonthRange(member.getId(), now.minusMonths(7), now);
         for (Object[] obj : monthlyStudyTime) {
             String year = String.valueOf(obj[0]);
