@@ -251,7 +251,7 @@ public class RoomService {
             () -> new EntityNotFoundException("방에 있는 멤버가 아닙니다.")
         );
 
-        // 하루 누적 시간 업데이트
+         /* 하루 누적 시간 업데이트 */
         member.updateStudyTime(studyTime);
 
         /* 스터디 룸 유저 삭제 */
