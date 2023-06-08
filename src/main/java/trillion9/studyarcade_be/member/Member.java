@@ -41,7 +41,7 @@ public class Member {
         this.nickname = nickname;
         this.email = email;
         this.password = password;
-        this.title = title;
+        this.title = title != null ? title : "Lv1";
     }
 
     public Member kakaoIdUpdate(Long kakaoId) {
