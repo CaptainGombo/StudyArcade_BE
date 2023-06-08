@@ -21,9 +21,10 @@ public class EmailServiceImpl implements EmailService{
     private final MemberRepository memberRepository;
     private final JavaMailSender emailSender;
 
-    public static final String ePw = createKey();
+    public String ePw;
 
     private MimeMessage createMessage(String to)throws Exception {
+        String ePw = createKey();
         System.out.println("보내는 대상 : "+ to);
         System.out.println("인증 번호 : "+ ePw);
         MimeMessage  message = emailSender.createMimeMessage();
@@ -43,6 +44,7 @@ public class EmailServiceImpl implements EmailService{
         message.setText(msg, "utf-8", "html"); // 내용
         message.setFrom(new InternetAddress("studyhu6@gmail.com","스터브")); // 보내는 사람
 
+        this.ePw = ePw;
         return message;
     }
 
