@@ -56,7 +56,6 @@ public class RoomScheduler {
             LocalDate previousDate = currentDate.minusDays(1);
 
             StudyTime dailyStudyTime = new StudyTime(member.getId(), previousDate, minute);
-
             studyTimeRepository.save(dailyStudyTime);
 
             // 멤버의 dailyStudyTime을 totalStudyTime에 더하고 0으로 리셋
