@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import trillion9.studyarcade_be.member.Member;
 import trillion9.studyarcade_be.member.MemberRepository;
-import trillion9.studyarcade_be.member.StudyTime;
-import trillion9.studyarcade_be.member.StudyTimeRepository;
 import trillion9.studyarcade_be.room.repository.RoomRepository;
 import trillion9.studyarcade_be.roommember.RoomMember;
 import trillion9.studyarcade_be.roommember.RoomMemberRepository;
+import trillion9.studyarcade_be.studytime.StudyTime;
+import trillion9.studyarcade_be.studytime.StudyTimeRepository;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -50,8 +50,9 @@ public class RoomScheduler {
 
         for (Member member : members) {
 
+            // 분 단위로 저장
             Long minute = member.getDailyStudyTime()  / 60;
-
+            // 자정 기준 하루 전 데이터
             LocalDate previousDate = currentDate.minusDays(1);
 
             StudyTime dailyStudyTime = new StudyTime(member.getId(), previousDate, minute);

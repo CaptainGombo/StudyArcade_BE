@@ -12,6 +12,7 @@ import trillion9.studyarcade_be.global.jwt.JwtUtil;
 import trillion9.studyarcade_be.global.jwt.TokenDto;
 import trillion9.studyarcade_be.member.dto.MemberRequestDto;
 import trillion9.studyarcade_be.member.dto.MyPageResponseDto;
+import trillion9.studyarcade_be.studytime.StudyTimeRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -119,21 +120,38 @@ public class MemberService {
         return ResponseDto.setSuccess("New Access Token", newAccessToken);
     }
 
+
+    @Transactional
     public ResponseDto<MyPageResponseDto> myPage(Member member) {
-        MyPageResponseDto myPageResponseDto = new MyPageResponseDto();
 
-        // 회원의 모든 공부 시간 조회
-        List<StudyTime> studyTimes = studyTimeRepository.findAllByMemberId(member.getId());
+        LocalDate now = LocalDate.now();
 
-        // 공부 시간을 저장할 HashMap 생성
-        HashMap<LocalDate, Long> dailyStudyTimeMap = new HashMap<>();
+        // 마지막 7일 통계
+        HashMap<String, Long> dailyStudyChart = new HashMap<>();
+        List<Object[]> dailyStudyTime = studyTimeRepository.findStudyTimeByDateRange(member.getId(), now.minusDays(7), now);
+        for (Object[] obj : dailyStudyTime) {
+            String day = String.valueOf(obj[0]);
+            Long studyTime = Long.parseLong(obj[1].toString());
+            dailyStudyChart.put(day, studyTime);
+        }
 
-        // 공부 시간을 날짜별로 계산하여 HashMap에 저장
-        for (StudyTime studyTime : studyTimes) {
-            LocalDate date = studyTime.getDailyDate();
-            Long dailyStudyTime = studyTime.getDailyStudyTime();
+        // 마지막 7주 통계
+        HashMap<String, Long> weeklyStudyChart = new HashMap<>();
+        List<Object[]>  weeklyStudyTime = studyTimeRepository.findStudyTimeByWeekRange(member.getId(), now.minusWeeks(7), now);
+        for (Object[] obj : weeklyStudyTime) {
+            String week = String.valueOf(obj[0]);
+            Long studyTime = Long.parseLong(obj[1].toString());
+            weeklyStudyChart.put(week, studyTime);
+        }
 
-            dailyStudyTimeMap.put(date, dailyStudyTime);
+        // 마지막 7달 통계
+        HashMap<String, Long> monthlyStudyChart = new HashMap<>();
+        List<Object[]>  monthlyStudyTime = studyTimeRepository.findStudyTimeByMonthRange(member.getId(), now.minusMonths(7), now);
+        for (Object[] obj : monthlyStudyTime) {
+            String year = String.valueOf(obj[0]);
+            String week = String.valueOf(obj[1]);
+            Long studyTime = Long.parseLong(obj[2].toString());
+            monthlyStudyChart.put(year + "." + week, studyTime);
         }
 
         // 회원 정보 설정
@@ -143,7 +161,9 @@ public class MemberService {
                 .dailyStudyTime(member.getDailyStudyTime())
                 .totalStudyTime(member.getTotalStudyTime())
                 .title(member.getTitle())
-                .memberStudyTime(dailyStudyTimeMap)
+                .dailyStudyChart(dailyStudyChart)
+                .weeklyStudyChart(weeklyStudyChart)
+                .monthlyStudyChart(monthlyStudyChart)
                 .build();
 
         return ResponseDto.setSuccess("마이페이지 조회 성공", responseDto);

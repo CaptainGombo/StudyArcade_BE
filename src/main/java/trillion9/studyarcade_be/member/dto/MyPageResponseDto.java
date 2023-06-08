@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.Map;
 
 @Getter
@@ -16,15 +15,23 @@ public class MyPageResponseDto {
     private Long totalStudyTime;
     private String title;
 
-    private Map<LocalDate, Long> memberStudyTime;
+    private Map<String, Long> dailyStudyChart;
+    private Map<String, Long> weeklyStudyChart;
+    private Map<String, Long> monthlyStudyChart;
 
     @Builder
-    private MyPageResponseDto(String nickname, String email, Long dailyStudyTime, Long totalStudyTime, String title, Map<LocalDate, Long> memberStudyTime) {
+    private MyPageResponseDto(String nickname, String email, Long dailyStudyTime, Long totalStudyTime, String title,
+                              Map<String, Long> dailyStudyChart,
+                              Map<String, Long> weeklyStudyChart,
+                              Map<String, Long> monthlyStudyChart) {
+
         this.nickname = nickname;
         this.email = email;
         this.dailyStudyTime = dailyStudyTime;
         this.totalStudyTime = totalStudyTime;
         this.title = title;
-        this.memberStudyTime = memberStudyTime;
+        this.dailyStudyChart = dailyStudyChart;
+        this.weeklyStudyChart = weeklyStudyChart;
+        this.monthlyStudyChart = monthlyStudyChart;
     }
 }
