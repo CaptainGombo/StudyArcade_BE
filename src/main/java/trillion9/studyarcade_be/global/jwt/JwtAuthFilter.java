@@ -46,6 +46,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 return;
             }
 
+           // Refresh Token 재발급을 Http 요청에 의해 처리하도록 변경됨
+//
 //            // Access 토큰 만료 & Refresh 토큰 유효
 //            else if (refreshToken != null && Boolean.TRUE.equals(jwtUtil.validateRefreshToken(refreshToken))) {
 //                String userEmail = jwtUtil.getUserInfoFromToken(refreshToken);

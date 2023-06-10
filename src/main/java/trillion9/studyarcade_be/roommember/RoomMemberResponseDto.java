@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class RoomMemberResponseDto {
-
     private Long roomMemberId;
     private String nickname;
     private String sessionId;

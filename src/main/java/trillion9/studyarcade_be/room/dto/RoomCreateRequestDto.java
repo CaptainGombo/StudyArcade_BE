@@ -11,7 +11,6 @@ import java.time.LocalDate;
 public class RoomCreateRequestDto {
 	@NotBlank(message = "스터디룸 이름을 입력해 주세요!")
 	private String roomName;
-
 	@NotBlank(message = "스터디룸 설명을 입력해 주세요!")
 	private String roomContent;
 
