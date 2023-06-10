@@ -76,6 +76,7 @@ public class MemberController {
     }
 
     @GetMapping("/mypage")
+    // 마이페이지 조회
     public ResponseDto<MyPageResponseDto> myPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return memberService.myPage(userDetails.getMember());
     }

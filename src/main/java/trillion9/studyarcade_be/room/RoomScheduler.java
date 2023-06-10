@@ -49,7 +49,6 @@ public class RoomScheduler {
         List<Member> members =  memberRepository.findAll();
 
         for (Member member : members) {
-
             // 분 단위로 저장
             Long minute = member.getDailyStudyTime()  / 60;
             // 자정 기준 하루 전 데이터
