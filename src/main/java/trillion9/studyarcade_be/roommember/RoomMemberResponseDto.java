@@ -3,8 +3,8 @@ package trillion9.studyarcade_be.roommember;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 public class RoomMemberResponseDto {
     private Long roomMemberId;
     private String nickname;
