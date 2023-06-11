@@ -1,6 +1,6 @@
 package trillion9.studyarcade_be.room;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,19 +16,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class RoomScheduler {
     private final RoomRepository roomRepository;
     private final MemberRepository memberRepository;
     private final StudyTimeRepository studyTimeRepository;
     private final RoomMemberRepository roomMemberRepository;
-
-    @Autowired
-    public RoomScheduler(RoomRepository roomRepository, MemberRepository memberRepository, StudyTimeRepository studyTimeRepository, RoomMemberRepository roomMemberRepository) {
-        this.roomRepository = roomRepository;
-        this.memberRepository = memberRepository;
-        this.studyTimeRepository = studyTimeRepository;
-        this.roomMemberRepository = roomMemberRepository;
-    }
 
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행되도록 설정
     @Transactional
@@ -42,7 +35,6 @@ public class RoomScheduler {
                 roomMemberRepository.deleteAll(roomMembers);
             }
         }
-
         roomRepository.deleteAll(expiredRooms);
 
         // 하루에 공부한 시간 저장

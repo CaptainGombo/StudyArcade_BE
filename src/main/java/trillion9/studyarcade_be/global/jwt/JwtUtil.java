@@ -1,6 +1,5 @@
 package trillion9.studyarcade_be.global.jwt;
 
-
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +33,7 @@ public class JwtUtil {
 
     public static final long ACCESS_TOKEN_TIME = 30 * 60 * 1000L;   // AccessToken Time 30 min
     public static final long REFRESH_TOKEN_TIME = 24 * 60 * 60 * 1000L; // RefreshToken Time 1 day
+
     private final UserDetailsServiceImpl userDetailsService;
     private final MemberRepository memberRepository;
     private final RedisTemplate<String, String> redisTemplate;
@@ -67,12 +67,10 @@ public class JwtUtil {
         }
     }
 
-
     public TokenDto createAllToken(String userEmail){
         return new TokenDto(createToken(userEmail,ACCESS_TOKEN), createToken(userEmail,REFRESH_TOKEN));
     }
 
-    // 토큰 생성
     public String createToken(String userEmail,  String token) {
         Date date = new Date();
         long time = token.equals(ACCESS_TOKEN) ? ACCESS_TOKEN_TIME : REFRESH_TOKEN_TIME;
@@ -86,7 +84,6 @@ public class JwtUtil {
                         .compact();
     }
 
-    // 토큰 검증
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -137,7 +134,7 @@ public class JwtUtil {
         return expirationTime - currentTime;
     }
 
-    /* Socket Access 토큰의 유효성을 검증한다.*/
+    // Socket Access 토큰의 유효성 검증
     public String socketResolveToken(String bearerToken) {
         log.info("resolve Token ...");
 

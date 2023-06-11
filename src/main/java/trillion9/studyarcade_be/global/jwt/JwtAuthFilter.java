@@ -28,9 +28,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-//        if (true) throw new CustomException(ErrorCode.INVALID_TOKEN);
         String accessToken = jwtUtil.resolveToken(request, JwtUtil.ACCESS_TOKEN);
-        String refreshToken = jwtUtil.resolveToken(request, JwtUtil.REFRESH_TOKEN);
 
         if(accessToken != null) {
             //Access 토큰 유효 시, security context에 인증 정보 저장
@@ -45,29 +43,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 jwtExceptionHandler(response, "Access Token Expired", HttpStatus.FORBIDDEN.value());
                 return;
             }
-
-           // Refresh Token 재발급을 Http 요청에 의해 처리하도록 변경됨
-//
-//            // Access 토큰 만료 & Refresh 토큰 유효
-//            else if (refreshToken != null && Boolean.TRUE.equals(jwtUtil.validateRefreshToken(refreshToken))) {
-//                String userEmail = jwtUtil.getUserInfoFromToken(refreshToken);
-//                //new accessToken 발급
-//                String newAccessToken = jwtUtil.createToken(userEmail, JwtUtil.ACCESS_TOKEN);
-//                //헤더에 새로운 Access 토큰 넣기
-//                response.setHeader(JwtUtil.ACCESS_TOKEN, newAccessToken);
-//                //Security context에 인증 정보 저장
-//                String newToken = newAccessToken.substring(7);
-//                setAuthentication(jwtUtil.getUserInfoFromToken(newToken));
-//                log.info("New Token Issued");
-//
-//            } else if (refreshToken == null) {
-//                jwtExceptionHandler(response, "Access Token Expired", HttpStatus.FORBIDDEN.value());
-//                return;
-//            } else {
-//                //Access & Refresh 토큰 만료시
-//                jwtExceptionHandler(response, "Access & Refresh Token Expired", HttpStatus.FORBIDDEN.value());
-//                return;
-//            }
+           // Refresh Token를 통한 Access Token 재발급을 Http 요청에 의해 따로 처리하도록 변경
         }
         filterChain.doFilter(request,response);
     }

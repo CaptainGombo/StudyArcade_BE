@@ -2,10 +2,12 @@ package trillion9.studyarcade_be.room.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
+@NoArgsConstructor
 public class RoomCreateResponseDto {
 	private String sessionId;
 	private String roomName;
