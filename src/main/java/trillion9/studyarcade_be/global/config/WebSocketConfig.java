@@ -3,6 +3,7 @@ package trillion9.studyarcade_be.global.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -38,8 +39,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 		registration.setMessageSizeLimit(50 * 1024 * 1024);
 	}
 
-//	 @Override
-//	 public void configureClientInboundChannel(ChannelRegistration registration) {
-//	 	registration.interceptors(stompHandler);
-//	 }
+	 @Override
+	 public void configureClientInboundChannel(ChannelRegistration registration) {
+	 	registration.interceptors(stompHandler);
+	 }
 }
