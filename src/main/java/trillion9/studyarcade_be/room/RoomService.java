@@ -71,8 +71,13 @@ public class RoomService {
         Pageable pageable = PageRequest.of(page , 6);
         Page<RoomResponseDto> roomResponseDtos = roomFilter.findRooms(pageable, category, keyword);
 
+        if(roomResponseDtos.isEmpty() && page != 0){
+            throw new IllegalArgumentException("조회할 수 있는 스터디룸이 없습니다.");
+        }
+
         return ResponseDto.setSuccess("스터디 룸 목록 조회 성공", roomResponseDtos);
     }
+
 
     /* 스터디 룸 생성 */
     @Transactional
