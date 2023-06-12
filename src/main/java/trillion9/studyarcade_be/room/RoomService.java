@@ -1,9 +1,5 @@
 package trillion9.studyarcade_be.room;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import io.openvidu.java.client.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import trillion9.studyarcade_be.global.ResponseDto;
+import trillion9.studyarcade_be.global.S3Util;
 import trillion9.studyarcade_be.global.exception.CustomException;
 import trillion9.studyarcade_be.global.exception.ErrorCode;
 import trillion9.studyarcade_be.member.Member;
@@ -28,9 +25,6 @@ import trillion9.studyarcade_be.roommember.RoomMemberResponseDto;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,10 +39,7 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final RoomMemberRepository roomMemberRepository;
     private final RoomFilterImpl roomFilter;
-
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucketName;
-    private final AmazonS3 amazonS3;
+    private final S3Util s3Util;
 
     //openvidu 서버 키 값
     @Value("${OPENVIDU_URL}")
@@ -91,7 +82,7 @@ public class RoomService {
         log.info("user 정보 : " + member.getEmail());
         log.info("user 정보 : " + member.getNickname());
 
-        String imageUrl = (image == null || image.isEmpty()) ? "대표 이미지 URL" : uploadImage(image);
+        String imageUrl = (image == null || image.isEmpty()) ? "대표 이미지 URL" : s3Util.uploadImage(image);
 
         Room room = Room.builder()
                         .sessionId(newToken.getSessionId())
@@ -165,7 +156,7 @@ public class RoomService {
                 () -> new CustomException(INVALID_USER)
         );
 
-        String imageUrl = (image == null || image.isEmpty()) ? "대표 이미지 URL" : uploadImage(image);
+        String imageUrl = (image == null || image.isEmpty()) ? "대표 이미지 URL" : s3Util.uploadImage(image);
 
         room.updateRoom(requestDto, imageUrl);
 
@@ -319,30 +310,5 @@ public class RoomService {
 
         /*해당 채팅방에 프로퍼티스를 설정하면서 커넥션을 만들고, 방에 접속할 수 있는 토큰을 발급한다.*/
         return session.createConnection(connectionProperties).getToken();
-    }
-
-    /* 이미지 업로드 */
-    private String uploadImage(MultipartFile image) throws IOException {
-        // 파일명 부여
-        LocalDateTime now = LocalDateTime.now();
-        int hour = now.getHour();
-        int minute = now.getMinute();
-        int second = now.getSecond();
-        int millis = now.get(ChronoField.MILLI_OF_SECOND);
-
-        String imageName = "image" + hour + minute + second + millis;
-        String fileExtension = '.' + image.getOriginalFilename().replaceAll("^.*\\.(.*)$", "$1");
-        String fullImageName = "S3" + imageName + fileExtension;
-
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentType(image.getContentType());
-        objectMetadata.setContentLength(image.getSize());
-
-        InputStream inputStream = image.getInputStream();
-
-        amazonS3.putObject(new PutObjectRequest(bucketName, fullImageName, inputStream, objectMetadata)
-            .withCannedAcl(CannedAccessControlList.PublicRead));
-
-        return amazonS3.getUrl(bucketName, fullImageName).toString();
     }
 }

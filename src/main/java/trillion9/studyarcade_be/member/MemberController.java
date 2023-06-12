@@ -84,11 +84,10 @@ public class MemberController {
         return memberService.myPage(userDetails.getMember());
     }
 
-    @PatchMapping("/{memberId}")
-    public ResponseDto<MemberResponseDto> updateMember(@PathVariable Long memberId,
-                                                       @RequestPart(value = "content") MemberRequestDto memberRequestDto,
+    @PatchMapping("/update")
+    public ResponseDto<MemberResponseDto> updateMember(@RequestPart(value = "content") MemberRequestDto memberRequestDto,
                                                        @RequestPart(value = "image", required = false) MultipartFile image,
                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        return memberService.updateMember(memberId, memberRequestDto, image, userDetails.getMember());
+        return memberService.updateMember(memberRequestDto, image, userDetails.getMember());
     }
 }
