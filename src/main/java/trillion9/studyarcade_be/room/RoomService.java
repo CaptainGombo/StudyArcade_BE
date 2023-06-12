@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.exception.CustomException;
+import trillion9.studyarcade_be.global.exception.ErrorCode;
 import trillion9.studyarcade_be.member.Member;
 import trillion9.studyarcade_be.room.dto.*;
 import trillion9.studyarcade_be.room.repository.RoomFilterImpl;
@@ -72,7 +73,7 @@ public class RoomService {
         Page<RoomResponseDto> roomResponseDtos = roomFilter.findRooms(pageable, category, keyword);
 
         if(roomResponseDtos.isEmpty() && page != 0){
-            throw new IllegalArgumentException("조회할 수 있는 스터디룸이 없습니다.");
+            throw new CustomException(ErrorCode.ROOM_NOT_FOUND);
         }
 
         return ResponseDto.setSuccess("스터디 룸 목록 조회 성공", roomResponseDtos);

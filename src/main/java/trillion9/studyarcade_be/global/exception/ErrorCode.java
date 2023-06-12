@@ -30,6 +30,7 @@ public enum ErrorCode {
     ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "스터디룸을 찾을 수 없습니다"),
     FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "파일이 없습니다."),
 
+
     /* 409 CONFLICT */
     DUPLICATE_RESOURCE(HttpStatus.CONFLICT, "데이터가 이미 존재합니다");
 
