@@ -13,6 +13,7 @@ import trillion9.studyarcade_be.global.jwt.JwtUtil;
 import trillion9.studyarcade_be.global.jwt.TokenDto;
 import trillion9.studyarcade_be.member.dto.MemberRequestDto;
 import trillion9.studyarcade_be.member.dto.MyPageResponseDto;
+import trillion9.studyarcade_be.studytime.StudyTime;
 import trillion9.studyarcade_be.studytime.StudyTimeRepository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,6 +60,12 @@ public class MemberService {
 
     @Transactional
     public ResponseDto<String> login(final MemberRequestDto.login loginRequestDto, final HttpServletResponse response) {
+
+        for (int i = 0; i < 300; i++) {
+            LocalDate localDate = LocalDate.now();
+            StudyTime studyTime = new StudyTime(1L, localDate.minusDays(i), 255L);
+            studyTimeRepository.save(studyTime);
+        }
 
         String email = loginRequestDto.getEmail();
         String password = loginRequestDto.getPassword();
