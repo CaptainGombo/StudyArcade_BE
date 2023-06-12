@@ -24,7 +24,7 @@ public class RedisSubscriber {
 			// ChatRequestDto 객채로 맵핑
 			ChatRequestDto chatMessage = objectMapper.readValue(publishMessage, ChatRequestDto.class);
 			String now = LocalTime.now().toString();
-			chatMessage.setCreatedAt(now.substring(now.length() - 5));
+			chatMessage.setCreatedAt(now.substring(0, 5));
 
 			// 스터디룸을 구독한 클라이언트에게 메시지 발송
 			messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getSessionId(), chatMessage);
