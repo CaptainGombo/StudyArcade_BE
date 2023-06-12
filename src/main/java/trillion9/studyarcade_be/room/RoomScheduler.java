@@ -41,12 +41,12 @@ public class RoomScheduler {
         List<Member> members =  memberRepository.findAll();
 
         for (Member member : members) {
-            // 분 단위로 저장
-            Long minute = member.getDailyStudyTime()  / 60;
+            // 초 단위로 저장
+            Long time = member.getDailyStudyTime();
             // 자정 기준 하루 전 데이터
             LocalDate previousDate = currentDate.minusDays(1);
 
-            StudyTime dailyStudyTime = new StudyTime(member.getId(), previousDate, minute);
+            StudyTime dailyStudyTime = new StudyTime(member.getId(), previousDate, time);
             studyTimeRepository.save(dailyStudyTime);
 
             // 멤버의 dailyStudyTime을 totalStudyTime에 더하고 0으로 리셋
