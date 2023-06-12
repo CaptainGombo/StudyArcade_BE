@@ -41,7 +41,7 @@ public class WebSecurityConfig {
                 // static files
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
                 // Swagger
-                .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**","/api-docs","/swagger-ui.html");
+                .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**","/api-docs","/swagger-ui.html", "ws-stomp/**");
     }
 
     @Bean
