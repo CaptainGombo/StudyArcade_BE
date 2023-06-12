@@ -30,7 +30,7 @@ public class RoomScheduler {
         List<Room> expiredRooms = roomRepository.findByExpirationDateBefore(currentDate);
 
         for (Room room : expiredRooms) {
-            List<RoomMember> roomMembers = roomMemberRepository.findBySessionId(room.getSessionId());
+            List<RoomMember> roomMembers = roomMemberRepository.findAllBySessionId(room.getSessionId());
             if (!roomMembers.isEmpty()) {
                 roomMemberRepository.deleteAll(roomMembers);
             }

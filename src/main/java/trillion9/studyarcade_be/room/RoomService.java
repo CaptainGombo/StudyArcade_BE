@@ -174,6 +174,9 @@ public class RoomService {
                 () -> new CustomException(INVALID_USER)
         );
 
+        List<RoomMember> roomMembers = roomMemberRepository.findAllBySessionId(sessionId);
+        roomMemberRepository.deleteAll(roomMembers);
+
         roomRepository.delete(room);
         return ResponseDto.setSuccess("스터디 룸 삭제 성공");
     }
