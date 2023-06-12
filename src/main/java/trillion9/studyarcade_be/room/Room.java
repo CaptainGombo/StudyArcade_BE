@@ -4,9 +4,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
-import trillion9.studyarcade_be.global.Timestamp;
+import trillion9.studyarcade_be.global.AuditingEntity;
 import trillion9.studyarcade_be.room.dto.RoomCreateRequestDto;
 
+import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -16,7 +17,8 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Room extends Timestamp {
+@AttributeOverride(name = "memberId", column = @Column(name = "room_creator_id"))
+public class Room extends AuditingEntity {
     // 세션 ID
     @Id
     private String sessionId;
@@ -27,11 +29,11 @@ public class Room extends Timestamp {
     @Column(nullable = false)
     private String roomContent;
 
-    @Column
     private String category;
-
-    @Column
     private String imageUrl;
+    private String roomPassword;
+    private LocalDate expirationDate;
+    private LocalDateTime roomDeleteTime;
 
     @ColumnDefault("0")
     private int userCount;
@@ -39,17 +41,8 @@ public class Room extends Timestamp {
     @ColumnDefault("false")
     private boolean secret;
 
-    @Column
-    private String roomPassword;
-
     @ColumnDefault("false")
     private boolean isDelete;
-
-    @Column
-    private LocalDateTime roomDeleteTime;
-
-    @Column
-    private LocalDate expirationDate;
 
     @Builder
     private Room(String sessionId, String roomName, String roomContent, String category, String imageUrl, int userCount, boolean secret, String roomPassword, LocalDate expirationDate) {
