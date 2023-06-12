@@ -8,15 +8,18 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.security.UserDetailsImpl;
 import trillion9.studyarcade_be.member.dto.KakaoUserInfoDto;
 import trillion9.studyarcade_be.member.dto.MemberRequestDto;
+import trillion9.studyarcade_be.member.dto.MemberResponseDto;
 import trillion9.studyarcade_be.member.dto.MyPageResponseDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Tag(name = "MemberController", description = "회원가입/로그인 API")
 @RestController
@@ -79,5 +82,13 @@ public class MemberController {
     // 마이페이지 조회
     public ResponseDto<MyPageResponseDto> myPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return memberService.myPage(userDetails.getMember());
+    }
+
+    @PatchMapping("/{memberId}")
+    public ResponseDto<MemberResponseDto> updateMember(@PathVariable Long memberId,
+                                                       @RequestPart(value = "content") MemberRequestDto memberRequestDto,
+                                                       @RequestPart(value = "image", required = false) MultipartFile image,
+                                                       @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        return memberService.updateMember(memberId, memberRequestDto, image, userDetails.getMember());
     }
 }
