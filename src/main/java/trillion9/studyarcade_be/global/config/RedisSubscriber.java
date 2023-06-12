@@ -23,8 +23,8 @@ public class RedisSubscriber {
 		try {
 			// ChatRequestDto 객채로 맵핑
 			ChatRequestDto chatMessage = objectMapper.readValue(publishMessage, ChatRequestDto.class);
-			LocalTime now = LocalTime.now();
-			chatMessage.setCreatedAt(now.getHour() + ":" + now.getMinute());
+			String now = LocalTime.now().toString();
+			chatMessage.setCreatedAt(now.substring(now.length() - 5));
 
 			// 스터디룸을 구독한 클라이언트에게 메시지 발송
 			messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getSessionId(), chatMessage);
