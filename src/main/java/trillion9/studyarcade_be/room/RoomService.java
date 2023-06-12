@@ -100,7 +100,6 @@ public class RoomService {
                         .build();
 
         RoomMember roomMember = RoomMember.builder()
-                                .member(member)
                                 .sessionId(newToken.getSessionId())
                                 .roomMaster(true)
                                 .build();
@@ -222,7 +221,7 @@ public class RoomService {
         String roomToken = createToken(member, room.getSessionId());
 
         RoomMember roomMember = RoomMember.builder()
-                .member(member)
+//                .member(member)
                 .sessionId(sessionId)
                 .roomMaster(false)
                 .roomToken(roomToken)
