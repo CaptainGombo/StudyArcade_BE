@@ -3,6 +3,7 @@ package trillion9.studyarcade_be.member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import trillion9.studyarcade_be.member.dto.MemberRequestDto;
 
 import javax.persistence.*;
 
@@ -35,13 +36,17 @@ public class Member {
     @Column
     private String title;
 
+    @Column
+    private String imageUrl;
+
     @Builder
-    private Member(Long kakaoId, String nickname, String email, String password, String title) {
+    private Member(Long kakaoId, String nickname, String email, String password, String title, String imageUrl) {
         this.kakaoId = kakaoId;
         this.nickname = nickname;
         this.email = email;
         this.password = password;
         this.title = title != null ? title : "Lv1";
+        this.imageUrl = imageUrl;
     }
 
     public Member kakaoIdUpdate(Long kakaoId) {
@@ -74,5 +79,10 @@ public class Member {
         } else {
             this.title = "Lv1";
         }
+    }
+
+    public void updateMember(MemberRequestDto memberRequestDto, String imageUrl) {
+        this.nickname = memberRequestDto.getNickname();
+        this.imageUrl = imageUrl;
     }
 }

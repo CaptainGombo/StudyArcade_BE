@@ -1,24 +1,35 @@
 package trillion9.studyarcade_be.member;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.exception.CustomException;
 import trillion9.studyarcade_be.global.jwt.JwtAuthFilter;
 import trillion9.studyarcade_be.global.jwt.JwtUtil;
 import trillion9.studyarcade_be.global.jwt.TokenDto;
 import trillion9.studyarcade_be.member.dto.MemberRequestDto;
+import trillion9.studyarcade_be.member.dto.MemberResponseDto;
 import trillion9.studyarcade_be.member.dto.MyPageResponseDto;
 import trillion9.studyarcade_be.studytime.StudyTime;
 import trillion9.studyarcade_be.studytime.StudyTimeRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoField;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +47,10 @@ public class MemberService {
     private final JwtUtil jwtUtil;
     private final JwtAuthFilter jwtAuthFilter;
     private final RedisTemplate<String, String> redisTemplate;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucketName;
+    private final AmazonS3 amazonS3;
 
     @Transactional
     public ResponseDto<String> register(MemberRequestDto memberRequestDto) {
@@ -176,5 +191,54 @@ public class MemberService {
                 .build();
 
         return ResponseDto.setSuccess("마이페이지 조회 성공", responseDto);
+    }
+
+    @Transactional
+    public ResponseDto<MemberResponseDto> updateMember(Long memberId, MemberRequestDto memberRequestDto, MultipartFile image, Member member) throws IOException {
+        memberRepository.findById(memberId).orElseThrow(
+                () -> new CustomException(USER_NOT_FOUND)
+        );
+
+        if (!member.getId().equals(memberId)) {
+            throw new CustomException(USER_NOT_FOUND);
+        }
+
+        String imageUrl = (image == null || image.isEmpty()) ? "대표 프로필 이미지 URL" : uploadImage(image);
+
+        MemberResponseDto responseDto = MemberResponseDto.builder()
+                .nickname(memberRequestDto.getNickname())
+                .email(member.getEmail())
+                .imageUrl(imageUrl)
+                .build();
+
+        member.updateMember(memberRequestDto, imageUrl);
+
+        memberRepository.save(member);
+
+        return ResponseDto.setSuccess("프로필 변경 성공", responseDto);
+    }
+
+    private String uploadImage(MultipartFile image) throws IOException {
+        // 파일명 부여
+        LocalDateTime now = LocalDateTime.now();
+        int hour = now.getHour();
+        int minute = now.getMinute();
+        int second = now.getSecond();
+        int millis = now.get(ChronoField.MILLI_OF_SECOND);
+
+        String imageName = "image" + hour + minute + second + millis;
+        String fileExtension = '.' + image.getOriginalFilename().replaceAll("^.*\\.(.*)$", "$1");
+        String fullImageName = "S3" + imageName + fileExtension;
+
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(image.getContentType());
+        objectMetadata.setContentLength(image.getSize());
+
+        InputStream inputStream = image.getInputStream();
+
+        amazonS3.putObject(new PutObjectRequest(bucketName, fullImageName, inputStream, objectMetadata)
+                .withCannedAcl(CannedAccessControlList.PublicRead));
+
+        return amazonS3.getUrl(bucketName, fullImageName).toString();
     }
 }
