@@ -1,15 +1,13 @@
 package trillion9.studyarcade_be.global.config;
 
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.stereotype.Service;
 import trillion9.studyarcade_be.chat.ChatRequestDto;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,7 +23,7 @@ public class RedisSubscriber {
 		try {
 			// ChatRequestDto 객채로 맵핑
 			ChatRequestDto chatMessage = objectMapper.readValue(publishMessage, ChatRequestDto.class);
-			LocalDateTime now = LocalDateTime.now();
+			LocalTime now = LocalTime.now();
 			chatMessage.setCreatedAt(now.toString());
 
 			// 스터디룸을 구독한 클라이언트에게 메시지 발송
