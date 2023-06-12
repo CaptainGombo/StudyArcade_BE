@@ -22,8 +22,12 @@ public class ChatRequestDto {
 	private String sessionId; // 방 세션 id
 	private String nickname; // 채팅을 보낸 사람
 	private String message; // 메시지
-	private String time; // 채팅 발송 시간간
+	private String createdAt; // 채팅 발송 시간
 	private String profile; //유저 프로필 이미지
+
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
+	}
 }
 
 

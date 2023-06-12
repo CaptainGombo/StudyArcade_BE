@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import trillion9.studyarcade_be.chat.ChatRequestDto;
 
+import java.time.LocalDateTime;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -23,6 +25,9 @@ public class RedisSubscriber {
 		try {
 			// ChatRequestDto 객채로 맵핑
 			ChatRequestDto chatMessage = objectMapper.readValue(publishMessage, ChatRequestDto.class);
+			LocalDateTime now = LocalDateTime.now();
+			chatMessage.setCreatedAt(now.toString());
+
 			// 스터디룸을 구독한 클라이언트에게 메시지 발송
 			messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getSessionId(), chatMessage);
 		} catch (Exception e) {
