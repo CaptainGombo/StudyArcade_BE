@@ -12,6 +12,7 @@ public class RoomResponseDto {
 	private String roomContent;
 	private String imageUrl;
 	private int userCount;
+	private boolean secret;
 	private String category;
 	private String createdAt;
 
@@ -22,6 +23,7 @@ public class RoomResponseDto {
 		this.imageUrl = room.getImageUrl();
 		this.userCount = room.getUserCount();
 		this.category = room.getCategory();
+		this.secret = room.isSecret();
 		this.createdAt = room.getCreatedAt();
 	}
 }

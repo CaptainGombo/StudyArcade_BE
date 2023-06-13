@@ -24,7 +24,6 @@ public class RoomDetailResponseDto {
         this.roomContent = room.getRoomContent();
         this.category = room.getCategory();
         this.userCount = room.getUserCount();
-
         this.members = roomMemberResponseDtos;
     }
 }
