@@ -24,6 +24,7 @@ import trillion9.studyarcade_be.roommember.RoomMemberRepository;
 import trillion9.studyarcade_be.roommember.RoomMemberResponseDto;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
@@ -42,6 +43,7 @@ public class RoomService {
     private final RoomMemberRepository roomMemberRepository;
     private final RoomFilterImpl roomFilter;
     private final S3Util s3Util;
+    private final EntityManager entityManager;
 
     //openvidu 서버 키 값
     @Value("${OPENVIDU_URL}")
@@ -59,7 +61,6 @@ public class RoomService {
     }
 
     /* 스터디 룸 목록 조회 */
-    @Transactional(readOnly = true)
     public ResponseDto<Page<RoomResponseDto>> allRooms(int page, String category, String keyword) {
         // 페이징 처리
         Pageable pageable = PageRequest.of(page , 6);
@@ -72,7 +73,6 @@ public class RoomService {
         return ResponseDto.setSuccess("스터디 룸 목록 조회 성공", roomResponseDtos);
     }
 
-
     /* 스터디 룸 생성 */
     @Transactional
     public ResponseDto<RoomCreateResponseDto> createRoom(RoomCreateRequestDto requestDto, MultipartFile image, Member member)
@@ -81,22 +81,7 @@ public class RoomService {
          /* SessionId 셋팅 */
         RoomCreateResponseDto newToken = createSession(member);
 
-        log.info("user 정보 : " + member.getEmail());
-        log.info("user 정보 : " + member.getNickname());
-
         String imageUrl = (image == null || image.isEmpty()) ? "대표 이미지 URL" : s3Util.uploadImage(image);
-
-        Room room = Room.builder()
-                        .sessionId(newToken.getSessionId())
-                        .roomName(requestDto.getRoomName())
-                        .roomContent(requestDto.getRoomContent())
-                        .userCount(1)
-                        .imageUrl(imageUrl)
-                        .secret(requestDto.isSecret())
-                        .category(requestDto.getCategory())
-                        .roomPassword(requestDto.getRoomPassword())
-                        .expirationDate(requestDto.getExpirationDate())
-                        .build();
 
         RoomMember roomMember = RoomMember.builder()
                                 .sessionId(newToken.getSessionId())
@@ -104,7 +89,20 @@ public class RoomService {
                                 .build();
 
         roomMemberRepository.save(roomMember);
-        roomRepository.save(room);
+
+        Room room = Room.builder()
+                .sessionId(newToken.getSessionId())
+                .roomName(requestDto.getRoomName())
+                .roomContent(requestDto.getRoomContent())
+                .userCount(1)
+                .imageUrl(imageUrl)
+                .secret(requestDto.isSecret())
+                .category(requestDto.getCategory())
+                .roomPassword(requestDto.getRoomPassword())
+                .expirationDate(requestDto.getExpirationDate())
+                .build();
+
+        entityManager.persist(room);
 
         RoomCreateResponseDto responseDto = RoomCreateResponseDto.builder()
                                                 .sessionId(room.getSessionId())
@@ -118,8 +116,7 @@ public class RoomService {
         return ResponseDto.setSuccess("스터디 룸 생성 성공", responseDto);
     }
 
-    /*채팅방 + 채팅방에 속한 유저 정보 불러오기*/
-    @Transactional
+    /* 채팅방 + 채팅방에 속한 유저 정보 불러오기 */
     public ResponseDto<RoomDetailResponseDto> getRoomData(String sessionId, Member member) {
 
         /*방이 있는 지 확인*/
@@ -132,11 +129,10 @@ public class RoomService {
                 () -> new IllegalArgumentException("방에 유저가 존재하지 않습니다.")
         );
 
-        /*채팅방 유저들 Entity*/
-        List<RoomMember> roomMemberList =
-                roomMemberRepository.findAllBySessionId(room.getSessionId());
+        /* 채팅방 유저들 Entity */
+        List<RoomMember> roomMemberList = roomMemberRepository.findAllBySessionId(room.getSessionId());
 
-        /*채팅방 유저들 Dto*/
+        /* 채팅방 유저들 Dto */
         List<RoomMemberResponseDto> roomMemberResponseDtos = roomMemberList.stream()
                                                                 .map(RoomMemberResponseDto::new)
                                                                 .toList();
@@ -188,12 +184,12 @@ public class RoomService {
     public ResponseDto<String> enterRoom(RoomEnterRequestDto requestDto, String sessionId, Member member)
         throws OpenViduJavaClientException, OpenViduHttpException {
 
-        /* 해당 sessionId를 가진 스터디룸이 존재하는지 확인한다. */
+        /* 해당 sessionId를 가진 스터디룸이 존재하는지 확인 */
         Room room = roomRepository.findBySessionId(sessionId).orElseThrow(
             () -> new EntityNotFoundException("해당 방이 없습니다."));
 
 
-        /* 스터디 룸의 최대 인원은 9명으로 제한하고, 초과 시 예외를 발생시킨다. */
+        /* 스터디 룸의 최대 인원은 9명으로 제한하고, 초과 시 예외 발생 */
         synchronized (room) {
             room.updateUserCount(room.getUserCount() + 1);
 
@@ -203,7 +199,7 @@ public class RoomService {
             }
         }
 
-         /* 비공개 방일 경우, 비밀번호 체크를 수행한다. */
+         /* 비공개 방일 경우, 비밀번호 체크를 수행 */
          if (room.isSecret()) {
              if (requestDto == null || requestDto.getRoomPassword() == null) {    // 패스워드를 입력 안했을 때 에러 발생
                  throw new IllegalArgumentException("비밀번호를 입력해주세요.");
@@ -213,7 +209,7 @@ public class RoomService {
              }
          }
 
-        /* 이미 입장한 유저일 경우 예외를 발생시킨다. */
+        /* 이미 입장한 유저일 경우 예외 발생 */
         Optional<RoomMember> alreadyEnterChatRoomUser
             = roomMemberRepository.findByMemberIdAndSessionId(member.getId(), sessionId);
 
@@ -223,7 +219,6 @@ public class RoomService {
         String roomToken = createToken(member, room.getSessionId());
 
         RoomMember roomMember = RoomMember.builder()
-//                .member(member)
                 .sessionId(sessionId)
                 .roomMaster(false)
                 .roomToken(roomToken)
@@ -232,7 +227,7 @@ public class RoomService {
         /* 현재 방에 접속한 사용자 저장 */
         roomMemberRepository.save(roomMember);
 
-        /* 채팅방 정보를 저장한다. */
+        /* 채팅방 정보 저장 */
         roomRepository.save(room);
 
         return ResponseDto.setSuccess("스터디 룸 입장 성공");
@@ -247,7 +242,7 @@ public class RoomService {
             () -> new EntityNotFoundException("채팅방이 존재하지않습니다.")
         );
 
-        /* 방에 멤버가 존재하는지 확인. */
+        /* 방에 멤버가 존재하는지 확인 */
         RoomMember roomMember = roomMemberRepository.findByMemberIdAndSessionId(member.getId(), sessionId).orElseThrow(
             () -> new EntityNotFoundException("방에 있는 멤버가 아닙니다.")
         );
@@ -284,7 +279,7 @@ public class RoomService {
          /* 스터디룸 생성 시 방을 만들며, 방장이 들어가지게 구현하려면 아래의 코드로 토큰 바로 발급
              방 생성, 방 입장(방장 입장) 로직이 나누어져 있다면 토큰 발급 필요 없음.
           */
-         String token = session.createConnection(connectionProperties).getToken();
+         // String token = session.createConnection(connectionProperties).getToken();
 
          return RoomCreateResponseDto.builder()
              .sessionId(session.getSessionId()) //리턴해주는 해당 세션아이디로 다른 유저 채팅방 입장시 요청해주시면 됩니다.

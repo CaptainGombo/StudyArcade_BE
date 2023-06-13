@@ -24,7 +24,7 @@ public class RedisSubscriber {
 		try {
 			// ChatMessageDto 객채로 맵핑
 			ChatMessageDto chatMessage = objectMapper.readValue(publishMessage, ChatMessageDto.class);
-			String now = LocalTime.now().format(DateTimeFormatter.ofPattern("a hh:mm"));
+			String now = LocalTime.now().format(DateTimeFormatter.ofPattern("hh:mm a"));
 			chatMessage.setCreatedAt(now);
 
 			// 스터디룸을 구독한 클라이언트에게 메시지 발송

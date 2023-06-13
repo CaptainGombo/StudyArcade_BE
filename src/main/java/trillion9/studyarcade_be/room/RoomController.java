@@ -47,7 +47,7 @@ public class RoomController {
         return roomService.createRoom(requestDto, image, userDetails.getMember());
     }
 
-     /* 스터디 룸 생성 */
+     /* 스터디 룸 정보 조회 */
      @Operation(summary = "스터디 룸 정보 조회 API", description = "스터디 룸 정보 조회")
      @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 정보 조회 완료")})
      @GetMapping(value = "/rooms/{session-id}")
