@@ -12,7 +12,7 @@ public class ChatService {
 	private final RedisTemplate<String, Object> redisTemplate;
 	private final ChannelTopic channelTopic;
 
-	public void message(ChatRequestDto message) {
+	public void message(ChatMessageDto message) {
 
 		// Websocket에 발행된 메시지를 redis로 발행 (publish)
 		redisTemplate.convertAndSend(channelTopic.getTopic(), message);

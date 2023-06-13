@@ -11,7 +11,7 @@ public class ChatController {
 
 	private final ChatService ChatService;
 	@MessageMapping("/chat/message")
-	public void message(ChatRequestDto message) {
+	public void message(ChatMessageDto message) {
 		ChatService.message(message);
 	}
 }
