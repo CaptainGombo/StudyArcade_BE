@@ -27,16 +27,9 @@ public class Member {
     @Column(nullable = false)
     private String password;
 
-    @Column
     private Long dailyStudyTime;
-
-    @Column
     private Long totalStudyTime;
-
-    @Column
     private String title;
-
-    @Column
     private String imageUrl;
 
     @Builder

@@ -13,7 +13,6 @@ public class StudyTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
-
     private Long memberId;
     private LocalDate dailyDate;
     private Long dailyStudyTime;

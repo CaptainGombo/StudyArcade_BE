@@ -17,7 +17,6 @@ public class RoomMember extends AuditingEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "room_member_id")
     private Long id;
-
     private String sessionId;
     private String roomToken;
 
