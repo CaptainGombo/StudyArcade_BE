@@ -56,13 +56,14 @@ public class MemberService {
                 .email(memberRequestDto.getEmail())
                 .password(encodedPassword)
                 .nickname(memberRequestDto.getNickname())
+                .dailyStudyTime(0L)
+                .totalStudyTime(0L)
                 .build();
 
-        memberRepository.saveAndFlush(member);
+        memberRepository.save(member);
         return ResponseDto.setSuccess("회원가입 성공");
     }
 
-    @Transactional
     public ResponseDto<String> login(final MemberRequestDto.login loginRequestDto, final HttpServletResponse response) {
 
         String email = loginRequestDto.getEmail();
@@ -71,7 +72,6 @@ public class MemberService {
         // 멤버 조회
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        // 비밀번호 확인
         if (!passwordEncoder.matches(password, member.getPassword())) {
             throw new CustomException(INVALID_USER_PASSWORD);
         }
@@ -82,14 +82,12 @@ public class MemberService {
         // TTL 세팅과 함께 새 토큰으로 업데이트 및 저장
         redisTemplate.opsForValue().set("RT:" + member.getEmail(), tokenDto.getRefreshToken(), JwtUtil.REFRESH_TOKEN_TIME, TimeUnit.MILLISECONDS);
 
-        // Header에 access token, refresh token 추가
         response.addHeader(JwtUtil.ACCESS_TOKEN, tokenDto.getAccessToken());
         response.addHeader(JwtUtil.REFRESH_TOKEN, tokenDto.getRefreshToken());
 
         return ResponseDto.setSuccess("로그인 성공", member.getNickname());
     }
 
-    @Transactional(readOnly = true)
     public ResponseDto<String> logout(HttpServletRequest request, Member member) {
         String accessToken = jwtUtil.resolveToken(request, JwtUtil.ACCESS_TOKEN);
         // 로그아웃 하고 싶은 토큰이 유효한 지 먼저 검증하기
@@ -109,13 +107,11 @@ public class MemberService {
         return ResponseDto.setSuccess("로그아웃 성공");
     }
 
-    @Transactional(readOnly = true)
     public ResponseDto<Boolean> checkNickname(String nickname) {
         Optional<Member> member = memberRepository.findByNickname(nickname);
         return ResponseDto.setSuccess("닉네임 중복 확인 완료", member.isEmpty());
     }
 
-    @Transactional(readOnly = true)
     public ResponseDto<String> newAccessToken(HttpServletRequest request) {
         String refreshToken = jwtUtil.resolveToken(request, JwtUtil.REFRESH_TOKEN);
         if (!jwtUtil.validateRefreshToken(refreshToken)) {
@@ -127,8 +123,6 @@ public class MemberService {
         return ResponseDto.setSuccess("New Access Token", newAccessToken);
     }
 
-
-    @Transactional
     public ResponseDto<MyPageResponseDto> myPage(Member member) {
 
         LocalDate now = LocalDate.now();
@@ -178,13 +172,6 @@ public class MemberService {
 
     @Transactional
     public ResponseDto<MemberResponseDto> updateMember(MemberRequestDto memberRequestDto, MultipartFile image, Member member) throws IOException {
-//        memberRepository.findById(memberId).orElseThrow(
-//                () -> new CustomException(USER_NOT_FOUND)
-//        );
-
-//        if (!member.getId().equals(member.getId())) {
-//            throw new CustomException(USER_NOT_FOUND);
-//        }
 
         String imageUrl = (image == null || image.isEmpty()) ? "대표 프로필 이미지 URL" : s3Util.uploadImage(image);
 
@@ -195,7 +182,6 @@ public class MemberService {
                 .build();
 
         member.updateMember(memberRequestDto, imageUrl);
-
         memberRepository.save(member);
 
         return ResponseDto.setSuccess("프로필 변경 성공", responseDto);

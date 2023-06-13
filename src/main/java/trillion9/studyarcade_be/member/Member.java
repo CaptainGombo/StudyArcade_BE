@@ -33,11 +33,13 @@ public class Member {
     private String imageUrl;
 
     @Builder
-    private Member(Long kakaoId, String nickname, String email, String password, String title, String imageUrl) {
+    private Member(Long kakaoId, String nickname, String email, String password, Long dailyStudyTime, Long totalStudyTime, String title, String imageUrl) {
         this.kakaoId = kakaoId;
         this.nickname = nickname;
         this.email = email;
         this.password = password;
+        this.dailyStudyTime = dailyStudyTime;
+        this.totalStudyTime = totalStudyTime;
         this.title = title != null ? title : "Lv1";
         this.imageUrl = imageUrl;
     }
@@ -48,9 +50,6 @@ public class Member {
     }
 
     public void updateStudyTime(Long roomStudyTime) {
-        if (this.dailyStudyTime == null) {
-            this.dailyStudyTime = 0L;
-        }
         this.dailyStudyTime += roomStudyTime;
     }
 
