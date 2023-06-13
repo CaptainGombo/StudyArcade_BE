@@ -27,7 +27,7 @@ public class RoomScheduler {
     @Transactional
     public void manageRoomAndStudyTime() {
         LocalDate currentDate = LocalDate.now();
-        List<Room> expiredRooms = roomRepository.findByExpirationDateBefore(currentDate);
+        List<Room> expiredRooms = roomRepository.findAllByExpirationDateBefore(currentDate);
 
         for (Room room : expiredRooms) {
             List<RoomMember> roomMembers = roomMemberRepository.findAllBySessionId(room.getSessionId());
