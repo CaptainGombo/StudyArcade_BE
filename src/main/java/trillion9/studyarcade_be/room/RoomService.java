@@ -15,6 +15,7 @@ import trillion9.studyarcade_be.global.S3Util;
 import trillion9.studyarcade_be.global.exception.CustomException;
 import trillion9.studyarcade_be.global.exception.ErrorCode;
 import trillion9.studyarcade_be.member.Member;
+import trillion9.studyarcade_be.member.MemberRepository;
 import trillion9.studyarcade_be.room.dto.*;
 import trillion9.studyarcade_be.room.repository.RoomFilterImpl;
 import trillion9.studyarcade_be.room.repository.RoomRepository;
@@ -36,6 +37,7 @@ import static trillion9.studyarcade_be.global.exception.ErrorCode.ROOM_NOT_FOUND
 @RequiredArgsConstructor
 public class RoomService {
 
+    private final MemberRepository memberRepository;
     private final RoomRepository roomRepository;
     private final RoomMemberRepository roomMemberRepository;
     private final RoomFilterImpl roomFilter;
@@ -248,6 +250,7 @@ public class RoomService {
 
          /* 하루 누적 시간 업데이트 */
         member.updateStudyTime(studyTime);
+        memberRepository.save(member);
 
         /* 스터디 룸 유저 삭제 */
         roomMemberRepository.delete(roomMember);
