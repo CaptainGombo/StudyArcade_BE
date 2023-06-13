@@ -72,10 +72,6 @@ public class RoomService {
         Pageable pageable = PageRequest.of(page , 6);
         Page<RoomResponseDto> roomResponseDtos = roomFilter.findRooms(pageable, category, keyword);
 
-        if(roomResponseDtos.isEmpty() && page != 0){
-            throw new CustomException(ErrorCode.ROOM_NOT_FOUND);
-        }
-
         return ResponseDto.setSuccess("스터디 룸 목록 조회 성공", roomResponseDtos);
     }
 
