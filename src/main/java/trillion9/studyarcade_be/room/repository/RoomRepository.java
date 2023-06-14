@@ -12,4 +12,5 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     Optional<Room> findBySessionId(String sessionId);
     Optional<Room> findBySessionIdAndIsDelete(String sessionId, boolean isDelete);
     List<Room> findAllByExpirationDateBefore(LocalDate currentDate);
+    List<Room> findAllByMemberId(Long memberId);
 }

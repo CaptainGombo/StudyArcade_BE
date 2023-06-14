@@ -16,6 +16,8 @@ import trillion9.studyarcade_be.global.jwt.TokenDto;
 import trillion9.studyarcade_be.member.dto.MemberRequestDto;
 import trillion9.studyarcade_be.member.dto.MemberResponseDto;
 import trillion9.studyarcade_be.member.dto.MyPageResponseDto;
+import trillion9.studyarcade_be.room.Room;
+import trillion9.studyarcade_be.room.repository.RoomRepository;
 import trillion9.studyarcade_be.studytime.StudyTimeRepository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +37,7 @@ import static trillion9.studyarcade_be.global.exception.ErrorCode.*;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final StudyTimeRepository studyTimeRepository;
+    private final RoomRepository roomRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final JwtAuthFilter jwtAuthFilter;
@@ -155,6 +158,14 @@ public class MemberService {
             monthlyStudyChart.put(year + "." + week, studyTime);
         }
 
+        // 총 공부시간 랭킹
+        List<Member> memberRanking = memberRepository.findAllByOrderByTotalStudyTimeDesc();
+        Member topRanked = memberRanking.get(0);
+
+
+        // 내가 만든 방 리스트 조회
+        List<Room> myRooms = roomRepository.findAllByMemberId(member.getId());
+
         // 회원 정보 설정
         MyPageResponseDto responseDto = MyPageResponseDto.builder()
                 .email(member.getEmail())
@@ -162,9 +173,11 @@ public class MemberService {
                 .dailyStudyTime(member.getDailyStudyTime())
                 .totalStudyTime(member.getTotalStudyTime())
                 .title(member.getTitle())
+                .topRanked(topRanked.getNickname())
                 .dailyStudyChart(dailyStudyChart)
                 .weeklyStudyChart(weeklyStudyChart)
                 .monthlyStudyChart(monthlyStudyChart)
+                .myRooms(myRooms)
                 .build();
 
         return ResponseDto.setSuccess("마이페이지 조회 성공", responseDto);
