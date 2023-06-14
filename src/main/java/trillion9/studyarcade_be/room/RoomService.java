@@ -181,10 +181,25 @@ public class RoomService {
     public ResponseDto<String> enterRoom(RoomEnterRequestDto requestDto, String sessionId, Member member)
         throws OpenViduJavaClientException, OpenViduHttpException {
 
-        /* 해당 sessionId를 가진 스터디룸이 존재하는지 확인 */
-        Room room = roomRepository.findBySessionId(sessionId).orElseThrow(
-            () -> new EntityNotFoundException("해당 방이 없습니다."));
+        openvidu.fetch();
+        /*Openvidu Server에 활성화되어 있는 세션(채팅방) 목록을 가지고 온다.*/
+        List<Session> activeSessionList = openvidu.getActiveSessions();
 
+        Optional<Session> sessionOptional = activeSessionList.stream()
+                .filter(s -> s.getSessionId().equals(sessionId))
+                .findFirst();
+
+        Session session;
+        if (sessionOptional.isPresent()) {
+            session = sessionOptional.get();
+        } else {
+            // 세션을 새로 생성
+            session = openvidu.createSession(new SessionProperties.Builder().customSessionId(sessionId).build());
+        }
+
+        /* 해당 sessionId를 가진 스터디룸이 존재하는지 확인 */
+        Room room = roomRepository.findBySessionId(session.getSessionId()).orElseThrow(
+            () -> new EntityNotFoundException("해당 방이 없습니다."));
 
         /* 스터디 룸의 최대 인원은 9명으로 제한하고, 초과 시 예외 발생 */
         synchronized (room) {
@@ -208,7 +223,7 @@ public class RoomService {
 
         /* 이미 입장한 유저일 경우 예외 발생 */
         Optional<RoomMember> alreadyEnterChatRoomUser
-            = roomMemberRepository.findByMemberIdAndSessionId(member.getId(), sessionId);
+            = roomMemberRepository.findByMemberIdAndSessionId(member.getId(), session.getSessionId());
 
         if (alreadyEnterChatRoomUser.isPresent()) throw new IllegalArgumentException("이미 입장한 멤버입니다.");
 
@@ -216,7 +231,7 @@ public class RoomService {
         String roomToken = createToken(member, room.getSessionId());
 
         RoomMember roomMember = RoomMember.builder()
-                .sessionId(sessionId)
+                .sessionId(session.getSessionId())
                 .roomMaster(false)
                 .roomToken(roomToken)
                 .build();
@@ -262,13 +277,13 @@ public class RoomService {
          OpenViduJavaClientException, OpenViduHttpException {
 
          /* 사용자 연결 시 닉네임 전달 */
-         String serverData = member.getNickname();
+//         String serverData = member.getNickname();
 
          /* serverData을 사용하여 connectionProperties 객체를 빌드 */
-         ConnectionProperties connectionProperties = new ConnectionProperties.Builder()
-             .type(ConnectionType.WEBRTC)
-             .data(serverData)
-             .build();
+//         ConnectionProperties connectionProperties = new ConnectionProperties.Builder()
+//             .type(ConnectionType.WEBRTC)
+//             .data(serverData)
+//             .build();
 
          /* 새로운 OpenVidu 세션(스터디 룸) 생성 */
          Session session = openvidu.createSession();
