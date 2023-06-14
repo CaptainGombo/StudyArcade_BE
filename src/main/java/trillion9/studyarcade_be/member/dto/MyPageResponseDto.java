@@ -3,6 +3,7 @@ package trillion9.studyarcade_be.member.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import trillion9.studyarcade_be.member.Member;
 import trillion9.studyarcade_be.room.Room;
 
 import java.util.List;
@@ -17,7 +18,9 @@ public class MyPageResponseDto {
     private Long totalStudyTime;
     private String title;
     private Long nextGradeRemainingTime;
-    private String topRanked;
+    private String topRankedNickname;
+    private String topRankedTitle;
+    private Long topRankedTotalStudyTime;
 
     private Map<String, Long> dailyStudyChart;
     private Map<String, Long> weeklyStudyChart;
@@ -26,7 +29,8 @@ public class MyPageResponseDto {
     private List<Room> myRooms;
 
     @Builder
-    private MyPageResponseDto(String nickname, String email, Long dailyStudyTime, Long totalStudyTime, String title, Long nextGradeRemainingTime, String topRanked,
+    private MyPageResponseDto(String nickname, String email, Long dailyStudyTime, Long totalStudyTime, String title, Long nextGradeRemainingTime,
+                              String topRankedNickname,String topRankedTitle, Long topRankedTotalStudyTime,
                               Map<String, Long> dailyStudyChart,
                               Map<String, Long> weeklyStudyChart,
                               Map<String, Long> monthlyStudyChart,
@@ -38,7 +42,9 @@ public class MyPageResponseDto {
         this.totalStudyTime = totalStudyTime;
         this.title = title;
         this.nextGradeRemainingTime = nextGradeRemainingTime;
-        this.topRanked = topRanked;
+        this.topRankedNickname = topRankedNickname;
+        this.topRankedTitle = topRankedTitle;
+        this.topRankedTotalStudyTime = topRankedTotalStudyTime;
         this.dailyStudyChart = dailyStudyChart;
         this.weeklyStudyChart = weeklyStudyChart;
         this.monthlyStudyChart = monthlyStudyChart;
