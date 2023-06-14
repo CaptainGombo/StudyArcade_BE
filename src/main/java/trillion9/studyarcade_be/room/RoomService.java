@@ -106,6 +106,7 @@ public class RoomService {
                                                 .roomContent(room.getRoomContent())
                                                 .imageUrl(room.getImageUrl())
                                                 .secret(room.isSecret())
+                                                .userCount(1)
                                                 .category(room.getCategory())
                                                 .build();
 
