@@ -3,6 +3,7 @@ package trillion9.studyarcade_be.member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import trillion9.studyarcade_be.member.dto.MemberRequestDto;
 
 import javax.persistence.*;
@@ -27,8 +28,12 @@ public class Member {
     @Column(nullable = false)
     private String password;
 
+    @ColumnDefault("0")
     private Long dailyStudyTime;
+
+    @ColumnDefault("0")
     private Long totalStudyTime;
+
     private String title;
     private String imageUrl;
 
