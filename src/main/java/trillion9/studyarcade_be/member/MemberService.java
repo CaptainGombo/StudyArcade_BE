@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
@@ -158,10 +159,16 @@ public class MemberService {
             monthlyStudyChart.put(year + "." + week, studyTime);
         }
 
+        //다음 등급까지 남은 시간 조회
+        Long nextGradeRemainingTime = getNextGradeRemainingTime(member);
+
         // 총 공부시간 랭킹
         List<Member> memberRanking = memberRepository.findAllByOrderByTotalStudyTimeDesc();
         Member topRanked = memberRanking.get(0);
-
+        List<String> topRankedInfo = new ArrayList<>();
+        topRankedInfo.add(topRanked.getNickname());
+        topRankedInfo.add(topRanked.getTitle());
+        topRankedInfo.add(String.valueOf(topRanked.getTotalStudyTime()));
 
         // 내가 만든 방 리스트 조회
         List<Room> myRooms = roomRepository.findAllByMemberId(member.getId());
@@ -173,7 +180,8 @@ public class MemberService {
                 .dailyStudyTime(member.getDailyStudyTime())
                 .totalStudyTime(member.getTotalStudyTime())
                 .title(member.getTitle())
-                .topRanked(topRanked.getNickname())
+                .nextGradeRemainingTime(nextGradeRemainingTime)
+                .topRanked(topRankedInfo.toString())
                 .dailyStudyChart(dailyStudyChart)
                 .weeklyStudyChart(weeklyStudyChart)
                 .monthlyStudyChart(monthlyStudyChart)
@@ -198,5 +206,31 @@ public class MemberService {
         memberRepository.save(member);
 
         return ResponseDto.setSuccess("프로필 변경 성공", responseDto);
+    }
+
+    // 다음 등급까지 남은 시간 조회
+    public Long getNextGradeRemainingTime(Member member) {
+        Long totalStudyTime = member.getTotalStudyTime();
+
+        if (totalStudyTime >= 1501 * 60) {
+            return 0L; // 이미 최고 등급인 경우 남은 시간은 0으로 처리
+        }
+
+        long nextGradeRemainingTime;
+
+        if (totalStudyTime >= 1001 * 60) {
+            nextGradeRemainingTime = (1501 * 60) - totalStudyTime;
+        } else if (totalStudyTime >= 651 * 60) {
+            nextGradeRemainingTime = (1001 * 60) - totalStudyTime;
+        } else if (totalStudyTime >= 401 * 60) {
+            nextGradeRemainingTime = (651 * 60) - totalStudyTime;
+        } else if (totalStudyTime >= 201 * 60) {
+            nextGradeRemainingTime = (401 * 60) - totalStudyTime;
+        } else if (totalStudyTime >= 51 * 60) {
+            nextGradeRemainingTime = (201 * 60) - totalStudyTime;
+        } else {
+            nextGradeRemainingTime = (51 * 60) - totalStudyTime;
+        }
+        return nextGradeRemainingTime;
     }
 }
