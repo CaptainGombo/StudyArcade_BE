@@ -165,10 +165,10 @@ public class MemberService {
         // 총 공부시간 랭킹
         List<Member> memberRanking = memberRepository.findAllByOrderByTotalStudyTimeDesc();
         Member topRanked = memberRanking.get(0);
-        List<String> topRankedInfo = new ArrayList<>();
-        topRankedInfo.add(topRanked.getNickname());
-        topRankedInfo.add(topRanked.getTitle());
-        topRankedInfo.add(String.valueOf(topRanked.getTotalStudyTime()));
+
+        String topRankedNickname = topRanked.getNickname();
+        String topRankedTitle = topRanked.getTitle();
+        Long topRankedTotalStudyTime = topRanked.getTotalStudyTime();
 
         // 내가 만든 방 리스트 조회
         List<Room> myRooms = roomRepository.findAllByMemberId(member.getId());
@@ -181,7 +181,9 @@ public class MemberService {
                 .totalStudyTime(member.getTotalStudyTime())
                 .title(member.getTitle())
                 .nextGradeRemainingTime(nextGradeRemainingTime)
-                .topRanked(topRankedInfo.toString())
+                .topRankedNickname(topRankedNickname)
+                .topRankedTitle(topRankedTitle)
+                .topRankedTotalStudyTime(topRankedTotalStudyTime)
                 .dailyStudyChart(dailyStudyChart)
                 .weeklyStudyChart(weeklyStudyChart)
                 .monthlyStudyChart(monthlyStudyChart)
