@@ -40,7 +40,7 @@ public class Member {
         this.password = password;
         this.dailyStudyTime = dailyStudyTime;
         this.totalStudyTime = totalStudyTime;
-        this.title = title != null ? title : "Lv1";
+        this.title = title != null ? title : "씨앗";
         this.imageUrl = imageUrl;
     }
 
