@@ -16,6 +16,7 @@ public class MyPageResponseDto {
     private Long dailyStudyTime;
     private Long totalStudyTime;
     private String title;
+    private Long nextGradeRemainingTime;
     private String topRanked;
 
     private Map<String, Long> dailyStudyChart;
@@ -25,7 +26,7 @@ public class MyPageResponseDto {
     private List<Room> myRooms;
 
     @Builder
-    private MyPageResponseDto(String nickname, String email, Long dailyStudyTime, Long totalStudyTime, String title, String topRanked,
+    private MyPageResponseDto(String nickname, String email, Long dailyStudyTime, Long totalStudyTime, String title, Long nextGradeRemainingTime, String topRanked,
                               Map<String, Long> dailyStudyChart,
                               Map<String, Long> weeklyStudyChart,
                               Map<String, Long> monthlyStudyChart,
@@ -36,6 +37,7 @@ public class MyPageResponseDto {
         this.dailyStudyTime = dailyStudyTime;
         this.totalStudyTime = totalStudyTime;
         this.title = title;
+        this.nextGradeRemainingTime = nextGradeRemainingTime;
         this.topRanked = topRanked;
         this.dailyStudyChart = dailyStudyChart;
         this.weeklyStudyChart = weeklyStudyChart;
