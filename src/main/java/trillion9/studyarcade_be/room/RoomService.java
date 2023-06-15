@@ -181,7 +181,7 @@ public class RoomService {
         throws OpenViduJavaClientException, OpenViduHttpException {
 
         openvidu.fetch();
-        /*Openvidu Server에 활성화되어 있는 세션(채팅방) 목록을 가지고 온다.*/
+        // Openvidu Server에 활성화되어 있는 세션(채팅방) 목록을 가지고 옴
         List<Session> activeSessionList = openvidu.getActiveSessions();
 
         Optional<Session> sessionOptional = activeSessionList.stream()
