@@ -263,7 +263,7 @@ public class RoomService {
         member.updateStudyTime(studyTime);
 
         /* 총 누적 시간 업데이트 및 등급 업데이트 */
-        member.updateTotalStudyTime();
+        member.updateTitle();
 
         memberRepository.save(member);
 
