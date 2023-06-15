@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.S3Util;
 import trillion9.studyarcade_be.global.exception.CustomException;
-import trillion9.studyarcade_be.global.exception.ErrorCode;
 import trillion9.studyarcade_be.member.Member;
 import trillion9.studyarcade_be.member.MemberRepository;
 import trillion9.studyarcade_be.room.dto.*;
@@ -261,10 +260,6 @@ public class RoomService {
 
         /* 하루 누적 시간 업데이트 */
         member.updateStudyTime(studyTime);
-
-        /* 총 누적 시간 업데이트 및 등급 업데이트 */
-        member.updateTitle();
-
         memberRepository.save(member);
 
         /* 스터디 룸 유저 삭제 */
