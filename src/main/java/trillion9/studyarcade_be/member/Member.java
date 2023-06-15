@@ -56,6 +56,7 @@ public class Member {
 
     public void updateStudyTime(Long roomStudyTime) {
         this.dailyStudyTime += roomStudyTime;
+        updateTitle();
     }
 
     public void updateTotalStudyTime() {
