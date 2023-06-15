@@ -64,7 +64,7 @@ public class Member {
         updateTitle();
     }
 
-    private void updateTitle() {
+    public void updateTitle() {
         if (this.totalStudyTime >= 1501 * 60 * 60) {
             this.title = "세계수";
         } else if (this.totalStudyTime >= 1001 * 60 * 60) {
