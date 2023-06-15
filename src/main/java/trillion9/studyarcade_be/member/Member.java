@@ -65,17 +65,17 @@ public class Member {
     }
 
     private void updateTitle() {
-        if (this.totalStudyTime >= 1501 * 60) {
+        if (this.totalStudyTime >= 1501 * 60 * 60) {
             this.title = "세계수";
-        } else if (this.totalStudyTime >= 1001 * 60) {
-            this.title = "백년나무";
-        } else if (this.totalStudyTime >= 651 * 60) {
+        } else if (this.totalStudyTime >= 1001 * 60 * 60) {
             this.title = "거목";
-        } else if (this.totalStudyTime >= 401 * 60) {
+        } else if (this.totalStudyTime >= 651 * 60 * 60) {
             this.title = "나무";
-        } else if (this.totalStudyTime >= 201 * 60) {
+        } else if (this.totalStudyTime >= 401 * 60 * 60) {
             this.title = "묘목";
-        } else if (this.totalStudyTime >= 51 * 60) {
+        } else if (this.totalStudyTime >= 201 * 60 * 60) {
+            this.title = "잎줄기";
+        } else if (this.totalStudyTime >= 51 * 60 * 60) {
             this.title = "새싹";
         } else {
             this.title = "씨앗";
