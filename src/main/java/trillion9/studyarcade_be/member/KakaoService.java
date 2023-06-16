@@ -22,6 +22,8 @@ import trillion9.studyarcade_be.global.jwt.JwtUtil;
 import trillion9.studyarcade_be.member.dto.KakaoUserInfoDto;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -43,6 +45,7 @@ public class KakaoService {
 
         // 3. 필요시에 회원가입
         Member kakaoUser = registerKakaoUserIfNeeded(kakaoUserInfo);
+        kakaoUserInfo.setNickname(kakaoUser.getNickname());
 
         // 4. JWT 토큰 반환
         String createToken =  jwtUtil.createToken(kakaoUser.getEmail(), "Access_Token");
@@ -144,22 +147,33 @@ public class KakaoService {
 
                 // email: kakao email
                 String email = kakaoUserInfo.getEmail();
+                String nickname;
 
-                //임시 닉네임 발급
-                String tempNickname;
-                do {
-                    String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
-                    StringBuilder builder = new StringBuilder();
-                    int count = 6;
-                    while (count-- != 0) {
-                        int character = (int)(Math.random() * ALPHA_NUMERIC_STRING.length());
-                        builder.append(ALPHA_NUMERIC_STRING.charAt(character));
-                    }
-                    tempNickname = "user" + builder.toString();
-                } while (memberRepository.findByNickname(tempNickname).isPresent());
+                Optional<Member> member = memberRepository.findByNickname(kakaoUserInfo.getNickname());
 
+                if (member.isPresent()) {
+                    Random random = new Random();
+                    int randomNumber = random.nextInt(100);
+                    nickname = kakaoUserInfo.getNickname() + randomNumber;
+                } else {
+                    nickname = kakaoUserInfo.getNickname();
+                }
 
-                kakaoUser = Member.builder().nickname(tempNickname)
+//                //임시 닉네임 발급
+//                String tempNickname;
+//                do {
+//                    String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
+//                    StringBuilder builder = new StringBuilder();
+//                    int count = 6;
+//                    while (count-- != 0) {
+//                        int character = (int)(Math.random() * ALPHA_NUMERIC_STRING.length());
+//                        builder.append(ALPHA_NUMERIC_STRING.charAt(character));
+//                    }
+//                    tempNickname = "user" + builder.toString();
+//                } while (memberRepository.findByNickname(tempNickname).isPresent());
+
+                kakaoUser = Member.builder()
+                        .nickname(nickname)
                         .kakaoId(kakaoId)
                         .password(encodedPassword)
                         .email(email)

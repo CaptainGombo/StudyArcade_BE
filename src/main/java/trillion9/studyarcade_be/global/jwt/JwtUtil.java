@@ -34,7 +34,6 @@ public class JwtUtil {
     public static final long ACCESS_TOKEN_TIME = 30 * 60 * 1000L;   // AccessToken Time 30 min
     public static final long REFRESH_TOKEN_TIME = 24 * 60 * 60 * 1000L; // RefreshToken Time 1 day
 
-
     private final UserDetailsServiceImpl userDetailsService;
     private final MemberRepository memberRepository;
     private final RedisTemplate<String, String> redisTemplate;

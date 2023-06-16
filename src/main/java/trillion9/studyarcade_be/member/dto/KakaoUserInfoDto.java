@@ -10,6 +10,10 @@ public class KakaoUserInfoDto {
     private String email;
     private String nickname;
 
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
     public KakaoUserInfoDto(Long id, String nickname, String email) {
         this.id = id;
         this.nickname = nickname;
