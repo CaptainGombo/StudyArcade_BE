@@ -72,11 +72,11 @@ public class RoomService {
     public ResponseDto<RoomCreateResponseDto> createRoom(RoomCreateRequestDto requestDto, MultipartFile image, Member member)
         throws Exception {
 
-        Long myRoomCount = roomRepository.countAllByMemberId(member.getId());
-
-        if (myRoomCount > 2) {
-            throw new CustomException(INVALID_ROOM_COUNT);
-        }
+//        Long myRoomCount = roomRepository.countAllByMemberId(member.getId());
+//
+//        if (myRoomCount > 2) {
+//            throw new CustomException(INVALID_ROOM_COUNT);
+//        }
 
          /* SessionId 셋팅 */
         RoomCreateResponseDto newToken = createSession(member);
