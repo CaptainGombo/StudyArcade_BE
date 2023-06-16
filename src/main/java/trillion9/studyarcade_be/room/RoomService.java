@@ -72,9 +72,9 @@ public class RoomService {
     public ResponseDto<RoomCreateResponseDto> createRoom(RoomCreateRequestDto requestDto, MultipartFile image, Member member)
         throws Exception {
 
-        List<Room> myRoomList = roomRepository.findAllByMemberId(member.getId());
+        Long myRoomCount = roomRepository.countAllByMemberId(member.getId());
 
-        if (myRoomList.size() > 2) {
+        if (myRoomCount > 2) {
             throw new CustomException(INVALID_ROOM_COUNT);
         }
 
