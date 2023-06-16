@@ -1,16 +1,13 @@
 version: 0.0
 os: linux
-
 files:
   - source:  /
     destination: /home/ubuntu/StudyHub_BE
     overwrite: yes
-
 permissions:
   - object: /
     owner: ubuntu
     group: ubuntu
-
 hooks:
   AfterInstall:
     - location: scripts/stop.sh

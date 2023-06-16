@@ -15,6 +15,7 @@ public enum ErrorCode {
     FILE_SIZE_OVER(HttpStatus.BAD_REQUEST, "파일 용량은 10MB 미만까지 가능합니다."),
     FILE_UNUPLOADED(HttpStatus.BAD_REQUEST, "이미지를 업로드해주세요."),
     INVALID_FILE_EXTENSION(HttpStatus.BAD_REQUEST, "지원하지 않는 확장자 입니다."),
+    INVALID_ROOM_COUNT(HttpStatus.BAD_REQUEST, "방의 개수가 3개를 초과하였습니다."),
 
     /* 401 UNAUTHORIZED */
     AUTHORIZATION_ERROR(HttpStatus.UNAUTHORIZED, "유효하지 않은 접근 방식입니다."),
