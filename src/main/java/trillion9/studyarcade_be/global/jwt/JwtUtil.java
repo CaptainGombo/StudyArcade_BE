@@ -32,9 +32,9 @@ public class JwtUtil {
     public static final String REFRESH_TOKEN = "Refresh_Token";
 
 //    public static final long ACCESS_TOKEN_TIME = 30 * 60 * 1000L;   // AccessToken Time 30 min
-    public static final long ACCESS_TOKEN_TIME = 2 * 60 * 1000L;   // test
+    public static final long ACCESS_TOKEN_TIME = 30 * 60 * 1000L;   // test
 //    public static final long REFRESH_TOKEN_TIME = 24 * 60 * 60 * 1000L; // RefreshToken Time 1 day
-    public static final long REFRESH_TOKEN_TIME = 4 * 60 * 1000L; // test
+    public static final long REFRESH_TOKEN_TIME = 24 * 60 * 60 * 1000L; // test
 
     private final UserDetailsServiceImpl userDetailsService;
     private final MemberRepository memberRepository;

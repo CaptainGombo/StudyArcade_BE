@@ -74,7 +74,8 @@ public class RoomService {
         throws Exception {
 
          /* SessionId 셋팅 */
-        RoomCreateResponseDto newToken = createSession(member);
+//        RoomCreateResponseDto newToken = createSession(member);
+        RoomCreateResponseDto newToken = RoomCreateResponseDto.builder().sessionId("testId").build();
 
         String imageUrl = (image == null || image.isEmpty()) ? "대표 이미지 URL" : s3Util.uploadImage(image);
 
@@ -201,13 +202,20 @@ public class RoomService {
             () -> new EntityNotFoundException("해당 방이 없습니다."));
 
         /* 스터디 룸의 최대 인원은 9명으로 제한하고, 초과 시 예외 발생 */
-        synchronized (room) {
-            room.updateUserCount(room.getUserCount() + 1);
+//        synchronized (room) {
+//            room.updateUserCount(room.getUserCount() + 1);
+//
+//            if (room.getUserCount() > roomMaxUser) {
+//                /* 트랜잭션에 의해 위의 updateCntUser 메서드의 user수 +1 자동으로 롤백(-1)되어서 9에 맞추어짐. */
+//                throw new IllegalArgumentException("방이 가득찼습니다.");
+//            }
+//        }
 
-            if (room.getUserCount() > roomMaxUser) {
-                /* 트랜잭션에 의해 위의 updateCntUser 메서드의 user수 +1 자동으로 롤백(-1)되어서 9에 맞추어짐. */
-                throw new IllegalArgumentException("방이 가득찼습니다.");
-            }
+        room.updateUserCount(room.getUserCount() + 1);
+
+        if (room.getUserCount() > roomMaxUser) {
+            /* 트랜잭션에 의해 위의 updateCntUser 메서드의 user수 +1 자동으로 롤백(-1)되어서 9에 맞추어짐. */
+            throw new IllegalArgumentException("방이 가득찼습니다.");
         }
 
          /* 비공개 방일 경우, 비밀번호 체크를 수행 */

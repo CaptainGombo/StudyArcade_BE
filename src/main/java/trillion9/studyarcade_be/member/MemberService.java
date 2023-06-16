@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
@@ -76,7 +75,7 @@ public class MemberService {
         // 멤버 조회
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        if (!passwordEncoder.matches(password, member.getPassword())) {
+        if (!password.equals(member.getPassword())) {
             throw new CustomException(INVALID_USER_PASSWORD);
         }
 
