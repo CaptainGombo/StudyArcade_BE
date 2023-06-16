@@ -75,7 +75,7 @@ public class MemberService {
         // 멤버 조회
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        if (!password.equals(member.getPassword())) {
+        if (!passwordEncoder.matches(password, member.getPassword())) {
             throw new CustomException(INVALID_USER_PASSWORD);
         }
 
