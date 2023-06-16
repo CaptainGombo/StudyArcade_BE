@@ -240,6 +240,12 @@ public class RoomService {
                 .roomToken(roomToken)
                 .build();
 
+        Optional<Room> roomMasterCheck = roomRepository.findBySessionIdAndMemberId(sessionId, member.getId());
+
+        if (roomMasterCheck.isPresent()) {
+            roomMember.setRoomMaster(true);
+        }
+
         /* 현재 방에 접속한 사용자 저장 */
         roomMemberRepository.save(roomMember);
 

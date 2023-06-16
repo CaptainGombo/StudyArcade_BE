@@ -29,4 +29,8 @@ public class RoomMember extends AuditingEntity {
         this.roomToken = roomToken;
         this.roomMaster = roomMaster;
     }
+
+    public void setRoomMaster(boolean roomMaster) {
+        this.roomMaster = roomMaster;
+    }
 }
