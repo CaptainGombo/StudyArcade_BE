@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MyRoomResponseDto {
     private String roomName;
-    private String roomContent;
+    private String category;
 
-    public MyRoomResponseDto(String roomName, String roomContent) {
+    public MyRoomResponseDto(String roomName, String category) {
         this.roomName = roomName;
-        this.roomContent = roomContent;
+        this.category = category;
     }
 }
