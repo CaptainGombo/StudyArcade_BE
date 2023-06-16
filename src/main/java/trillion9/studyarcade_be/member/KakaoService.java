@@ -173,6 +173,8 @@ public class KakaoService {
 //                } while (memberRepository.findByNickname(tempNickname).isPresent());
 
                 kakaoUser = Member.builder()
+                        .dailyStudyTime(0L)
+                        .totalStudyTime(0L)
                         .nickname(nickname)
                         .kakaoId(kakaoId)
                         .password(encodedPassword)
