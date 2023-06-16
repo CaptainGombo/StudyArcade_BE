@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AmazonS3Exception.class)
-    public ResponseEntity handleFileExtensionException(AmazonS3Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+    public ResponseEntity<ErrorResponse> handleFileExtensionException(AmazonS3Exception e) {
+        return ErrorResponse.toResponseEntity(INVALID_FILE_EXTENSION);
     }
 }
