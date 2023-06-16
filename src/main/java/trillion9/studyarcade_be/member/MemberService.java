@@ -16,7 +16,7 @@ import trillion9.studyarcade_be.global.jwt.TokenDto;
 import trillion9.studyarcade_be.member.dto.MemberRequestDto;
 import trillion9.studyarcade_be.member.dto.MemberResponseDto;
 import trillion9.studyarcade_be.member.dto.MyPageResponseDto;
-import trillion9.studyarcade_be.room.Room;
+import trillion9.studyarcade_be.room.dto.MyRoomResponseDto;
 import trillion9.studyarcade_be.room.repository.RoomRepository;
 import trillion9.studyarcade_be.studytime.StudyTimeRepository;
 
@@ -24,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
@@ -162,16 +161,16 @@ public class MemberService {
         //다음 등급까지 남은 시간 조회
         Long nextGradeRemainingTime = getNextGradeRemainingTime(member);
 
-        // 총 공부시간 랭킹
-        List<Member> memberRanking = memberRepository.findAllByOrderByTotalStudyTimeDesc();
-        Member topRanked = memberRanking.get(0);
+        // 총 공부시간 랭킹 1위 정보 조회
+        List<Object[]> topRankedList = memberRepository.findTopRanked();
 
-        String topRankedNickname = topRanked.getNickname();
-        String topRankedTitle = topRanked.getTitle();
-        Long topRankedTotalStudyTime = topRanked.getTotalStudyTime();
+        Object[] topRanked = topRankedList.get(0);
+        String topRankedNickname = String.valueOf(topRanked[0]);
+        String topRankedTitle = String.valueOf(topRanked[1]);
+        Long topRankedTotalStudyTime = Long.parseLong(topRanked[2].toString());
 
         // 내가 만든 방 리스트 조회
-        List<Room> myRooms = roomRepository.findAllByMemberId(member.getId());
+        List<MyRoomResponseDto> myRooms = roomRepository.findMyRoomResponseDto(member.getId());
 
         // 회원 정보 설정
         MyPageResponseDto responseDto = MyPageResponseDto.builder()
@@ -180,10 +179,10 @@ public class MemberService {
                 .dailyStudyTime(member.getDailyStudyTime())
                 .totalStudyTime(member.getTotalStudyTime())
                 .title(member.getTitle())
-                .nextGradeRemainingTime(nextGradeRemainingTime)
                 .topRankedNickname(topRankedNickname)
                 .topRankedTitle(topRankedTitle)
                 .topRankedTotalStudyTime(topRankedTotalStudyTime)
+                .nextGradeRemainingTime(nextGradeRemainingTime)
                 .dailyStudyChart(dailyStudyChart)
                 .weeklyStudyChart(weeklyStudyChart)
                 .monthlyStudyChart(monthlyStudyChart)
