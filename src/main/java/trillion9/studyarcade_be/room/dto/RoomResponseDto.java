@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import trillion9.studyarcade_be.room.Room;
 
+import java.time.LocalDateTime;
+
 @Getter
 @NoArgsConstructor
 public class RoomResponseDto {
@@ -14,7 +16,7 @@ public class RoomResponseDto {
 	private int userCount;
 	private boolean secret;
 	private String category;
-	private String createdAt;
+	private LocalDateTime createdAt;
 
 	public RoomResponseDto(Room room) {
 		this.sessionId = room.getSessionId();
