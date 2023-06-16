@@ -1,8 +1,7 @@
 version: 0.0
 os: linux
-
 files:
-  - source:  /
+  - source: /
     destination: /home/ubuntu/StudyHub_BE
     overwrite: yes
 
@@ -12,9 +11,13 @@ permissions:
     group: ubuntu
 
 hooks:
-  AfterInstall:
-    - location: scripts/stop.sh
-      timeout: 60
   ApplicationStart:
-    - location: scripts/start.sh
+    - location: scripts/run_new_was.sh
       timeout: 60
+      runas: ubuntu
+    - location: scripts/health_check.sh
+      timeout: 60
+      runas: ubuntu
+    - location: scripts/switch.sh
+      timeout: 60
+      runas: ubuntu
