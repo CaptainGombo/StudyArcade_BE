@@ -3,8 +3,7 @@ package trillion9.studyarcade_be.member.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import trillion9.studyarcade_be.member.Member;
-import trillion9.studyarcade_be.room.Room;
+import trillion9.studyarcade_be.room.dto.MyRoomResponseDto;
 
 import java.util.List;
 import java.util.Map;
@@ -26,7 +25,7 @@ public class MyPageResponseDto {
     private Map<String, Long> weeklyStudyChart;
     private Map<String, Long> monthlyStudyChart;
 
-    private List<Room> myRooms;
+    private List<MyRoomResponseDto> myRooms;
 
     @Builder
     private MyPageResponseDto(String nickname, String email, Long dailyStudyTime, Long totalStudyTime, String title, Long nextGradeRemainingTime,
@@ -34,7 +33,7 @@ public class MyPageResponseDto {
                               Map<String, Long> dailyStudyChart,
                               Map<String, Long> weeklyStudyChart,
                               Map<String, Long> monthlyStudyChart,
-                              List<Room> myRooms) {
+                              List<MyRoomResponseDto> myRooms) {
 
         this.nickname = nickname;
         this.email = email;

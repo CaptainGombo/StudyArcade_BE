@@ -29,8 +29,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static trillion9.studyarcade_be.global.exception.ErrorCode.INVALID_USER;
-import static trillion9.studyarcade_be.global.exception.ErrorCode.ROOM_NOT_FOUND;
+import static trillion9.studyarcade_be.global.exception.ErrorCode.*;
 
 @Slf4j
 @Service
@@ -72,6 +71,12 @@ public class RoomService {
     @Transactional
     public ResponseDto<RoomCreateResponseDto> createRoom(RoomCreateRequestDto requestDto, MultipartFile image, Member member)
         throws Exception {
+
+//        Long myRoomCount = roomRepository.countAllByMemberId(member.getId());
+//
+//        if (myRoomCount > 2) {
+//            throw new CustomException(INVALID_ROOM_COUNT);
+//        }
 
          /* SessionId 셋팅 */
         RoomCreateResponseDto newToken = createSession(member);
