@@ -10,8 +10,8 @@ import java.util.List;
 
 public interface StudyTimeRepository extends JpaRepository<StudyTime, Long> {
 
-    @Query(value = "SELECT s.daily_date as date, s.daily_study_time as dailyStudyTime FROM study_time as s " +
-            "WHERE s.member_id = :memberId AND s.daily_date >= :startDate AND s.daily_date <= :endDate ORDER BY s.daily_date", nativeQuery = true)
+    @Query("SELECT s.dailyDate as date, s.dailyStudyTime as dailyStudyTime FROM StudyTime s " +
+            "WHERE s.memberId = :memberId AND s.dailyDate >= :startDate AND s.dailyDate <= :endDate ORDER BY s.dailyDate")
     List<Object[]> findStudyTimeByDateRange(@Param("memberId") Long memberId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
     @Query("SELECT WEEK(s.dailyDate) as week, SUM(s.dailyStudyTime) as totalStudyTime FROM StudyTime s " +
