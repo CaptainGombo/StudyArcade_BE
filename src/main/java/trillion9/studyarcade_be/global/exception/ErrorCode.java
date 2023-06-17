@@ -33,6 +33,7 @@ public enum ErrorCode {
 
 
     /* 409 CONFLICT */
+    ROOM_MEMBER_LIMIT_EXCEEDED(HttpStatus.CONFLICT, "하나의 방에만 입장할 수 있습니다"),
     DUPLICATE_RESOURCE(HttpStatus.CONFLICT, "데이터가 이미 존재합니다");
 
     private String message;
