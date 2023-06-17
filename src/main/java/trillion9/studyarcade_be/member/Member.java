@@ -74,7 +74,7 @@ public class Member {
         } else if (this.totalStudyTime >= 401 * 60 * 60) {
             this.title = "묘목";
         } else if (this.totalStudyTime >= 201 * 60 * 60) {
-            this.title = "잎줄기";
+            this.title = "잎사귀";
         } else if (this.totalStudyTime >= 51 * 60 * 60) {
             this.title = "새싹";
         } else {
