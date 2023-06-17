@@ -71,8 +71,10 @@ public class KakaoService {
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", "263c7291b1a0c6cc3d7e3f43bbf65a79");
-        body.add("client_secret", "JwxjyfhCzsiy7pJb1bQjk2qRXE3v3l6V");
+//        body.add("client_id", "263c7291b1a0c6cc3d7e3f43bbf65a79");
+        body.add("client_id", "ea89de9cbc1a50c0361e4feb9692b423");
+//        body.add("client_secret", "JwxjyfhCzsiy7pJb1bQjk2qRXE3v3l6V");
+        body.add("client_secret", "U9QMwMDT2QrndKYBhlhV6PXhA5IelU5d");
         body.add("redirect_uri", "https://www.study-hub.shop/api/members/kakao/callback");
         body.add("code", code);
 
