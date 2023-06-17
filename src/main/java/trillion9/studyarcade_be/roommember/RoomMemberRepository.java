@@ -10,4 +10,5 @@ public interface RoomMemberRepository extends JpaRepository<RoomMember, Long> {
     Optional<RoomMember> findByMemberIdAndSessionId(Long memberId, String sessionId);
     Optional<RoomMember> findByMemberIdAndSessionIdAndRoomMaster(Long memberId, String sessionId, boolean roomMaster);
     List<RoomMember> findAllBySessionId(String sessionId);
+    Optional<RoomMember> findByMemberId(Long memberId);
 }

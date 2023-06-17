@@ -231,6 +231,13 @@ public class RoomService {
 
         if (alreadyEnterChatRoomUser.isPresent()) throw new IllegalArgumentException("이미 입장한 멤버입니다.");
 
+        // 방 입장 하나로 제한
+        Optional<RoomMember> roomMemberCheck = roomMemberRepository.findByMemberId(member.getId());
+
+        if (roomMemberCheck.isPresent()) {
+            throw new CustomException(ROOM_MEMBER_LIMIT_EXCEEDED);
+        }
+
         /* 방 입장 토큰 생성 */
         String roomToken = createToken(member, room.getSessionId());
 
