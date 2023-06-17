@@ -49,6 +49,10 @@ public class Member {
         this.imageUrl = imageUrl;
     }
 
+    public void setDailyStudyTime(Long dailyStudyTime) {
+        this.dailyStudyTime = dailyStudyTime;
+    }
+
     public Member kakaoIdUpdate(Long kakaoId) {
         this.kakaoId = kakaoId;
         return this;
@@ -56,12 +60,7 @@ public class Member {
 
     public void updateStudyTime(Long roomStudyTime) {
         this.dailyStudyTime += roomStudyTime;
-        updateTitle();
-    }
-
-    public void updateTotalStudyTime() {
-        this.totalStudyTime += this.dailyStudyTime;
-        this.dailyStudyTime = 0L;
+        this.totalStudyTime += roomStudyTime;
         updateTitle();
     }
 

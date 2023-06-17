@@ -132,30 +132,39 @@ public class MemberService {
 
         // 마지막 7일 통계
         LinkedHashMap<String, Long> dailyStudyChart = new LinkedHashMap<>();
-        List<Object[]> dailyStudyTime = studyTimeRepository.findStudyTimeByDateRange(member.getId(), now.minusDays(7), now);
-        for (Object[] obj : dailyStudyTime) {
-            String day = String.valueOf(obj[0]);
-            Long studyTime = Long.parseLong(obj[1].toString());
+        List<Object[]> dailyStudyTime = studyTimeRepository.findStudyTimeByDateRange(member.getId(), now.minusDays(7), now.minusDays(1));
+        for (int i = 0; i < dailyStudyTime.size(); i++) {
+            String day = String.valueOf(dailyStudyTime.get(i)[0].toString());
+            Long studyTime = Long.parseLong(dailyStudyTime.get(i)[1].toString());
             dailyStudyChart.put(day, studyTime);
         }
+        dailyStudyChart.put(now.toString(), member.getDailyStudyTime());
 
         // 마지막 7주 통계
         LinkedHashMap<String, Long> weeklyStudyChart = new LinkedHashMap<>();
         List<Object[]>  weeklyStudyTime = studyTimeRepository.findStudyTimeByWeekRange(member.getId(), now.minusWeeks(7), now);
-        for (Object[] obj : weeklyStudyTime) {
-            String week = String.valueOf(obj[0]);
-            Long studyTime = Long.parseLong(obj[1].toString());
+        for (int i = 0; i < weeklyStudyTime.size(); i++) {
+            String week = String.valueOf(weeklyStudyTime.get(i)[0].toString());
+            Long studyTime = Long.parseLong(weeklyStudyTime.get(i)[1].toString());
+            // 마지막 주에 당일 공부 시간 추가
+            if (i == weeklyStudyChart.size() - 1) {
+                studyTime += member.getDailyStudyTime();
+            }
             weeklyStudyChart.put(week, studyTime);
         }
 
         // 마지막 7달 통계
         LinkedHashMap<String, Long> monthlyStudyChart = new LinkedHashMap<>();
         List<Object[]>  monthlyStudyTime = studyTimeRepository.findStudyTimeByMonthRange(member.getId(), now.minusMonths(7), now);
-        for (Object[] obj : monthlyStudyTime) {
-            String year = String.valueOf(obj[0]);
-            String week = String.valueOf(obj[1]);
-            Long studyTime = Long.parseLong(obj[2].toString());
-            monthlyStudyChart.put(year + "." + week, studyTime);
+        for (int i = 0; i < monthlyStudyTime.size(); i++) {
+            String year = String.valueOf(monthlyStudyTime.get(i)[0].toString());
+            String month = String.valueOf(monthlyStudyTime.get(i)[1].toString());
+            Long studyTime = Long.parseLong(monthlyStudyTime.get(i)[2].toString());
+            // 마지막 달에 당일 공부 시간 추가
+            if (i == monthlyStudyChart.size() - 1) {
+                studyTime += member.getDailyStudyTime();
+            }
+            monthlyStudyChart.put(year + "." + month, studyTime);
         }
 
         //다음 등급까지 남은 시간 조회

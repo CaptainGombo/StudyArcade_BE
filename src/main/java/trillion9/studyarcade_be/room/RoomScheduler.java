@@ -49,8 +49,8 @@ public class RoomScheduler {
             StudyTime dailyStudyTime = new StudyTime(member.getId(), previousDate, time);
             studyTimeRepository.save(dailyStudyTime);
 
-            // 멤버의 dailyStudyTime을 totalStudyTime에 더하고 0으로 리셋
-            member.updateTotalStudyTime();
+            // dailyStudyTime을 0으로 리셋
+            member.setDailyStudyTime(0L);
         }
     }
 }
