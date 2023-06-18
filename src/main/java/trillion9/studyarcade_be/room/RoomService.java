@@ -203,7 +203,7 @@ public class RoomService {
 
         /* 해당 sessionId를 가진 스터디룸이 존재하는지 확인 */
         Room room = roomRepository.findBySessionId(session.getSessionId()).orElseThrow(
-            () -> new CustomException(ROOM_NOT_FOUND));
+            () -> new EntityNotFoundException("해당 방이 없습니다."));
 
         /* 스터디 룸의 최대 인원은 9명으로 제한하고, 초과 시 예외 발생 */
         synchronized (room) {
@@ -211,17 +211,17 @@ public class RoomService {
 
             if (room.getUserCount() > roomMaxUser) {
                 /* 트랜잭션에 의해 위의 updateCntUser 메서드의 user수 +1 자동으로 롤백(-1)되어서 9에 맞추어짐. */
-                throw new CustomException(ROOM_FULL);
+                throw new IllegalArgumentException("방이 가득찼습니다.");
             }
         }
 
          /* 비공개 방일 경우, 비밀번호 체크를 수행 */
          if (room.isSecret()) {
              if (requestDto == null || requestDto.getRoomPassword() == null) {    // 패스워드를 입력 안했을 때 에러 발생
-                 throw new CustomException(INVALID_PASSWORD_INPUT);
+                 throw new IllegalArgumentException("비밀번호를 입력해주세요.");
              }
              if (!room.getRoomPassword().equals(requestDto.getRoomPassword())) {  // 비밀번호가 틀리면 에러 발생
-                 throw new CustomException(INVALID_PASSWORD_MATCH);
+                 throw new IllegalArgumentException("비밀번호가 틀립니다.");
              }
          }
 
@@ -229,7 +229,7 @@ public class RoomService {
         Optional<RoomMember> alreadyEnterChatRoomUser
             = roomMemberRepository.findByMemberIdAndSessionId(member.getId(), session.getSessionId());
 
-        if (alreadyEnterChatRoomUser.isPresent()) throw new CustomException(MEMBER_ALREADY_ENTERED);
+        if (alreadyEnterChatRoomUser.isPresent()) throw new IllegalArgumentException("이미 입장한 멤버입니다.");
 
         // 방 입장 하나로 제한
         Optional<RoomMember> roomMemberCheck = roomMemberRepository.findByMemberId(member.getId());
