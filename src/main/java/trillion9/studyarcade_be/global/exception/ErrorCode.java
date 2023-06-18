@@ -16,6 +16,9 @@ public enum ErrorCode {
     FILE_UNUPLOADED(HttpStatus.BAD_REQUEST, "이미지를 업로드해주세요."),
     INVALID_FILE_EXTENSION(HttpStatus.BAD_REQUEST, "지원하지 않는 확장자 입니다."),
     INVALID_ROOM_COUNT(HttpStatus.BAD_REQUEST, "방의 개수가 3개를 초과하였습니다."),
+    INVALID_PASSWORD_INPUT(HttpStatus.BAD_REQUEST, "비밀번호를 입력해주세요."),
+    INVALID_PASSWORD_MATCH(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
+    ROOM_FULL(HttpStatus.BAD_REQUEST, "방이 가득찼습니다."),
 
     /* 401 UNAUTHORIZED */
     AUTHORIZATION_ERROR(HttpStatus.UNAUTHORIZED, "유효하지 않은 접근 방식입니다."),
@@ -33,6 +36,7 @@ public enum ErrorCode {
 
 
     /* 409 CONFLICT */
+    MEMBER_ALREADY_ENTERED(HttpStatus.CONFLICT, "이미 입장한 멤버입니다."),
     ROOM_MEMBER_LIMIT_EXCEEDED(HttpStatus.CONFLICT, "하나의 방에만 입장할 수 있습니다"),
     DUPLICATE_RESOURCE(HttpStatus.CONFLICT, "데이터가 이미 존재합니다");
 
