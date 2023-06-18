@@ -121,7 +121,7 @@ public class RoomService {
     public ResponseDto<RoomDetailResponseDto> getRoomData(String sessionId, Member member) {
 
         /*방이 있는 지 확인*/
-        Room room = roomRepository.findBySessionIdAndIsDelete(sessionId, false).orElseThrow(
+        Room room = roomRepository.findBySessionId(sessionId).orElseThrow(
                 () -> new EntityNotFoundException("해당 방이 없습니다."));
 
         /*해당 방에 해당 유저가 접속해 있는 상태여아
@@ -267,7 +267,7 @@ public class RoomService {
     public ResponseDto<String> outRoom(String sessionId, Long studyTime, Member member) {
 
         /* 방이 있는 지 확인 */
-        Room room = roomRepository.findBySessionIdAndIsDelete(sessionId, false).orElseThrow(
+        Room room = roomRepository.findBySessionId(sessionId).orElseThrow(
             () -> new EntityNotFoundException("채팅방이 존재하지않습니다.")
         );
 
