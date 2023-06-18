@@ -13,7 +13,6 @@ import java.util.Optional;
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
     Optional<Room> findBySessionId(String sessionId);
-    Optional<Room> findBySessionIdAndIsDelete(String sessionId, boolean isDelete);
     Optional<Room> findBySessionIdAndMemberId(String sessionId, Long memberId);
     List<Room> findAllByExpirationDateBefore(LocalDate currentDate);
     Long countAllByMemberId(Long memberId);
