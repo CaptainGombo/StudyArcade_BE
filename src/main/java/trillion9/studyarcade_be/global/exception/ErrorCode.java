@@ -33,7 +33,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 유저 정보를 찾을 수 없습니다"),
     ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "스터디룸을 찾을 수 없습니다"),
     FILE_NOT_FOUND(HttpStatus.NOT_FOUND, "파일이 없습니다."),
-
+    ROOM_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "방에 존재하는 유저가 아닙니다."),
 
     /* 409 CONFLICT */
     MEMBER_ALREADY_ENTERED(HttpStatus.CONFLICT, "이미 입장한 멤버입니다."),
