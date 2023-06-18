@@ -41,9 +41,6 @@ public class Room extends AuditingEntity {
     @ColumnDefault("false")
     private boolean secret;
 
-    @ColumnDefault("false")
-    private boolean isDelete;
-
     @Builder
     private Room(String sessionId, String roomName, String roomContent, String category, String imageUrl, int userCount, boolean secret, String roomPassword, LocalDate expirationDate) {
         this.sessionId = sessionId;
@@ -55,11 +52,6 @@ public class Room extends AuditingEntity {
         this.secret = secret;
         this.roomPassword = roomPassword;
         this.expirationDate = expirationDate;
-    }
-
-    public void deleteRoom(LocalDateTime roomDeleteTime) {
-        this.isDelete = true;
-        this.roomDeleteTime = roomDeleteTime;
     }
 
     public void updateRoom(RoomCreateRequestDto requestDto, String imageUrl) {
