@@ -14,10 +14,13 @@
  import org.springframework.web.multipart.MultipartFile;
  import reactor.util.annotation.Nullable;
  import trillion9.studyarcade_be.global.ResponseDto;
+ import trillion9.studyarcade_be.global.exception.CustomException;
  import trillion9.studyarcade_be.global.security.UserDetailsImpl;
  import trillion9.studyarcade_be.room.dto.*;
 
  import java.io.IOException;
+
+ import static trillion9.studyarcade_be.global.exception.ErrorCode.TOKEN_INEXISTENT;
 
  @Tag(name = "RoomController",description = "스터디룸 API")
 @RestController
@@ -44,6 +47,7 @@ public class RoomController {
     public ResponseDto<RoomCreateResponseDto> createRoom(@RequestPart(value = "content") RoomCreateRequestDto requestDto,
                                                          @RequestPart(value = "image", required = false) MultipartFile image,
                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
+        if (userDetails == null) throw new CustomException(TOKEN_INEXISTENT);
         return roomService.createRoom(requestDto, image, userDetails.getMember());
     }
 
@@ -52,7 +56,8 @@ public class RoomController {
      @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 정보 조회 완료")})
      @GetMapping(value = "/rooms/{session-id}")
      public ResponseDto<RoomDetailResponseDto> getRoomData(@PathVariable("session-id") String sessionId,
-                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) throws Exception {
+                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+         if (userDetails == null) throw new CustomException(TOKEN_INEXISTENT);
          return roomService.getRoomData(sessionId, userDetails.getMember());
      }
 
@@ -64,6 +69,7 @@ public class RoomController {
                                                          @RequestPart(value = "content") RoomCreateRequestDto requestDto,
                                                          @RequestPart(value = "image", required = false) MultipartFile image,
                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        if (userDetails == null) throw new CustomException(TOKEN_INEXISTENT);
         return roomService.updateRoom(sessionId, requestDto, image, userDetails.getMember());
     }
 
@@ -73,6 +79,7 @@ public class RoomController {
     @DeleteMapping("/rooms/{session-id}")
     public ResponseDto<String> deleteRoom(@PathVariable("session-id") String sessionId,
                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) throw new CustomException(TOKEN_INEXISTENT);
         return roomService.deleteRoom(sessionId, userDetails.getMember());
     }
 
@@ -84,6 +91,7 @@ public class RoomController {
                             @PathVariable("session-id") String sessionId,
                             @AuthenticationPrincipal UserDetailsImpl userDetails) throws
         OpenViduJavaClientException, OpenViduHttpException {
+        if (userDetails == null) throw new CustomException(TOKEN_INEXISTENT);
         return roomService.enterRoom(requestDto, sessionId, userDetails.getMember());
     }
 
@@ -94,6 +102,7 @@ public class RoomController {
     public ResponseDto<String> outRoom(@PathVariable(name = "session-id") String sessionId,
                           @RequestParam(name = "studytime") Long studyTime,
                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) throw new CustomException(TOKEN_INEXISTENT);
         return roomService.outRoom(sessionId, studyTime, userDetails.getMember());
     }
 }

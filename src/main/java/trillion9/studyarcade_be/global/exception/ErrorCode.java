@@ -24,6 +24,7 @@ public enum ErrorCode {
     AUTHORIZATION_ERROR(HttpStatus.UNAUTHORIZED, "유효하지 않은 접근 방식입니다."),
 
     /* 403 FORBIDDEN */
+    TOKEN_INEXISTENT(HttpStatus.FORBIDDEN, "토큰이 존재하지 않습니다."),
     INVALID_TOKEN(HttpStatus.FORBIDDEN, "Invalid Token"),
     INVALID_REFRESH_TOKEN(HttpStatus.FORBIDDEN, "Refresh Token Expired"),
 

@@ -10,6 +10,8 @@ import trillion9.studyarcade_be.global.security.UserDetailsImpl;
 
 @Component
 class CustomSentryUserProvider implements SentryUserProvider {
+
+    @Override
     public User provideUser() {
         User user = new User();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
