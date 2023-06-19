@@ -158,20 +158,6 @@ public class KakaoService {
                 } else {
                     nickname = kakaoUserInfo.getNickname();
                 }
-
-//                //임시 닉네임 발급
-//                String tempNickname;
-//                do {
-//                    String ALPHA_NUMERIC_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
-//                    StringBuilder builder = new StringBuilder();
-//                    int count = 6;
-//                    while (count-- != 0) {
-//                        int character = (int)(Math.random() * ALPHA_NUMERIC_STRING.length());
-//                        builder.append(ALPHA_NUMERIC_STRING.charAt(character));
-//                    }
-//                    tempNickname = "user" + builder.toString();
-//                } while (memberRepository.findByNickname(tempNickname).isPresent());
-
                 kakaoUser = Member.builder()
                         .dailyStudyTime(0L)
                         .totalStudyTime(0L)
