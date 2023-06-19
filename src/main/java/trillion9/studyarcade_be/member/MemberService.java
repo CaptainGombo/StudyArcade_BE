@@ -46,7 +46,6 @@ public class MemberService {
 
     @Transactional
     public ResponseDto<String> register(MemberRequestDto memberRequestDto) {
-        if (true) throw new ArithmeticException("??");
         if (!memberRequestDto.getPassword().equals(memberRequestDto.getCheckPassword())) {
             throw new CustomException(INVALID_USER_PASSWORD);
         }
