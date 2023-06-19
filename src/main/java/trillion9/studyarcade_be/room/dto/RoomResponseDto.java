@@ -12,6 +12,7 @@ public class RoomResponseDto {
 	private String sessionId;
 	private String roomName;
 	private String roomContent;
+	private String roomPassword;
 	private String imageUrl;
 	private int userCount;
 	private boolean secret;
@@ -22,6 +23,7 @@ public class RoomResponseDto {
 		this.sessionId = room.getSessionId();
 		this.roomName = room.getRoomName();
 		this.roomContent = room.getRoomContent();
+		this.roomPassword = room.getRoomPassword();
 		this.imageUrl = room.getImageUrl();
 		this.userCount = room.getUserCount();
 		this.category = room.getCategory();
