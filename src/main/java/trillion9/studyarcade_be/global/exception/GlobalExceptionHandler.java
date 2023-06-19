@@ -48,19 +48,19 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> duplicateDataException(DataIntegrityViolationException e) {
-        Sentry.captureException(e);
+        Sentry.captureException(new CustomException(DUPLICATE_DATA));
         return ErrorResponse.toResponseEntity(DUPLICATE_DATA);
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     protected ResponseEntity<ErrorResponse> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
-        Sentry.captureException(e);
+        Sentry.captureException(new CustomException(FILE_SIZE_OVER));
         return ErrorResponse.toResponseEntity(FILE_SIZE_OVER);
     }
 
     @ExceptionHandler(AmazonS3Exception.class)
     public ResponseEntity<ErrorResponse> handleFileExtensionException(AmazonS3Exception e) {
-        Sentry.captureException(e);
+        Sentry.captureException(new CustomException(INVALID_FILE_EXTENSION));
         return ErrorResponse.toResponseEntity(INVALID_FILE_EXTENSION);
     }
 }

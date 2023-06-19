@@ -29,8 +29,8 @@ public class EmailServiceImpl implements EmailService{
         System.out.println("인증 번호 : "+ ePw);
         MimeMessage  message = emailSender.createMimeMessage();
 
-        message.addRecipients(RecipientType.TO, to); // 보내는 대상
-        message.setSubject("스터브 회원가입 인증 코드입니다."); // 제목
+        message.addRecipients(RecipientType.TO, to);
+        message.setSubject("스터브 회원가입 인증 코드입니다.");
 
         String msg = "";
         msg += "<head><title>스터브 회원가입 인증</title></head>"
@@ -82,9 +82,9 @@ public class EmailServiceImpl implements EmailService{
         });
 
         MimeMessage message = createMessage(to);
-        try{ // 예외처리
+        try { // 예외처리
             emailSender.send(message);
-        }catch(MailException es){
+        } catch (MailException es) {
             es.printStackTrace();
             throw new IllegalArgumentException();
         }
