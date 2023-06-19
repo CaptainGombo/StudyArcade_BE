@@ -1,6 +1,7 @@
 package trillion9.studyarcade_be.email;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.Random;
 
 import static trillion9.studyarcade_be.global.exception.ErrorCode.INVALID_USER_EXISTENCE;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmailServiceImpl implements EmailService{
@@ -86,7 +88,7 @@ public class EmailServiceImpl implements EmailService{
             emailSender.send(message);
         } catch (MailException es) {
             es.printStackTrace();
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(es.getMessage());
         }
         return ePw;
     }

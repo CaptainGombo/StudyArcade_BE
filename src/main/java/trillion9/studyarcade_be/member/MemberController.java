@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import trillion9.studyarcade_be.global.ResponseDto;
+import trillion9.studyarcade_be.global.exception.CustomException;
 import trillion9.studyarcade_be.global.security.UserDetailsImpl;
 import trillion9.studyarcade_be.member.dto.KakaoUserInfoDto;
 import trillion9.studyarcade_be.member.dto.MemberRequestDto;
@@ -20,6 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+
+import static trillion9.studyarcade_be.global.exception.ErrorCode.TOKEN_INEXISTENT;
 
 @Tag(name = "MemberController", description = "회원가입/로그인 API")
 @RestController
@@ -42,7 +45,7 @@ public class MemberController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "로그인 완료")})
     // 로그인
     @PostMapping("/login")
-    public ResponseDto<String> login(@RequestBody MemberRequestDto.login memberRequestDto, HttpServletResponse response){
+    public ResponseDto<String> login(@RequestBody MemberRequestDto.login memberRequestDto, HttpServletResponse response) {
         return  memberService.login(memberRequestDto, response);
     }
 
@@ -50,7 +53,8 @@ public class MemberController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "로그아웃 완료")})
     // 로그아웃
     @PostMapping("/logout")
-    public ResponseDto<String> logout(HttpServletRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseDto<String> logout(HttpServletRequest request, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) throw new CustomException(TOKEN_INEXISTENT);
         return  memberService.logout(request, userDetails.getMember());
     }
 
@@ -81,6 +85,7 @@ public class MemberController {
     @GetMapping("/mypage")
     // 마이페이지 조회
     public ResponseDto<MyPageResponseDto> myPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) throw new CustomException(TOKEN_INEXISTENT);
         return memberService.myPage(userDetails.getMember());
     }
 
@@ -88,6 +93,7 @@ public class MemberController {
     public ResponseDto<MemberResponseDto> updateMember(@RequestPart(value = "content") MemberRequestDto memberRequestDto,
                                                        @RequestPart(value = "image", required = false) MultipartFile image,
                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        if (userDetails == null) throw new CustomException(TOKEN_INEXISTENT);
         return memberService.updateMember(memberRequestDto, image, userDetails.getMember());
     }
 }
