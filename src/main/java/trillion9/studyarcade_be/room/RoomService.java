@@ -122,12 +122,12 @@ public class RoomService {
 
         /*방이 있는 지 확인*/
         Room room = roomRepository.findBySessionId(sessionId).orElseThrow(
-                () -> new EntityNotFoundException("해당 방이 없습니다."));
+                () -> new CustomException(ROOM_NOT_FOUND));
 
         /*해당 방에 해당 유저가 접속해 있는 상태여아
          * 방유저 정보 불러오기 API를 사용할 수 있다.*/
         roomMemberRepository.findByMemberIdAndSessionId(member.getId(), sessionId).orElseThrow(
-                () -> new IllegalArgumentException("방에 유저가 존재하지 않습니다.")
+                () -> new CustomException(ROOM_MEMBER_NOT_FOUND)
         );
 
         /* 채팅방 유저들 Entity */
@@ -203,7 +203,7 @@ public class RoomService {
 
         /* 해당 sessionId를 가진 스터디룸이 존재하는지 확인 */
         Room room = roomRepository.findBySessionId(session.getSessionId()).orElseThrow(
-            () -> new CustomException(ROOM_NOT_FOUND));
+                () -> new CustomException(ROOM_NOT_FOUND));
 
         /* 스터디 룸의 최대 인원은 9명으로 제한하고, 초과 시 예외 발생 */
         synchronized (room) {
@@ -268,12 +268,12 @@ public class RoomService {
 
         /* 방이 있는 지 확인 */
         Room room = roomRepository.findBySessionId(sessionId).orElseThrow(
-            () -> new EntityNotFoundException("채팅방이 존재하지않습니다.")
+            () -> new CustomException(ROOM_NOT_FOUND)
         );
 
         /* 방에 멤버가 존재하는지 확인 */
         RoomMember roomMember = roomMemberRepository.findByMemberIdAndSessionId(member.getId(), sessionId).orElseThrow(
-            () -> new EntityNotFoundException("방에 있는 멤버가 아닙니다.")
+            () -> new CustomException(ROOM_MEMBER_NOT_FOUND)
         );
 
         /* 하루 누적 시간 업데이트 */
@@ -336,7 +336,7 @@ public class RoomService {
         Session session = activeSessionList.stream()
             .filter(s -> s.getSessionId().equals(sessionId))
             .findFirst()
-            .orElseThrow(() -> new EntityNotFoundException("채팅세션이 존재하지 않습니다."));
+            .orElseThrow(() -> new CustomException(ROOM_NOT_FOUND));
 
         /*해당 채팅방에 프로퍼티스를 설정하면서 커넥션을 만들고, 방에 접속할 수 있는 토큰을 발급한다.*/
         return session.createConnection(connectionProperties).getToken();

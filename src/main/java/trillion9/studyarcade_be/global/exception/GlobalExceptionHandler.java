@@ -1,9 +1,10 @@
 package trillion9.studyarcade_be.global.exception;
 
 import com.amazonaws.services.s3.model.AmazonS3Exception;
+import io.sentry.Sentry;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,17 +20,19 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
+        Sentry.captureException(e);
         return ErrorResponse.toResponseEntity(e.getErrorCode());
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> uncheckedError(Exception e) {
+        Sentry.captureException(e);
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
-    public ResponseEntity<ErrorResponse> signValidException(MethodArgumentNotValidException exception) {
-        BindingResult bindingResult = exception.getBindingResult();
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> signValidException(MethodArgumentNotValidException e) {
+        BindingResult bindingResult = e.getBindingResult();
 
         StringBuilder builder = new StringBuilder();
 
@@ -39,19 +42,25 @@ public class GlobalExceptionHandler {
             builder.append("] ");
             builder.append(fieldError.getDefaultMessage());
         }
-
+        Sentry.captureException(e);
         return ErrorResponse.toResponseEntity(INVALID_SIGN, builder.toString());
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> duplicateDataException(DataIntegrityViolationException e) {
+        Sentry.captureException(e);
+        return ErrorResponse.toResponseEntity(DUPLICATE_DATA);
     }
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     protected ResponseEntity<ErrorResponse> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e) {
-        log.info("handleMaxUploadSizeExceededException", e);
-
+        Sentry.captureException(e);
         return ErrorResponse.toResponseEntity(FILE_SIZE_OVER);
     }
 
     @ExceptionHandler(AmazonS3Exception.class)
     public ResponseEntity<ErrorResponse> handleFileExtensionException(AmazonS3Exception e) {
+        Sentry.captureException(e);
         return ErrorResponse.toResponseEntity(INVALID_FILE_EXTENSION);
     }
 }
