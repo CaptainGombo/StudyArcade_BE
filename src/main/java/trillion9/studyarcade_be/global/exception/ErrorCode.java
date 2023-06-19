@@ -19,6 +19,7 @@ public enum ErrorCode {
     INVALID_PASSWORD_INPUT(HttpStatus.BAD_REQUEST, "비밀번호를 입력해주세요."),
     INVALID_PASSWORD_MATCH(HttpStatus.BAD_REQUEST, "비밀번호가 일치하지 않습니다."),
     ROOM_FULL(HttpStatus.BAD_REQUEST, "방이 가득찼습니다."),
+    KAKAO_ID_EXIST(HttpStatus.BAD_REQUEST, "카카오 아이디가 존재합니다."),
 
     /* 401 UNAUTHORIZED */
     AUTHORIZATION_ERROR(HttpStatus.UNAUTHORIZED, "유효하지 않은 접근 방식입니다."),
