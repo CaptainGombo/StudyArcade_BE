@@ -24,6 +24,7 @@ import trillion9.studyarcade_be.studytime.StudyTimeRepository;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -132,16 +133,18 @@ public class MemberService {
 
     public ResponseDto<MyPageResponseDto> myPage(Member member) {
 
-        HashOperations<String, String, Long> hashOperations = redisTemplate.opsForHash();
+        HashOperations<String, String, Long> hash = redisTemplate.opsForHash();
 
         // 마지막 7일 통계
-        Map<String, Long> dailyStudyChart = hashOperations.entries(member.getId() + "D");
+        // 당일은 당일 공부 시간이 더해져서 나타남
+        hash.increment(member.getId() + "D", LocalDate.now().toString(),  member.getDailyStudyTime());
+        Map<String, Long> dailyStudyChart = hash.entries(member.getId() + "D");
 
         // 마지막 7주 통계
-        Map<String, Long> weeklyStudyChart = hashOperations.entries(member.getId() + "W");
+        Map<String, Long> weeklyStudyChart = hash.entries(member.getId() + "W");
 
         // 마지막 7달 통계
-        Map<String, Long> monthlyStudyChart = hashOperations.entries(member.getId() + "M");
+        Map<String, Long> monthlyStudyChart = hash.entries(member.getId() + "M");
 
         //다음 등급까지 남은 시간 조회
         Long nextGradeRemainingTime = getNextGradeRemainingTime(member);
