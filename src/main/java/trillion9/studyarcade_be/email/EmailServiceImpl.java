@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.exception.CustomException;
 import trillion9.studyarcade_be.member.MemberRepository;
 
@@ -76,7 +77,7 @@ public class EmailServiceImpl implements EmailService{
     }
 
     @Override
-    public String sendSimpleMessage(String to) throws Exception {
+    public ResponseDto<Object> sendSimpleMessage(String to) throws Exception {
         // TODO Auto-generated method stub
 
         memberRepository.findByEmail(to).ifPresent(member -> {
@@ -90,6 +91,6 @@ public class EmailServiceImpl implements EmailService{
             es.printStackTrace();
             throw new IllegalArgumentException(es.getMessage());
         }
-        return ePw;
+        return ResponseDto.setSuccess("이메일 발송 성공");
     }
 }
