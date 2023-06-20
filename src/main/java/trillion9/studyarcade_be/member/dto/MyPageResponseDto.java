@@ -17,9 +17,7 @@ public class MyPageResponseDto {
     private Long totalStudyTime;
     private String title;
     private Long nextGradeRemainingTime;
-    private String topRankedNickname;
-    private String topRankedTitle;
-    private Long topRankedTotalStudyTime;
+
     private List<TopRankedResponseDto> topRankedList;
     private List<RoomResponseDto> myRooms;
 
@@ -29,7 +27,6 @@ public class MyPageResponseDto {
 
     @Builder
     private MyPageResponseDto(String nickname, String email, Long dailyStudyTime, Long totalStudyTime, String title, Long nextGradeRemainingTime,
-                              String topRankedNickname, String topRankedTitle, Long topRankedTotalStudyTime,
                               List<TopRankedResponseDto> topRankedList,
                               List<RoomResponseDto> myRooms,
                               Map<String, Long> dailyStudyChart,
@@ -42,9 +39,6 @@ public class MyPageResponseDto {
         this.totalStudyTime = totalStudyTime;
         this.title = title;
         this.nextGradeRemainingTime = nextGradeRemainingTime;
-        this.topRankedNickname = topRankedNickname;
-        this.topRankedTitle = topRankedTitle;
-        this.topRankedTotalStudyTime = topRankedTotalStudyTime;
         this.topRankedList = topRankedList;
         this.myRooms = myRooms;
         this.dailyStudyChart = dailyStudyChart;

@@ -147,25 +147,17 @@ public class MemberService {
         //다음 등급까지 남은 시간 조회
         Long nextGradeRemainingTime = getNextGradeRemainingTime(member);
 
-        // 총 공부시간 랭킹 1위 정보 조회
+        // 총 공부시간 랭킹 1~3위 정보 조회
         List<Object[]> topRankedList = memberRepository.findTopRanked();
 
-        Object[] topRanked = topRankedList.get(0);
-        String topRankedNickname = String.valueOf(topRanked[0]);
-        String topRankedTitle = String.valueOf(topRanked[1]);
-        Long topRankedTotalStudyTime = Long.parseLong(topRanked[2].toString());
-
-//        // 총 공부시간 랭킹 1~3위 정보 조회
-//        List<Object[]> topRankedList = memberRepository.findTopRanked();
-
-//        List<TopRankedResponseDto> topRankedDtoList = topRankedList.stream()
-//                .map(topRanked -> {
-//                    String nickname = String.valueOf(topRanked[0]);
-//                    String title = String.valueOf(topRanked[1]);
-//                    Long totalStudyTime = Long.parseLong(topRanked[2].toString());
-//                    return new TopRankedResponseDto(nickname, title, totalStudyTime);
-//                })
-//                .toList();
+        List<TopRankedResponseDto> topRankedDtoList = topRankedList.stream()
+                .map(topRanked -> {
+                    String nickname = String.valueOf(topRanked[0]);
+                    String title = String.valueOf(topRanked[1]);
+                    Long totalStudyTime = Long.parseLong(topRanked[2].toString());
+                    return new TopRankedResponseDto(nickname, title, totalStudyTime);
+                })
+                .toList();
 
         // 내가 만든 방 리스트 조회
         List<RoomResponseDto> myRooms = roomRepository.findAllByMemberId(member.getId());
@@ -177,10 +169,7 @@ public class MemberService {
                 .dailyStudyTime(member.getDailyStudyTime())
                 .totalStudyTime(member.getTotalStudyTime())
                 .title(member.getTitle())
-                .topRankedNickname(topRankedNickname)
-                .topRankedTitle(topRankedTitle)
-                .topRankedTotalStudyTime(topRankedTotalStudyTime)
-//                .topRankedList(topRankedDtoList)
+                .topRankedList(topRankedDtoList)
                 .nextGradeRemainingTime(nextGradeRemainingTime)
                 .dailyStudyChart(dailyStudyChart)
                 .weeklyStudyChart(weeklyStudyChart)
