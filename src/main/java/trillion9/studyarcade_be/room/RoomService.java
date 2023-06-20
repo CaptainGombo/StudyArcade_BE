@@ -57,8 +57,6 @@ public class RoomService {
 
     private int roomMaxUser = 9;
 
-    HashOperations<String, String, Long> hash = redisTemplate.opsForHash();
-
     Calendar calendar = Calendar.getInstance();
 
     @PostConstruct
@@ -293,6 +291,7 @@ public class RoomService {
         String currentWeek = String.valueOf(calendar.get(Calendar.WEEK_OF_YEAR));
         String currentMonth = calendar.get(Calendar.YEAR) + "." + (calendar.get(Calendar.MONTH) + 1);
 
+        HashOperations<String, String, Long> hash = redisTemplate.opsForHash();
         hash.increment(member.getId() + "D", currentDate, studyTime);
         hash.increment(member.getId() + "W", currentWeek, studyTime);
         hash.increment(member.getId() + "M", currentMonth, studyTime);
