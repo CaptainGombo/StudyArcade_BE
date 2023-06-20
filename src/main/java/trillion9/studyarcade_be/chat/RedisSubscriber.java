@@ -1,11 +1,10 @@
-package trillion9.studyarcade_be.global.config;
+package trillion9.studyarcade_be.chat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
-import trillion9.studyarcade_be.chat.ChatMessageDto;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
