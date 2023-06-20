@@ -60,11 +60,6 @@ public class RoomScheduler {
 
             LocalDate now = LocalDate.now();
 
-            for (int i = 0; i < 300; i++) {
-                StudyTime studyTime = new StudyTime(member.getId(), now.minusDays(i), 123L);
-                studyTimeRepository.save(studyTime);
-            }
-
             // 마지막 7일 통계
             List<Object[]> dailyStudyTime = studyTimeRepository.findStudyTimeByDateRange(member.getId(), now.minusDays(6), now.minusDays(1));
             for (int i = 0; i < dailyStudyTime.size(); i++) {
