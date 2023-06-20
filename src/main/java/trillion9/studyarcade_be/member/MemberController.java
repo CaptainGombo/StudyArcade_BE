@@ -89,11 +89,20 @@ public class MemberController {
         return memberService.myPage(userDetails.getMember());
     }
 
-    @PatchMapping("/update")
-    public ResponseDto<MemberResponseDto> updateMember(@RequestPart(value = "content") MemberRequestDto memberRequestDto,
+    // 프로필 페이지 조회 API
+    @GetMapping("/profile")
+    public ResponseDto<MemberResponseDto> getProfile(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        if (userDetails == null) throw new CustomException(TOKEN_INEXISTENT);
+        return memberService.getProfile(userDetails.getMember());
+    }
+
+    // 프로필 수정 API
+    @PatchMapping("/updateProfile")
+    public ResponseDto<MemberResponseDto> updateProfile(@RequestPart(value = "content") MemberRequestDto memberRequestDto,
                                                        @RequestPart(value = "image", required = false) MultipartFile image,
                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         if (userDetails == null) throw new CustomException(TOKEN_INEXISTENT);
-        return memberService.updateMember(memberRequestDto, image, userDetails.getMember());
+        return memberService.updateProfile(memberRequestDto, image, userDetails.getMember());
     }
+
 }

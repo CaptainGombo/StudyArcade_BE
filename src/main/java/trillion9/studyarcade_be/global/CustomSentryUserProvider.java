@@ -1,4 +1,4 @@
-package trillion9.studyarcade_be.global.config;
+package trillion9.studyarcade_be.global;
 
 import io.sentry.protocol.User;
 import io.sentry.spring.SentryUserProvider;

@@ -15,6 +15,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import lombok.RequiredArgsConstructor;
+import trillion9.studyarcade_be.chat.RedisSubscriber;
 
 @RequiredArgsConstructor
 @Configuration

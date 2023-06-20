@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.S3Util;
 import trillion9.studyarcade_be.global.exception.CustomException;
+import trillion9.studyarcade_be.global.exception.ErrorCode;
 import trillion9.studyarcade_be.global.jwt.JwtAuthFilter;
 import trillion9.studyarcade_be.global.jwt.JwtUtil;
 import trillion9.studyarcade_be.global.jwt.TokenDto;
@@ -181,21 +182,35 @@ public class MemberService {
     }
 
     @Transactional
-    public ResponseDto<MemberResponseDto> updateMember(MemberRequestDto memberRequestDto, MultipartFile image, Member member) throws IOException {
+    public ResponseDto<MemberResponseDto> updateProfile(MemberRequestDto memberRequestDto, MultipartFile image, Member member) throws IOException {
 
         String imageUrl = (image == null || image.isEmpty()) ? "대표 프로필 이미지 URL" : s3Util.uploadImage(image);
+        String encodedPassword = member.getPassword();
 
-        MemberResponseDto responseDto = MemberResponseDto.builder()
-                .nickname(memberRequestDto.getNickname())
-                .email(member.getEmail())
-                .imageUrl(imageUrl)
-                .build();
-
-        member.updateMember(memberRequestDto, imageUrl);
+        if (memberRequestDto.getPassword() != null && memberRequestDto.getCheckPassword() != null ) {
+            if (!memberRequestDto.getPassword().equals(memberRequestDto.getCheckPassword())) {
+                throw new CustomException(ErrorCode.INVALID_PASSWORD_MATCH);
+            }
+            encodedPassword = passwordEncoder.encode(memberRequestDto.getPassword());
+        }
+        member.updateMember(memberRequestDto, imageUrl, encodedPassword);
         memberRepository.save(member);
 
-        return ResponseDto.setSuccess("프로필 변경 성공", responseDto);
+        return ResponseDto.setSuccess("프로필 변경 성공");
     }
+
+    @Transactional(readOnly = true)
+    public ResponseDto<MemberResponseDto> getProfile(Member member) {
+        MemberResponseDto responseDto = MemberResponseDto.builder()
+            .nickname(member.getNickname())
+            .email(member.getEmail())
+            .imageUrl(member.getImageUrl())
+            .title(member.getTitle())
+            .build();
+
+        return ResponseDto.setSuccess("프로필 조회 성공", responseDto);
+    }
+
 
     // 다음 등급까지 남은 시간 조회
     public Long getNextGradeRemainingTime(Member member) {
