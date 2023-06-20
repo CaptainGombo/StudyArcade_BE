@@ -17,7 +17,8 @@ import trillion9.studyarcade_be.member.dto.MemberRequestDto;
 import trillion9.studyarcade_be.member.dto.MemberResponseDto;
 import trillion9.studyarcade_be.member.dto.MyPageResponseDto;
 import trillion9.studyarcade_be.member.dto.TopRankedResponseDto;
-import trillion9.studyarcade_be.room.dto.MyRoomResponseDto;
+import trillion9.studyarcade_be.room.Room;
+import trillion9.studyarcade_be.room.dto.RoomResponseDto;
 import trillion9.studyarcade_be.room.repository.RoomRepository;
 import trillion9.studyarcade_be.studytime.StudyTimeRepository;
 
@@ -29,7 +30,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import static trillion9.studyarcade_be.global.exception.ErrorCode.*;
 
@@ -189,7 +189,7 @@ public class MemberService {
                 .toList();
 
         // 내가 만든 방 리스트 조회
-        List<MyRoomResponseDto> myRooms = roomRepository.findMyRoomResponseDto(member.getId());
+        List<RoomResponseDto> myRooms = roomRepository.findAllByMemberId(member.getId());
 
         // 회원 정보 설정
         MyPageResponseDto responseDto = MyPageResponseDto.builder()

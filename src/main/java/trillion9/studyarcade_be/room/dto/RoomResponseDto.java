@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import trillion9.studyarcade_be.room.Room;
 
-import java.time.LocalDateTime;
-
 @Getter
 @NoArgsConstructor
 public class RoomResponseDto {
@@ -17,7 +15,6 @@ public class RoomResponseDto {
 	private int userCount;
 	private boolean secret;
 	private String category;
-	private LocalDateTime createdAt;
 
 	public RoomResponseDto(Room room) {
 		this.sessionId = room.getSessionId();
@@ -28,6 +25,5 @@ public class RoomResponseDto {
 		this.userCount = room.getUserCount();
 		this.category = room.getCategory();
 		this.secret = room.isSecret();
-		this.createdAt = room.getCreatedAt();
 	}
 }
