@@ -68,8 +68,6 @@ public class RoomScheduler {
 
                 hash.put(member.getId() + "D", day, studyTime);
             }
-            // 0으로 세팅된 당일 통계 데이터 미리 생성
-            hash.put(member.getId() + "D", now.toString(), 0L);
             redisTemplate.expire(member.getId() + "D", 1, TimeUnit.DAYS);
 
             // 마지막 7주 통계
