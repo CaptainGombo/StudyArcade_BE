@@ -26,6 +26,7 @@ import trillion9.studyarcade_be.studytime.StudyTimeRepository;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -70,6 +71,54 @@ public class MemberService {
     }
 
     public ResponseDto<String> login(final MemberRequestDto.login loginRequestDto, final HttpServletResponse response) {
+
+        LocalDate now = LocalDate.now();
+        // 하루에 공부한 시간 저장 및 통계 저장
+        HashOperations<String, String, Long> hash = redisTemplate.opsForHash();
+
+        List<Member> members =  memberRepository.findAll();
+
+        for (Member member : members) {
+
+            // 마지막 7일 통계
+            List<Object[]> dailyStudyTime = studyTimeRepository.findStudyTimeByDateRange(member.getId(), now.minusDays(6), now.minusDays(1));
+            for (int i = 0; i < dailyStudyTime.size(); i++) {
+                String day = String.valueOf(dailyStudyTime.get(i)[0].toString());
+                Long studyTime = Long.parseLong(dailyStudyTime.get(i)[1].toString());
+
+                hash.put(member.getId() + "D", day, studyTime);
+            }
+            hash.put(member.getId() + "D", now.toString(), member.getDailyStudyTime());
+            redisTemplate.expire(member.getId() + "D", 1, TimeUnit.DAYS);
+
+            // 마지막 7주 통계
+            List<Object[]>  weeklyStudyTime = studyTimeRepository.findStudyTimeByWeekRange(member.getId(), now.minusWeeks(6), now);
+            for (int i = 0; i < weeklyStudyTime.size(); i++) {
+                String week = String.valueOf(weeklyStudyTime.get(i)[0].toString());
+                Long studyTime = Long.parseLong(weeklyStudyTime.get(i)[1].toString());
+                // 마지막 주에 당일 공부 시간 추가
+                if (i == weeklyStudyTime.size() - 1) {
+                    studyTime += member.getDailyStudyTime();
+                }
+                hash.put(member.getId() + "W", week, studyTime);
+            }
+            redisTemplate.expire(member.getId() + "W", 1, TimeUnit.DAYS);
+
+            // 마지막 7달 통계
+            List<Object[]>  monthlyStudyTime = studyTimeRepository.findStudyTimeByMonthRange(member.getId(), now.minusMonths(6), now);
+            for (int i = 0; i < monthlyStudyTime.size(); i++) {
+                String year = String.valueOf(monthlyStudyTime.get(i)[0].toString());
+                String month = String.valueOf(monthlyStudyTime.get(i)[1].toString());
+                Long studyTime = Long.parseLong(monthlyStudyTime.get(i)[2].toString());
+                // 마지막 달에 당일 공부 시간 추가
+                if (i == monthlyStudyTime.size() - 1) {
+                    studyTime += member.getDailyStudyTime();
+                }
+                hash.put(member.getId() + "M", year + "." + month, studyTime);
+            }
+            redisTemplate.expire(member.getId() + "M", 1, TimeUnit.DAYS);
+        }
+
 
         String email = loginRequestDto.getEmail();
         String password = loginRequestDto.getPassword();
