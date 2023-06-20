@@ -12,14 +12,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Entity
 @NoArgsConstructor
 @AttributeOverride(name = "memberId", column = @Column(name = "room_creator_id"))
 public class Room extends AuditingEntity {
-    // 세션 ID
+    // OpenVidu 세션 ID
     @Id
     private String sessionId;
 
@@ -33,7 +32,6 @@ public class Room extends AuditingEntity {
     private String imageUrl;
     private String roomPassword;
     private LocalDate expirationDate;
-    private LocalDateTime roomDeleteTime;
 
     @ColumnDefault("0")
     private int userCount;
@@ -62,9 +60,5 @@ public class Room extends AuditingEntity {
 
     public void updateUserCount(int userCount) {
         this.userCount = userCount;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 }
