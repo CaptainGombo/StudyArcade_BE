@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 public class KakaoService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final JwtUtil jwtUtil;
 
     public ResponseDto<KakaoUserInfoDto> kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
