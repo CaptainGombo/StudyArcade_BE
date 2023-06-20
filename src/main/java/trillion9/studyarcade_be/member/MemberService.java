@@ -2,6 +2,7 @@ package trillion9.studyarcade_be.member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,9 +26,8 @@ import trillion9.studyarcade_be.studytime.StudyTimeRepository;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -43,7 +43,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final JwtAuthFilter jwtAuthFilter;
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final S3Util s3Util;
 
     @Transactional
@@ -134,44 +134,16 @@ public class MemberService {
 
     public ResponseDto<MyPageResponseDto> myPage(Member member) {
 
-        LocalDate now = LocalDate.now();
+        HashOperations<String, String, Long> hashOperations = redisTemplate.opsForHash();
 
         // 마지막 7일 통계
-        LinkedHashMap<String, Long> dailyStudyChart = new LinkedHashMap<>();
-        List<Object[]> dailyStudyTime = studyTimeRepository.findStudyTimeByDateRange(member.getId(), now.minusDays(7), now.minusDays(1));
-        for (int i = 0; i < dailyStudyTime.size(); i++) {
-            String day = String.valueOf(dailyStudyTime.get(i)[0].toString());
-            Long studyTime = Long.parseLong(dailyStudyTime.get(i)[1].toString());
-            dailyStudyChart.put(day, studyTime);
-        }
-        dailyStudyChart.put(now.toString(), member.getDailyStudyTime());
+        Map<String, Long> dailyStudyChart = hashOperations.entries(member.getId() + "D");
 
         // 마지막 7주 통계
-        LinkedHashMap<String, Long> weeklyStudyChart = new LinkedHashMap<>();
-        List<Object[]>  weeklyStudyTime = studyTimeRepository.findStudyTimeByWeekRange(member.getId(), now.minusWeeks(7), now);
-        for (int i = 0; i < weeklyStudyTime.size(); i++) {
-            String week = String.valueOf(weeklyStudyTime.get(i)[0].toString());
-            Long studyTime = Long.parseLong(weeklyStudyTime.get(i)[1].toString());
-            // 마지막 주에 당일 공부 시간 추가
-            if (i == weeklyStudyChart.size() - 1) {
-                studyTime += member.getDailyStudyTime();
-            }
-            weeklyStudyChart.put(week, studyTime);
-        }
+        Map<String, Long> weeklyStudyChart = hashOperations.entries(member.getId() + "W");
 
         // 마지막 7달 통계
-        LinkedHashMap<String, Long> monthlyStudyChart = new LinkedHashMap<>();
-        List<Object[]>  monthlyStudyTime = studyTimeRepository.findStudyTimeByMonthRange(member.getId(), now.minusMonths(7), now);
-        for (int i = 0; i < monthlyStudyTime.size(); i++) {
-            String year = String.valueOf(monthlyStudyTime.get(i)[0].toString());
-            String month = String.valueOf(monthlyStudyTime.get(i)[1].toString());
-            Long studyTime = Long.parseLong(monthlyStudyTime.get(i)[2].toString());
-            // 마지막 달에 당일 공부 시간 추가
-            if (i == monthlyStudyChart.size() - 1) {
-                studyTime += member.getDailyStudyTime();
-            }
-            monthlyStudyChart.put(year + "." + month, studyTime);
-        }
+        Map<String, Long> monthlyStudyChart = hashOperations.entries(member.getId() + "M");
 
         //다음 등급까지 남은 시간 조회
         Long nextGradeRemainingTime = getNextGradeRemainingTime(member);

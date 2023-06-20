@@ -24,7 +24,6 @@ import trillion9.studyarcade_be.roommember.RoomMemberResponseDto;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
