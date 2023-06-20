@@ -43,7 +43,7 @@ public class RoomFilterImpl implements RoomFilter {
         List<RoomResponseDto> roomResponseDtos = queryFactory.select(Projections.constructor(
                 RoomResponseDto.class, room))
                 .from(room)
-                .orderBy(room.createdAt.desc()) // 최신 순
+                .orderBy(room.createdAt.desc())
                 .where(booleanBuilder)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -51,5 +51,4 @@ public class RoomFilterImpl implements RoomFilter {
 
         return new PageImpl<>(roomResponseDtos, pageable, roomResponseDtos.size());
     }
-
 }
