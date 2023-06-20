@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +27,8 @@ import trillion9.studyarcade_be.roommember.RoomMemberResponseDto;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,6 +45,7 @@ public class RoomService {
     private final RoomFilterImpl roomFilter;
     private final S3Util s3Util;
     private final EntityManager entityManager;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     //openvidu 서버 키 값
     @Value("${OPENVIDU_URL}")
@@ -51,6 +56,8 @@ public class RoomService {
     private OpenVidu openvidu;
 
     private int roomMaxUser = 9;
+
+    Calendar calendar = Calendar.getInstance();
 
     @PostConstruct
     public void init() {
@@ -278,6 +285,16 @@ public class RoomService {
         /* 하루 누적 시간 업데이트 */
         member.updateStudyTime(studyTime);
         memberRepository.save(member);
+
+        /* 통계 공부 시간 업데이트 */
+        String currentDate = LocalDate.now().toString();
+        String currentWeek = String.valueOf(calendar.get(Calendar.WEEK_OF_YEAR));
+        String currentMonth = calendar.get(Calendar.YEAR) + "." + (calendar.get(Calendar.MONTH) + 1);
+
+        HashOperations<String, String, Long> hash = redisTemplate.opsForHash();
+        hash.increment(member.getId() + "D", currentDate, studyTime);
+        hash.increment(member.getId() + "W", currentWeek, studyTime);
+        hash.increment(member.getId() + "M", currentMonth, studyTime);
 
         /* 스터디 룸 유저 삭제 */
         roomMemberRepository.delete(roomMember);
