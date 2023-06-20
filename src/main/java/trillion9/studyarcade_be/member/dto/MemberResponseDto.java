@@ -11,12 +11,14 @@ public class MemberResponseDto {
     private String email;
     private String imageUrl;
     private String title;
+    private Long nextGradeRemainingTime;
 
     @Builder
-    private MemberResponseDto(String nickname, String email, String imageUrl, String title) {
+    private MemberResponseDto(String nickname, String email, String imageUrl, String title, Long nextGradeRemainingTime) {
         this.nickname = nickname;
         this.email = email;
         this.imageUrl = imageUrl;
         this.title = title;
+        this.nextGradeRemainingTime = nextGradeRemainingTime;
     }
 }

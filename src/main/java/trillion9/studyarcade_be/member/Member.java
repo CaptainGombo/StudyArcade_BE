@@ -84,5 +84,9 @@ public class Member {
         this.imageUrl = imageUrl;
         this.password = password;
     }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }
 

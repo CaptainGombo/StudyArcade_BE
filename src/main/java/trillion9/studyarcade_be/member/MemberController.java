@@ -98,11 +98,10 @@ public class MemberController {
 
     // 프로필 수정 API
     @PatchMapping("/profile")
-    public ResponseDto<MemberResponseDto> updateProfile(@RequestPart(value = "content") MemberRequestDto memberRequestDto,
-                                                       @RequestPart(value = "image", required = false) MultipartFile image,
-                                                       @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+    public ResponseDto<MemberResponseDto> updateProfile(@RequestPart(value = "content", required = false) MemberRequestDto memberRequestDto,
+                                                        @RequestPart(value = "image", required = false) MultipartFile image,
+                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         if (userDetails == null) throw new CustomException(TOKEN_INEXISTENT);
         return memberService.updateProfile(memberRequestDto, image, userDetails.getMember());
     }
-
 }

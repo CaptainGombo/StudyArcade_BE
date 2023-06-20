@@ -181,13 +181,36 @@ public class MemberService {
         return ResponseDto.setSuccess("마이페이지 조회 성공", responseDto);
     }
 
+    @Transactional(readOnly = true)
+    public ResponseDto<MemberResponseDto> getProfile(Member member) {
+
+        //다음 등급까지 남은 시간 조회
+        Long nextGradeRemainingTime = getNextGradeRemainingTime(member);
+
+        MemberResponseDto responseDto = MemberResponseDto.builder()
+                .nickname(member.getNickname())
+                .email(member.getEmail())
+                .imageUrl(member.getImageUrl())
+                .title(member.getTitle())
+                .nextGradeRemainingTime(nextGradeRemainingTime)
+                .build();
+
+        return ResponseDto.setSuccess("프로필 조회 성공", responseDto);
+    }
+
     @Transactional
     public ResponseDto<MemberResponseDto> updateProfile(MemberRequestDto memberRequestDto, MultipartFile image, Member member) throws IOException {
 
         String imageUrl = (image == null || image.isEmpty()) ? "대표 프로필 이미지 URL" : s3Util.uploadImage(image);
+
+        if (memberRequestDto == null) {
+            member.setImageUrl(imageUrl);
+            return ResponseDto.setSuccess("프로필 변경 성공");
+        }
+
         String encodedPassword = member.getPassword();
 
-        if (memberRequestDto.getPassword() != null && memberRequestDto.getCheckPassword() != null ) {
+        if (memberRequestDto.getPassword() != null || memberRequestDto.getCheckPassword() != null) {
             if (!memberRequestDto.getPassword().equals(memberRequestDto.getCheckPassword())) {
                 throw new CustomException(ErrorCode.INVALID_PASSWORD_MATCH);
             }
@@ -198,19 +221,6 @@ public class MemberService {
 
         return ResponseDto.setSuccess("프로필 변경 성공");
     }
-
-    @Transactional(readOnly = true)
-    public ResponseDto<MemberResponseDto> getProfile(Member member) {
-        MemberResponseDto responseDto = MemberResponseDto.builder()
-            .nickname(member.getNickname())
-            .email(member.getEmail())
-            .imageUrl(member.getImageUrl())
-            .title(member.getTitle())
-            .build();
-
-        return ResponseDto.setSuccess("프로필 조회 성공", responseDto);
-    }
-
 
     // 다음 등급까지 남은 시간 조회
     public Long getNextGradeRemainingTime(Member member) {
