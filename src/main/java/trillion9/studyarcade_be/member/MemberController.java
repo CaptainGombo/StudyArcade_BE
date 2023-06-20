@@ -97,7 +97,7 @@ public class MemberController {
     }
 
     // 프로필 수정 API
-    @PatchMapping("/updateProfile")
+    @PatchMapping("/profile")
     public ResponseDto<MemberResponseDto> updateProfile(@RequestPart(value = "content") MemberRequestDto memberRequestDto,
                                                        @RequestPart(value = "image", required = false) MultipartFile image,
                                                        @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
