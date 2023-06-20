@@ -25,7 +25,6 @@ import trillion9.studyarcade_be.studytime.StudyTimeRepository;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -137,8 +136,6 @@ public class MemberService {
         HashOperations<String, String, Long> hash = redisTemplate.opsForHash();
 
         // 마지막 7일 통계
-        // 당일은 당일 공부 시간이 업데이트되서 나타남
-        hash.put(member.getId() + "D", LocalDate.now().toString(), member.getDailyStudyTime());
         Map<String, Long> dailyStudyChart = hash.entries(member.getId() + "D");
 
         // 마지막 7주 통계
