@@ -207,6 +207,12 @@ public class MemberService {
 
         String imageUrl = (image == null || image.isEmpty()) ? "대표 프로필 이미지 URL" : s3Util.uploadImage(image);
 
+        if (image != null) {
+            if (memberRequestDto.getNickname() == null) {
+                memberRequestDto.setNickname(member.getNickname());
+            }
+        }
+
         if (memberRequestDto == null) {
             member.setImageUrl(imageUrl);
             memberRepository.save(member);
