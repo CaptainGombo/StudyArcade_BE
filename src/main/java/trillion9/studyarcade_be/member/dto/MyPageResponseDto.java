@@ -13,6 +13,7 @@ import java.util.Map;
 public class MyPageResponseDto {
     private String nickname;
     private String email;
+    private String imageUrl;
     private Long dailyStudyTime;
     private Long totalStudyTime;
     private String title;
@@ -26,7 +27,7 @@ public class MyPageResponseDto {
     private Map<String, Long> monthlyStudyChart;
 
     @Builder
-    private MyPageResponseDto(String nickname, String email, Long dailyStudyTime, Long totalStudyTime, String title, Long nextGradeRemainingTime,
+    private MyPageResponseDto(String nickname, String email, String imageUrl, Long dailyStudyTime, Long totalStudyTime, String title, Long nextGradeRemainingTime,
                               List<TopRankedResponseDto> topRankedList,
                               List<RoomResponseDto> myRooms,
                               Map<String, Long> dailyStudyChart,
@@ -35,6 +36,7 @@ public class MyPageResponseDto {
 
         this.nickname = nickname;
         this.email = email;
+        this.imageUrl = imageUrl;
         this.dailyStudyTime = dailyStudyTime;
         this.totalStudyTime = totalStudyTime;
         this.title = title;

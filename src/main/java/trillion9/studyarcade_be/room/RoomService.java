@@ -157,9 +157,8 @@ public class RoomService {
                 () -> new CustomException(ROOM_NOT_FOUND)
         );
 
-        roomMemberRepository.findByMemberIdAndSessionIdAndRoomMaster(member.getId(), sessionId, true).orElseThrow(
-                () -> new CustomException(INVALID_USER)
-        );
+        roomRepository.findBySessionIdAndMemberId(sessionId, member.getId())
+                .orElseThrow(() -> new CustomException(INVALID_USER));
 
         String imageUrl = (image == null || image.isEmpty()) ? "대표 이미지 URL" : s3Util.uploadImage(image);
 
@@ -170,14 +169,23 @@ public class RoomService {
 
     /* 스터디 룸 삭제 */
     @Transactional
-    public ResponseDto<String> deleteRoom(String sessionId, Member member) {
+    public ResponseDto<String> deleteRoom(String sessionId, Member member) throws OpenViduJavaClientException, OpenViduHttpException {
         Room room = roomRepository.findBySessionId(sessionId).orElseThrow(
                 () -> new CustomException(ROOM_NOT_FOUND)
         );
 
-        roomMemberRepository.findByMemberIdAndSessionIdAndRoomMaster(member.getId(), sessionId, true).orElseThrow(
-                () -> new CustomException(INVALID_USER)
-        );
+        roomRepository.findBySessionIdAndMemberId(sessionId, member.getId())
+                .orElseThrow(() -> new CustomException(INVALID_USER));
+
+        openvidu.fetch();
+        List<Session> activeSessionList = openvidu.getActiveSessions();
+        Optional<Session> sessionOptional = activeSessionList.stream()
+                .filter(s -> s.getSessionId().equals(sessionId))
+                .findFirst();
+        if (sessionOptional.isPresent()) {
+            Session session = sessionOptional.get();
+            session.close();
+        }
 
         List<RoomMember> roomMembers = roomMemberRepository.findAllBySessionId(sessionId);
         roomMemberRepository.deleteAll(roomMembers);
