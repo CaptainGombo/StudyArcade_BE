@@ -169,6 +169,7 @@ public class MemberService {
         MyPageResponseDto responseDto = MyPageResponseDto.builder()
                 .email(member.getEmail())
                 .nickname(member.getNickname())
+                .imageUrl(member.getImageUrl())
                 .dailyStudyTime(member.getDailyStudyTime())
                 .totalStudyTime(member.getTotalStudyTime())
                 .title(member.getTitle())
