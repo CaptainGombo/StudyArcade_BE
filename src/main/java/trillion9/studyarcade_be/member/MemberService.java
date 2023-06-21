@@ -193,6 +193,7 @@ public class MemberService {
                 .imageUrl(member.getImageUrl())
                 .title(member.getTitle())
                 .nextGradeRemainingTime(nextGradeRemainingTime)
+                .totalStudyTime(member.getTotalStudyTime())
                 .build();
 
         return ResponseDto.setSuccess("프로필 조회 성공", responseDto);
