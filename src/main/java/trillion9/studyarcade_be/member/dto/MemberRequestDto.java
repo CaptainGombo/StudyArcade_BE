@@ -28,5 +28,7 @@ public class MemberRequestDto {
         private String password;
     }
 
-
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }
