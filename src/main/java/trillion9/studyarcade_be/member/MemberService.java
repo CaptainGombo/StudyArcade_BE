@@ -206,6 +206,7 @@ public class MemberService {
             .email(member.getEmail())
             .imageUrl(member.getImageUrl())
             .title(member.getTitle())
+            .totalStudyTime(member.getTotalStudyTime())
             .build();
 
         return ResponseDto.setSuccess("프로필 조회 성공", responseDto);
