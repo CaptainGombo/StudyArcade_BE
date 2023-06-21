@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 import static trillion9.studyarcade_be.global.exception.ErrorCode.*;
 
@@ -38,7 +39,6 @@ import static trillion9.studyarcade_be.global.exception.ErrorCode.*;
 @Slf4j
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final StudyTimeRepository studyTimeRepository;
     private final RoomRepository roomRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
@@ -151,12 +151,14 @@ public class MemberService {
         // 총 공부시간 랭킹 1~3위 정보 조회
         List<Object[]> topRankedList = memberRepository.findTopRanked();
 
-        List<TopRankedResponseDto> topRankedDtoList = topRankedList.stream()
-                .map(topRanked -> {
+        List<TopRankedResponseDto> topRankedDtoList = IntStream.range(0, topRankedList.size())
+                .mapToObj(index -> {
+                    Object[] topRanked = topRankedList.get(index);
                     String nickname = String.valueOf(topRanked[0]);
                     String title = String.valueOf(topRanked[1]);
                     Long totalStudyTime = Long.parseLong(topRanked[2].toString());
-                    return new TopRankedResponseDto(nickname, title, totalStudyTime);
+                    int rank = index + 1; // 순서 할당
+                    return new TopRankedResponseDto(rank, nickname, title, totalStudyTime);
                 })
                 .toList();
 
