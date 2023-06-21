@@ -205,18 +205,10 @@ public class MemberService {
     @Transactional
     public ResponseDto<MemberResponseDto> updateProfile(MemberRequestDto memberRequestDto, MultipartFile image, Member member) throws IOException {
 
-        String imageUrl = (image == null || image.isEmpty()) ? "대표 프로필 이미지 URL" : s3Util.uploadImage(image);
+        String imageUrl = (image == null || image.isEmpty()) ? member.getImageUrl() : s3Util.uploadImage(image);
 
-        if (image != null) {
-            if (memberRequestDto.getNickname() == null) {
-                memberRequestDto.setNickname(member.getNickname());
-            }
-        }
-
-        if (memberRequestDto == null) {
-            member.setImageUrl(imageUrl);
-            memberRepository.save(member);
-            return ResponseDto.setSuccess("프로필 변경 성공");
+        if (memberRequestDto == null || memberRequestDto.getNickname() == null) {
+            memberRequestDto.setNickname(member.getNickname());
         }
 
         String encodedPassword = member.getPassword();
