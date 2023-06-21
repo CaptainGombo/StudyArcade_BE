@@ -209,6 +209,7 @@ public class MemberService {
 
         if (memberRequestDto == null) {
             member.setImageUrl(imageUrl);
+            memberRepository.save(member);
             return ResponseDto.setSuccess("프로필 변경 성공");
         }
 
