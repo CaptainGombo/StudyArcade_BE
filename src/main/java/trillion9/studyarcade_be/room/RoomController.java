@@ -56,7 +56,7 @@ public class RoomController {
      @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 정보 조회 완료")})
      @GetMapping(value = "/rooms/{session-id}")
      public ResponseDto<RoomDetailResponseDto> getRoomData(@PathVariable("session-id") String sessionId,
-                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
          if (userDetails == null) throw new CustomException(TOKEN_INEXISTENT);
          return roomService.getRoomData(sessionId, userDetails.getMember());
      }
@@ -66,9 +66,9 @@ public class RoomController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 수정 완료")})
     @PatchMapping(value = "/rooms/{session-id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE, "application/json", "multipart/form-data"})
     public ResponseDto<String> updateRoom(@PathVariable("session-id") String sessionId,
-                                                         @RequestPart(value = "content") RoomCreateRequestDto requestDto,
-                                                         @RequestPart(value = "image", required = false) MultipartFile image,
-                                                         @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+                                          @RequestPart(value = "content") RoomCreateRequestDto requestDto,
+                                          @RequestPart(value = "image", required = false) MultipartFile image,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         if (userDetails == null) throw new CustomException(TOKEN_INEXISTENT);
         return roomService.updateRoom(sessionId, requestDto, image, userDetails.getMember());
     }
@@ -78,7 +78,7 @@ public class RoomController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 삭제 완료")})
     @DeleteMapping("/rooms/{session-id}")
     public ResponseDto<String> deleteRoom(@PathVariable("session-id") String sessionId,
-                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails == null) throw new CustomException(TOKEN_INEXISTENT);
         return roomService.deleteRoom(sessionId, userDetails.getMember());
     }
@@ -88,8 +88,8 @@ public class RoomController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 입장 완료")})
     @PostMapping("/rooms/{session-id}/enter")
     public ResponseDto<String> enterRoom(@RequestBody @Nullable RoomEnterRequestDto requestDto,
-                            @PathVariable("session-id") String sessionId,
-                            @AuthenticationPrincipal UserDetailsImpl userDetails) throws
+                                         @PathVariable("session-id") String sessionId,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails) throws
         OpenViduJavaClientException, OpenViduHttpException {
         if (userDetails == null) throw new CustomException(TOKEN_INEXISTENT);
         return roomService.enterRoom(requestDto, sessionId, userDetails.getMember());
@@ -100,8 +100,8 @@ public class RoomController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 퇴장 완료")})
     @DeleteMapping("/rooms/{session-id}/out")
     public ResponseDto<String> outRoom(@PathVariable(name = "session-id") String sessionId,
-                          @RequestParam(name = "studytime") Long studyTime,
-                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                       @RequestParam(name = "studytime") Long studyTime,
+                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {
         if (userDetails == null) throw new CustomException(TOKEN_INEXISTENT);
         return roomService.outRoom(sessionId, studyTime, userDetails.getMember());
     }

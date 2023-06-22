@@ -47,22 +47,21 @@ public class RoomService {
     private final EntityManager entityManager;
     private final RedisTemplate<String, Object> redisTemplate;
 
-    //openvidu 서버 키 값
     @Value("${OPENVIDU_URL}")
     private String OPENVIDU_URL;
-
     @Value("${OPENVIDU_SECRET}")
     private String OPENVIDU_SECRET;
+
     private OpenVidu openvidu;
 
-    private int roomMaxUser = 9;
-
-    Calendar calendar = Calendar.getInstance();
+    private final int roomMaxUser = 9;
 
     @PostConstruct
     public void init() {
-        this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
+        openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);
     }
+
+    Calendar calendar = Calendar.getInstance();
 
     /* 스터디 룸 목록 조회 */
     public ResponseDto<Page<RoomResponseDto>> allRooms(int page, String category, String keyword) {
@@ -80,9 +79,9 @@ public class RoomService {
 
         Long myRoomCount = roomRepository.countAllByMemberId(member.getId());
 
-        if (myRoomCount > 2) {
-            throw new CustomException(INVALID_ROOM_COUNT);
-        }
+//        if (myRoomCount > 2) {
+//            throw new CustomException(INVALID_ROOM_COUNT);
+//        }
 
          /* SessionId 셋팅 */
         RoomCreateResponseDto newToken = createSession(member);

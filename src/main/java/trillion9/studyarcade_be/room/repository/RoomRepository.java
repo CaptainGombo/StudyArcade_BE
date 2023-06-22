@@ -15,7 +15,9 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     Optional<Room> findBySessionId(String sessionId);
     Optional<Room> findBySessionIdAndMemberId(String sessionId, Long memberId);
     List<Room> findAllByExpirationDateBefore(LocalDate currentDate);
+
     Long countAllByMemberId(Long memberId);
+
     @Query("SELECT new trillion9.studyarcade_be.room.dto.MyRoomResponseDto(r.roomName, r.category) FROM Room r WHERE r.memberId = :memberId ORDER BY r.createdAt DESC")
     List<MyRoomResponseDto> findMyRoomResponseDto(@Param("memberId") Long memberId);
 }
