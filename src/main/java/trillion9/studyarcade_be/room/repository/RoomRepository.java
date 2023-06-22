@@ -1,10 +1,8 @@
 package trillion9.studyarcade_be.room.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import trillion9.studyarcade_be.room.Room;
-import trillion9.studyarcade_be.room.dto.MyRoomResponseDto;
+import trillion9.studyarcade_be.room.dto.RoomResponseDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,6 +16,5 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
 
     Long countAllByMemberId(Long memberId);
 
-    @Query("SELECT new trillion9.studyarcade_be.room.dto.MyRoomResponseDto(r.roomName, r.category) FROM Room r WHERE r.memberId = :memberId ORDER BY r.createdAt DESC")
-    List<MyRoomResponseDto> findMyRoomResponseDto(@Param("memberId") Long memberId);
+    List<RoomResponseDto> findAllByMemberId(Long MemberId);
 }

@@ -35,8 +35,8 @@ public class RoomController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 목록 조회 완료")})
     @GetMapping("/main")
     public ResponseDto<Page<RoomResponseDto>> allRooms(@RequestParam("page") int page,
-                                                       @RequestParam(value = "category", required = false) String category,
-                                                       @RequestParam(value = "keyword", required = false) String keyword) {
+                                                                                  @RequestParam(value = "category", required = false) String category,
+                                                                                  @RequestParam(value = "keyword", required = false) String keyword) {
         return roomService.allRooms(page - 1, category, keyword);
     }
 
@@ -78,7 +78,7 @@ public class RoomController {
     @ApiResponses(value = {@ApiResponse(responseCode = "200",description = "스터디 룸 삭제 완료")})
     @DeleteMapping("/rooms/{session-id}")
     public ResponseDto<String> deleteRoom(@PathVariable("session-id") String sessionId,
-                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                             @AuthenticationPrincipal UserDetailsImpl userDetails) throws OpenViduJavaClientException, OpenViduHttpException {
         if (userDetails == null) throw new CustomException(TOKEN_INEXISTENT);
         return roomService.deleteRoom(sessionId, userDetails.getMember());
     }

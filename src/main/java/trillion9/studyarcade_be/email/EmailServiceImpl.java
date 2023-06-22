@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.exception.CustomException;
 import trillion9.studyarcade_be.member.MemberRepository;
 
@@ -44,7 +45,7 @@ public class EmailServiceImpl implements EmailService{
             + "<div><strong style='font-size: 22px; color: #0D47A1; background-color: #E1F5FE; padding: 12px 20px; border-radius: 5px; display: inline-block; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);'>";
         msg += ePw + "</strong></div></div>";
         message.setText(msg, "utf-8", "html"); // 내용
-        message.setFrom(new InternetAddress("studyhu6@gmail.com","스터브")); // 보내는 사람
+        message.setFrom(new InternetAddress("studyhu6@gmail.com","StudyHub")); // 보내는 사람
 
         this.ePw = ePw;
         return message;
@@ -76,7 +77,7 @@ public class EmailServiceImpl implements EmailService{
     }
 
     @Override
-    public String sendSimpleMessage(String to) throws Exception {
+    public ResponseDto<Object> sendSimpleMessage(String to) throws Exception {
         // TODO Auto-generated method stub
 
         memberRepository.findByEmail(to).ifPresent(member -> {
@@ -90,6 +91,6 @@ public class EmailServiceImpl implements EmailService{
             es.printStackTrace();
             throw new IllegalArgumentException(es.getMessage());
         }
-        return ePw;
+        return ResponseDto.setSuccess("이메일 발송 성공");
     }
 }

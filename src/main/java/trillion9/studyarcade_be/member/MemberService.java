@@ -11,13 +11,15 @@ import org.springframework.web.multipart.MultipartFile;
 import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.S3Util;
 import trillion9.studyarcade_be.global.exception.CustomException;
+import trillion9.studyarcade_be.global.exception.ErrorCode;
 import trillion9.studyarcade_be.global.jwt.JwtAuthFilter;
 import trillion9.studyarcade_be.global.jwt.JwtUtil;
 import trillion9.studyarcade_be.global.jwt.TokenDto;
 import trillion9.studyarcade_be.member.dto.MemberRequestDto;
 import trillion9.studyarcade_be.member.dto.MemberResponseDto;
 import trillion9.studyarcade_be.member.dto.MyPageResponseDto;
-import trillion9.studyarcade_be.room.dto.MyRoomResponseDto;
+import trillion9.studyarcade_be.member.dto.TopRankedResponseDto;
+import trillion9.studyarcade_be.room.dto.RoomResponseDto;
 import trillion9.studyarcade_be.room.repository.RoomRepository;
 import trillion9.studyarcade_be.studytime.StudyTimeRepository;
 
@@ -28,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 import static trillion9.studyarcade_be.global.exception.ErrorCode.*;
 
@@ -36,7 +39,6 @@ import static trillion9.studyarcade_be.global.exception.ErrorCode.*;
 @Slf4j
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final StudyTimeRepository studyTimeRepository;
     private final RoomRepository roomRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
@@ -146,27 +148,32 @@ public class MemberService {
         //다음 등급까지 남은 시간 조회
         Long nextGradeRemainingTime = getNextGradeRemainingTime(member);
 
-        // 총 공부시간 랭킹 1위 정보 조회
+        // 총 공부시간 랭킹 1~3위 정보 조회
         List<Object[]> topRankedList = memberRepository.findTopRanked();
 
-        Object[] topRanked = topRankedList.get(0);
-        String topRankedNickname = String.valueOf(topRanked[0]);
-        String topRankedTitle = String.valueOf(topRanked[1]);
-        Long topRankedTotalStudyTime = Long.parseLong(topRanked[2].toString());
+        List<TopRankedResponseDto> topRankedDtoList = IntStream.range(0, topRankedList.size())
+                .mapToObj(index -> {
+                    Object[] topRanked = topRankedList.get(index);
+                    String nickname = String.valueOf(topRanked[0]);
+                    String title = String.valueOf(topRanked[1]);
+                    Long totalStudyTime = Long.parseLong(topRanked[2].toString());
+                    int rank = index + 1; // 순서 할당
+                    return new TopRankedResponseDto(rank, nickname, title, totalStudyTime);
+                })
+                .toList();
 
         // 내가 만든 방 리스트 조회
-        List<MyRoomResponseDto> myRooms = roomRepository.findMyRoomResponseDto(member.getId());
+        List<RoomResponseDto> myRooms = roomRepository.findAllByMemberId(member.getId());
 
         // 회원 정보 설정
         MyPageResponseDto responseDto = MyPageResponseDto.builder()
                 .email(member.getEmail())
                 .nickname(member.getNickname())
+                .imageUrl(member.getImageUrl())
                 .dailyStudyTime(member.getDailyStudyTime())
                 .totalStudyTime(member.getTotalStudyTime())
                 .title(member.getTitle())
-                .topRankedNickname(topRankedNickname)
-                .topRankedTitle(topRankedTitle)
-                .topRankedTotalStudyTime(topRankedTotalStudyTime)
+                .topRankedList(topRankedDtoList)
                 .nextGradeRemainingTime(nextGradeRemainingTime)
                 .dailyStudyChart(dailyStudyChart)
                 .weeklyStudyChart(weeklyStudyChart)
@@ -177,21 +184,45 @@ public class MemberService {
         return ResponseDto.setSuccess("마이페이지 조회 성공", responseDto);
     }
 
-    @Transactional
-    public ResponseDto<MemberResponseDto> updateMember(MemberRequestDto memberRequestDto, MultipartFile image, Member member) throws IOException {
+    @Transactional(readOnly = true)
+    public ResponseDto<MemberResponseDto> getProfile(Member member) {
 
-        String imageUrl = (image == null || image.isEmpty()) ? "대표 프로필 이미지 URL" : s3Util.uploadImage(image);
+        //다음 등급까지 남은 시간 조회
+        Long nextGradeRemainingTime = getNextGradeRemainingTime(member);
 
         MemberResponseDto responseDto = MemberResponseDto.builder()
-                .nickname(memberRequestDto.getNickname())
+                .nickname(member.getNickname())
                 .email(member.getEmail())
-                .imageUrl(imageUrl)
+                .imageUrl(member.getImageUrl())
+                .title(member.getTitle())
+                .nextGradeRemainingTime(nextGradeRemainingTime)
+                .totalStudyTime(member.getTotalStudyTime())
                 .build();
 
-        member.updateMember(memberRequestDto, imageUrl);
+        return ResponseDto.setSuccess("프로필 조회 성공", responseDto);
+    }
+
+    @Transactional
+    public ResponseDto<MemberResponseDto> updateProfile(MemberRequestDto memberRequestDto, MultipartFile image, Member member) throws IOException {
+
+        String imageUrl = (image == null || image.isEmpty()) ? member.getImageUrl() : s3Util.uploadImage(image);
+
+        if (memberRequestDto == null || memberRequestDto.getNickname() == null) {
+            memberRequestDto.setNickname(member.getNickname());
+        }
+
+        String encodedPassword = member.getPassword();
+
+        if (memberRequestDto.getPassword() != null || memberRequestDto.getCheckPassword() != null) {
+            if (!memberRequestDto.getPassword().equals(memberRequestDto.getCheckPassword())) {
+                throw new CustomException(ErrorCode.INVALID_PASSWORD_MATCH);
+            }
+            encodedPassword = passwordEncoder.encode(memberRequestDto.getPassword());
+        }
+        member.updateMember(memberRequestDto, imageUrl, encodedPassword);
         memberRepository.save(member);
 
-        return ResponseDto.setSuccess("프로필 변경 성공", responseDto);
+        return ResponseDto.setSuccess("프로필 변경 성공");
     }
 
     // 다음 등급까지 남은 시간 조회
