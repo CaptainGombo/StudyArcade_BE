@@ -35,7 +35,6 @@ public class JobScheduler {
         String timeString = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS").format(new Date());
 
         jobParametersMap.put("DateTime", new JobParameter(timeString));
-
         JobParameters jobParameters = new JobParameters(jobParametersMap);
 
         JobExecution jobExecution = jobLauncher.run(job, jobParameters);
