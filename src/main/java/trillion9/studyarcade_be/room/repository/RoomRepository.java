@@ -13,6 +13,8 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     Optional<Room> findBySessionId(String sessionId);
     Optional<Room> findBySessionIdAndMemberId(String sessionId, Long memberId);
     List<Room> findAllByExpirationDateBefore(LocalDate currentDate);
+
     Long countAllByMemberId(Long memberId);
+
     List<RoomResponseDto> findAllByMemberId(Long MemberId);
 }

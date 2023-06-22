@@ -41,9 +41,6 @@ public class RoomScheduler {
         }
         roomRepository.deleteAll(expiredRooms);
 
-        // 하루에 공부한 시간 저장 및 통계 저장
-        HashOperations<String, String, Long> hash = redisTemplate.opsForHash();
-
         List<Member> members =  memberRepository.findAll();
 
         for (Member member : members) {
@@ -58,6 +55,9 @@ public class RoomScheduler {
             // dailyStudyTime을 0으로 리셋
             member.setDailyStudyTime(0L);
 
+            // 하루에 공부한 시간 저장
+            // Redis에 통계 데이터 저장
+            HashOperations<String, String, Long> hash = redisTemplate.opsForHash();
             LocalDate now = LocalDate.now();
 
             // 마지막 7일 통계
