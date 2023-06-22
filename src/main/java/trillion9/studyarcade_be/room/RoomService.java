@@ -79,9 +79,9 @@ public class RoomService {
 
         Long myRoomCount = roomRepository.countAllByMemberId(member.getId());
 
-//        if (myRoomCount > 2) {
-//            throw new CustomException(INVALID_ROOM_COUNT);
-//        }
+        if (myRoomCount > 2) {
+            throw new CustomException(INVALID_ROOM_COUNT);
+        }
 
          /* SessionId 셋팅 */
         RoomCreateResponseDto newToken = createSession(member);
