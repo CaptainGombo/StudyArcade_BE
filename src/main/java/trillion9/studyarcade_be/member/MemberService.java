@@ -21,7 +21,6 @@ import trillion9.studyarcade_be.member.dto.MyPageResponseDto;
 import trillion9.studyarcade_be.member.dto.TopRankedResponseDto;
 import trillion9.studyarcade_be.room.dto.RoomResponseDto;
 import trillion9.studyarcade_be.room.repository.RoomRepository;
-import trillion9.studyarcade_be.studytime.StudyTimeRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -138,10 +137,8 @@ public class MemberService {
 
         // 마지막 7일 통계
         Map<String, Long> dailyStudyChart = hash.entries(member.getId() + "D");
-
         // 마지막 7주 통계
         Map<String, Long> weeklyStudyChart = hash.entries(member.getId() + "W");
-
         // 마지막 7달 통계
         Map<String, Long> monthlyStudyChart = hash.entries(member.getId() + "M");
 
@@ -184,7 +181,6 @@ public class MemberService {
         return ResponseDto.setSuccess("마이페이지 조회 성공", responseDto);
     }
 
-    @Transactional(readOnly = true)
     public ResponseDto<MemberResponseDto> getProfile(Member member) {
 
         //다음 등급까지 남은 시간 조회

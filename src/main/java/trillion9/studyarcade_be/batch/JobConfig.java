@@ -1,7 +1,6 @@
 package trillion9.studyarcade_be.batch;
 
 import io.openvidu.java.client.OpenVidu;
-import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.Session;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -75,7 +74,7 @@ public class JobConfig {
     }
 
     // 처리량이 적어서 Tasklet 단위로 처리
-    // 만료일이 된 Room 삭제 및 해당 Room에 포함된 RoomMember 삭제
+    // 만료일이 된 Room 삭제 및 해당 Room에 포함된 RoomMember 삭제 Step
     @Bean
     public Step roomStep() {
         return stepBuilderFactory.get("roomStep")
@@ -93,6 +92,7 @@ public class JobConfig {
 //                .build();
 //    }
 
+    // 현재 RoomMember가 존재하는 세션 외의 모든 세션 삭제 Step
     @Bean
     public Step sessionStep() {
         return stepBuilderFactory.get("sessionStep")
@@ -100,7 +100,7 @@ public class JobConfig {
                 .build();
     }
 
-    // 모든 멤버의 전날 공부 시간 저장 및 통계 데이터 계산
+    // 모든 멤버의 전날 공부 시간 저장 및 통계 데이터 계산 Step
     @Bean
     public Step memberStep() {
         return stepBuilderFactory.get("studyTimeStep")
@@ -130,30 +130,16 @@ public class JobConfig {
 
     public Tasklet sessionTasklet() {
         return (contribution, chunkContext) -> {
-
             List<String> sessionIds = roomMemberRepository.findActiveSessionIds();
 
             openvidu.fetch();
-            log.info("openvidu server fetched");
-
             List<Session> activeSessionList = openvidu.getActiveSessions();
-
-            for (String s : sessionIds) log.info("가져온 세션 : " + s);
 
             activeSessionList.removeIf(session -> sessionIds.contains(session.getSessionId()));
 
-            for (Session s : activeSessionList) log.info("지워질 세션" + s.getSessionId());
-
             for (Session session : activeSessionList) {
-                try {
-                    session.close();
-                    log.info("Session " + session.getSessionId() + " closed");
-                } catch (OpenViduHttpException e) {
-                    // 세션을 닫을 때 발생한 예외 처리
-                    log.error("Failed to close session " + session.getSessionId(), e);
-                }
+                session.close();
             }
-
             return RepeatStatus.FINISHED;
         };
     }
@@ -178,18 +164,10 @@ public class JobConfig {
 
 //    public ItemWriter<String> sessionWriter() throws OpenViduJavaClientException, OpenViduHttpException {
 //
-//        openvidu.fetch();
-//        log.info("openvidu server fetched");
-//
-//        List<Session> activeSessionList = openvidu.getActiveSessions();
-//
-//        return sessionIds -> {
-//            for (String s : sessionIds) log.info("가져온 세션 : " + s);
+//            openvidu.fetch();
+//            List<Session> activeSessionList = openvidu.getActiveSessions();
 //
 //            activeSessionList.removeIf(session -> sessionIds.contains(session.getSessionId()));
-//
-//            for (Session s : activeSessionList) log.info("지워질 세션" + s.getSessionId());
-//
 //
 //            for (Session session : activeSessionList) {
 //                try {

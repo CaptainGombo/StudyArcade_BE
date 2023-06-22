@@ -12,6 +12,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByEmail(String email);
     Optional<Member> findByNickname(String nickname);
     Optional<Member> findById(Long id);
+
     @Query(value = "SELECT m.nickname, m.title, m.total_study_time FROM member as m ORDER BY m.total_study_time DESC LIMIT 3", nativeQuery = true)
     List<Object[]> findTopRanked();
 }
