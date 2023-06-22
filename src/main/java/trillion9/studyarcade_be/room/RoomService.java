@@ -218,16 +218,6 @@ public class RoomService {
         Room room = roomRepository.findBySessionId(session.getSessionId()).orElseThrow(
                 () -> new CustomException(ROOM_NOT_FOUND));
 
-        /* 스터디 룸의 최대 인원은 9명으로 제한하고, 초과 시 예외 발생 */
-        synchronized (room) {
-            room.updateUserCount(room.getUserCount() + 1);
-
-            if (room.getUserCount() > roomMaxUser) {
-                /* 트랜잭션에 의해 위의 updateCntUser 메서드의 user수 +1 자동으로 롤백(-1)되어서 9에 맞추어짐. */
-                throw new CustomException(ROOM_FULL);
-            }
-        }
-
          /* 비공개 방일 경우, 비밀번호 체크를 수행 */
          if (room.isSecret()) {
              if (requestDto == null || requestDto.getRoomPassword() == null) {    // 패스워드를 입력 안했을 때 에러 발생
@@ -245,11 +235,27 @@ public class RoomService {
         if (alreadyEnterChatRoomUser.isPresent()) throw new CustomException(MEMBER_ALREADY_ENTERED);
 
         // 방 입장 하나로 제한
-        Optional<RoomMember> roomMemberCheck = roomMemberRepository.findByMemberId(member.getId());
+//        Optional<RoomMember> roomMemberCheck = roomMemberRepository.findByMemberId(member.getId());
+//
+//        if (roomMemberCheck.isPresent()) {
+//            throw new CustomException(ROOM_MEMBER_LIMIT_EXCEEDED);
+//        }
 
-        if (roomMemberCheck.isPresent()) {
-            throw new CustomException(ROOM_MEMBER_LIMIT_EXCEEDED);
+        /* 스터디 룸의 최대 인원은 9명으로 제한하고, 초과 시 예외 발생 */
+        synchronized (room) {
+            room.updateUserCount(room.getUserCount() + 1);
+
+            if (room.getUserCount() > roomMaxUser) {
+                /* 트랜잭션에 의해 위의 updateCntUser 메서드의 user수 +1 자동으로 롤백(-1)되어서 9에 맞추어짐. */
+                throw new CustomException(ROOM_FULL);
+            }
         }
+//
+//        room.updateUserCount(room.getUserCount() + 1);
+//
+//        if (room.getUserCount() > roomMaxUser) {
+//            throw new CustomException(ROOM_FULL);
+//        }
 
         /* 방 입장 토큰 생성 */
         String roomToken = createToken(member, room.getSessionId());
