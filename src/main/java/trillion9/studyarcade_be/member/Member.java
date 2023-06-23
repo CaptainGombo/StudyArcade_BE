@@ -79,6 +79,7 @@ public class Member {
         }
     }
 
+
     public void updateMember(MemberRequestDto memberRequestDto, String imageUrl, String password) {
         this.nickname = memberRequestDto.getNickname();
         this.imageUrl = imageUrl;
