@@ -19,22 +19,8 @@ public class ChatService {
 
 	public void message(ChatMessageDto message) {
 
-		// 프로필 이미지 설정
-		String profileImage = retrieveProfileImage(message.getNickname());
-		message.setProfileImage(profileImage);
-
 		// Websocket에 발행된 메시지를 redis로 발행 (publish)
 		redisTemplate.convertAndSend(channelTopic.getTopic(), message);
 	}
 
-	private String retrieveProfileImage(String nickname) {
-
-		Optional<Member> member = memberRepository.findByNickname(nickname);
-
-		if (member.isPresent() && member.get().getImageUrl() != null) {
-			return member.get().getImageUrl();
-		}
-
-		return "대표 프로필 이미지 URL";
-	}
 }
