@@ -1,3 +1,5 @@
+# run_new_was.sh
+
 #!/bin/bash
 
 PROJECT_ROOT="/home/ubuntu/StudyHub_BE" # 프로젝트 루트
@@ -15,26 +17,18 @@ elif [ ${CURRENT_PORT} -eq 8082 ]; then
   TARGET_PORT=8081 # 현재포트가 8082라면 8081로 배포
 else
   echo "> Not connected to nginx" # nginx가 실행되고 있지 않다면 에러 코드
-  exit 1 # 에러 발생 시 스크립트 종료
 fi
-
-# 새로운 JAR 파일 업로드
-echo "> Uploading new JAR file to port ${TARGET_PORT}."
-scp ${JAR_FILE} localhost:${TARGET_PORT}/app.jar
 
 # 현재 포트의 PID를 불러온다
 TARGET_PID=$(lsof -Fp -i TCP:${TARGET_PORT} | grep -Po 'p[0-9]+' | grep -Po '[0-9]+')
 
-# PID를 이용해 해당 포트 서버를 종료
+# PID를 이용해 해당 포트 서버 Kill
 if [ ! -z ${TARGET_PID} ]; then
-  echo "> Sending shutdown signal to ${TARGET_PORT}."
-  curl -X POST http://localhost:${TARGET_PORT}/shutdown # 서버 종료 요청 보내기
-  sleep 10 # 서버 종료 대기 시간 (10초) - 적절한 시간 설정 필요
+  echo "> Kill ${TARGET_PORT}."
+  sudo kill ${TARGET_PID}
 fi
 
-# 새로운 서버 실행
-echo "> Starting new WAS at ${TARGET_PORT}."
-nohup java -jar -Dserver.port=${TARGET_PORT} ${JAR_FILE} > /home/ubuntu/logs/nohup_${TARGET_PORT}.out 2>&1 &
-
+# 타켓 포트에 jar파일을 이용해 새로운 서버 실행
+nohup java -jar -Dserver.port=${TARGET_PORT} ${JAR_FILE} > /home/ubuntu/nohup.out 2>&1 &
 echo "> Now new WAS runs at ${TARGET_PORT}."
 exit 0
