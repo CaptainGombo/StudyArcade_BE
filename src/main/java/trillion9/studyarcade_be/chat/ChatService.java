@@ -20,8 +20,8 @@ public class ChatService {
 	public void message(ChatMessageDto message) {
 
 		// 프로필 이미지 설정
-		String profile = retrieveProfileImage(message.getNickname());
-		message.setProfile(profile);
+		String profileImg = retrieveProfileImage(message.getNickname());
+		message.setProfileImg(profileImg);
 
 		// Websocket에 발행된 메시지를 redis로 발행 (publish)
 		redisTemplate.convertAndSend(channelTopic.getTopic(), message);
