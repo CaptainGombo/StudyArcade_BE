@@ -3,7 +3,7 @@
 #!/bin/bash
 
 PROJECT_ROOT="/home/ubuntu/StudyHub_BE" # 프로젝트 루트
-JAR_FILE="$PROJECT_ROOT/build/libs/StudyArcade_BE-0.0.1-SNAPSHOT.jar $JAR" # JAR_FILE (어쩌구저쩌구.jar)
+JAR_FILE="$PROJECT_ROOT/build/libs/StudyArcade_BE-0.0.1-SNAPSHOT.jar" # JAR_FILE (어쩌구저쩌구.jar)
 
 # service_url.inc 에서 현재 서비스를 하고 있는 WAS의 포트 번호 가져오기
 CURRENT_PORT=$(cat /home/ubuntu/service_url.inc | grep -Po '[0-9]+' | tail -1)
@@ -11,10 +11,10 @@ TARGET_PORT=0
 
 echo "> Current port of running WAS is ${CURRENT_PORT}."
 
-if [ ${CURRENT_PORT} -eq 8081 ]; then
-  TARGET_PORT=8082 # 현재포트가 8081이면 8082로 배포
-elif [ ${CURRENT_PORT} -eq 8082 ]; then
-  TARGET_PORT=8081 # 현재포트가 8082라면 8081로 배포
+if [ ${CURRENT_PORT} -eq 8080 ]; then
+  TARGET_PORT=8081 # 현재포트가 8081이면 8082로 배포
+elif [ ${CURRENT_PORT} -eq 8081 ]; then
+  TARGET_PORT=8080 # 현재포트가 8082라면 8081로 배포
 else
   echo "> Not connected to nginx" # nginx가 실행되고 있지 않다면 에러 코드
 fi
