@@ -15,6 +15,7 @@ class CustomSentryUserProvider implements SentryUserProvider {
     public User provideUser() {
         User user = new User();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
             user.setId(userDetails.getMember().getId().toString());
