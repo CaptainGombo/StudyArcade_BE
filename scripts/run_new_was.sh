@@ -25,10 +25,11 @@ TARGET_PID=$(lsof -Fp -i TCP:${TARGET_PORT} | grep -Po 'p[0-9]+' | grep -Po '[0-
 # PID를 이용해 해당 포트 서버 Kill
 if [ ! -z ${TARGET_PID} ]; then
   echo "> Kill ${TARGET_PORT}."
-  sudo kill ${TARGET_PID}
+  sudo kill -9 ${TARGET_PID}
 fi
 
 # 타켓 포트에 jar파일을 이용해 새로운 서버 실행
 nohup java -jar -Dserver.port=${TARGET_PORT} ${JAR_FILE} > /home/ubuntu/nohup.out 2>&1 &
 echo "> Now new WAS runs at ${TARGET_PORT}."
+
 exit 0
