@@ -11,10 +11,10 @@ TARGET_PORT=0
 
 echo "> Current port of running WAS is ${CURRENT_PORT}."
 
-if [ ${CURRENT_PORT} -eq 8082 ]; then
-  TARGET_PORT=8081 # 현재포트가 8081이면 8082로 배포
-elif [ ${CURRENT_PORT} -eq 8081 ]; then
-  TARGET_PORT=8082 # 현재포트가 8082라면 8081로 배포
+if [ ${CURRENT_PORT} -eq 8081 ]; then
+  TARGET_PORT=8082 # 현재포트가 8081이면 8082로 배포
+elif [ ${CURRENT_PORT} -eq 8082 ]; then
+  TARGET_PORT=8081 # 현재포트가 8082라면 8081로 배포
 else
   echo "> Not connected to nginx" # nginx가 실행되고 있지 않다면 에러 코드
 fi
