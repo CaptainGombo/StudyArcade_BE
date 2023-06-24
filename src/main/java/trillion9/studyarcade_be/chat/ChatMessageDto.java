@@ -19,8 +19,8 @@ public class ChatMessageDto {
 	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
 	}
+
+	public void setProfileImage(String profileImage) {
+		this.profileImage = profileImage;
+	}
 }
-
-
-
-
