@@ -117,7 +117,6 @@ public class MemberService {
 
     public ResponseDto<Boolean> checkNickname(String nickname) {
 //        Optional<Member> member = memberRepository.findByNickname(nickname);
-
         return ResponseDto.setSuccess("테스트");
     }
 
