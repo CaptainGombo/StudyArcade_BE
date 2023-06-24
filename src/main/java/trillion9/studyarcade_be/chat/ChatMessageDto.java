@@ -14,13 +14,13 @@ public class ChatMessageDto {
 	private String nickname; // 채팅을 보낸 사람 닉네임
 	private String message; // 메시지
 	private String createdAt; // 채팅 발송 시간
-	private String profileImg; //유저 프로필 이미지
+	private String profileImage; //유저 프로필 이미지
 
 	public void setCreatedAt(String createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public void setProfileImg(String profileImg) {
-		this.profileImg = profileImg;
+	public void setProfileImage(String profileImage) {
+		this.profileImage = profileImage;
 	}
 }
