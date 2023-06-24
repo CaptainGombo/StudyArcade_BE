@@ -116,8 +116,8 @@ public class MemberService {
     }
 
     public ResponseDto<Boolean> checkNickname(String nickname) {
-        Optional<Member> member = memberRepository.findByNickname(nickname);
-        return ResponseDto.setSuccess("닉네임 중복 확인 완료", member.isEmpty());
+//        Optional<Member> member = memberRepository.findByNickname(nickname);
+        return ResponseDto.setSuccess("테스트");
     }
 
     public ResponseDto<String> newAccessToken(HttpServletRequest request) {
