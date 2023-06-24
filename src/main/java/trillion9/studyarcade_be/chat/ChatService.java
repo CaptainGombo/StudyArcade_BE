@@ -1,14 +1,10 @@
 package trillion9.studyarcade_be.chat;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
-
-import lombok.RequiredArgsConstructor;
-import trillion9.studyarcade_be.member.Member;
 import trillion9.studyarcade_be.member.MemberRepository;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
