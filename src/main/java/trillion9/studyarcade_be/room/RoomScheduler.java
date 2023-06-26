@@ -94,4 +94,5 @@ public class RoomScheduler {
             redisTemplate.expire(member.getId() + "M", 1, TimeUnit.DAYS);
         }
     }
+
 }
