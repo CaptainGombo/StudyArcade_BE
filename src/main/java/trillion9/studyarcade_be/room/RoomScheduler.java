@@ -27,7 +27,7 @@ public class RoomScheduler {
     private final RoomMemberRepository roomMemberRepository;
     private final RedisTemplate<String, Object> redisTemplate;
 
-    @Scheduled(cron = "0 45 * * * *") // 매일 자정에 실행되도록 설정
+    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행되도록 설정
     @Transactional
     public void manageRoomAndStudyTime() {
         LocalDate currentDate = LocalDate.now();
