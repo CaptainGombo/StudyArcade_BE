@@ -8,6 +8,7 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,7 +26,7 @@ public class JobScheduler {
     private final Job job;
     private final JobLauncher jobLauncher;
 
-    //    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행되도록 설정
+    @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행되도록 설정
     @GetMapping("/api/batch")
     public void executeJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException,
             JobRestartException, JobInstanceAlreadyCompleteException {
