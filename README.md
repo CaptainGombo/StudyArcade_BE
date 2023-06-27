@@ -26,7 +26,7 @@
   화면 송출 시 
 
 ![2](https://github.com/Study-Hub-09/StudyHub_FE/assets/129656095/cecd6959-d641-4365-81ac-91fdcf84a2b6)
-  화면 차단 
+  화면 차단 시
 
 
 </details>
