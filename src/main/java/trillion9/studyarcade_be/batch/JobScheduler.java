@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +26,11 @@ public class JobScheduler {
 
     private final Job job;
     private final JobLauncher jobLauncher;
+
+    @GetMapping("api/time")
+    public String getCurrentTime() {
+        return LocalDate.now().toString();
+    }
 
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행되도록 설정
     @GetMapping("/api/batch")
