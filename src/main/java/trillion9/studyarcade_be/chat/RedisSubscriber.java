@@ -31,9 +31,8 @@ public class RedisSubscriber {
 			chatMessage.setCreatedAt(now);
 
 			// 프로필 이미지 설정
-//			String profileImage = retrieveProfileImage(chatMessage.getNickname());
-//			chatMessage.setProfileImage(profileImage);
-			chatMessage.setProfileImage("abcd");
+			String profileImage = retrieveProfileImage(chatMessage.getNickname());
+			chatMessage.setProfileImage(profileImage);
 
 			// 스터디룸을 구독한 클라이언트에게 메시지 발송
 			messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessage.getSessionId(), chatMessage);

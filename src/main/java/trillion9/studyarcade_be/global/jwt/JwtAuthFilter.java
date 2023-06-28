@@ -31,7 +31,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String accessToken = jwtUtil.resolveToken(request, JwtUtil.ACCESS_TOKEN);
 
         if(accessToken != null) {
-            //Access 토큰 유효 시, security context에 인증 정보 저장
+            // Access 토큰 유효 시, security context에 인증 정보 저장
             if(jwtUtil.validateToken(accessToken)) {
                 // Redis에 해당 accessToken logout 여부를 확인
                 String isLogout = redisTemplate.opsForValue().get("BL:" + accessToken);

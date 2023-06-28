@@ -25,7 +25,7 @@ public class JobScheduler {
 
     private final Job job;
     private final JobLauncher jobLauncher;
-
+    
     @GetMapping("/api/batch")
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행되도록 설정
     public void executeJob() throws JobParametersInvalidException, JobExecutionAlreadyRunningException,

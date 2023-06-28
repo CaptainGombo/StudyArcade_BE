@@ -52,10 +52,17 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests()
                 //회원가입, 로그인페이지, 메인 페이지
-                .antMatchers("/**").permitAll()
-//                .antMatchers("/members/signup").permitAll()
-//                .antMatchers("/emails/**").permitAll()
-//                .antMatchers(HttpMethod.GET,"/posts/**").permitAll()
+                .antMatchers("/api/members/register").permitAll()
+                .antMatchers("/api/members/login").permitAll()
+                .antMatchers("/api/members/refresh-token").permitAll()
+                .antMatchers("/api/members/kakao/callback").permitAll()
+                .antMatchers("/api/members/check-nickname/**").permitAll()
+                .antMatchers("/api/members/register/email-confirm").permitAll()
+                .antMatchers("/api/main").permitAll()
+                // 테스트용 API
+                .antMatchers("/api/time").permitAll()
+                .antMatchers("/api/port").permitAll()
+                .antMatchers("/api/batch").permitAll()
 
                 .anyRequest().authenticated()
                 // JWT 인증/인가를 사용하기 위한 설정
@@ -72,7 +79,9 @@ public class WebSecurityConfig {
 
         CorsConfiguration config = new CorsConfiguration();
 
-        config.addAllowedOriginPattern("*"); // "http://localhost:3000"
+        config.addAllowedOriginPattern("https://www.study-hub.shop/");
+        config.addAllowedOriginPattern("https://study-hub-fe.vercel.app/");
+        config.addAllowedOriginPattern("http://localhost:3000");
 
         config.addExposedHeader(JwtUtil.ACCESS_TOKEN);
         config.addExposedHeader(JwtUtil.REFRESH_TOKEN);
