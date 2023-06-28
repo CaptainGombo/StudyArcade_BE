@@ -59,6 +59,7 @@ public class WebSecurityConfig {
                 .antMatchers("/api/members/check-nickname/**").permitAll()
                 .antMatchers("/api/members/register/email-confirm").permitAll()
                 .antMatchers("/api/main").permitAll()
+                // 웹소켓
                 .antMatchers("/ws-stomp/**").permitAll()
                 // 테스트용 API
                 .antMatchers("/api/time").permitAll()
