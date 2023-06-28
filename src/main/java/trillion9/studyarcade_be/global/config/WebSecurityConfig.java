@@ -65,8 +65,8 @@ public class WebSecurityConfig {
                 .antMatchers("/api/time").permitAll()
                 .antMatchers("/api/port").permitAll()
                 .antMatchers("/api/batch").permitAll()
-
                 .anyRequest().authenticated()
+
                 // JWT 인증/인가를 사용하기 위한 설정
                 .and().addFilterBefore(new JwtAuthFilter(jwtUtil, redisTemplate), UsernamePasswordAuthenticationFilter.class);
 
