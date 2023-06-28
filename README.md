@@ -140,7 +140,7 @@
 ## 📊 개선 사항
 ### BACK END
 <details>
-  <summary> ❕마이페이지 조회 성능 개선을 위한 통계 쿼리 최적화 방안 </summary>
+  <summary> ❕마이페이지 조회 성능 개선을 위한 Redis 캐싱 방안 </summary>
     <br>
   
   **`기술 도입 배경`**
