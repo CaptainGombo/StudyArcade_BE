@@ -16,14 +16,13 @@ public class TestController {
 
     @GetMapping("api/time")
     public String getCurrentTime() {
-        return LocalDateTime.now().toString();
+        return "현재 서버 시간 : " + LocalDateTime.now();
     }
 
     @GetMapping("api/port")
     public String getPortNumber() {
         WebServer webServer = applicationContext.getWebServer();
         int port = webServer.getPort();
-
         return "현재 사용 중인 서버 포트 번호: " + port;
     }
 }
