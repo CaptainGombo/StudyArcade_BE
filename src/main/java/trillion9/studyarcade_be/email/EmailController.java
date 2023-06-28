@@ -12,7 +12,7 @@ public class EmailController {
 
     private final EmailService emailService;
 
-    @PostMapping("/api/members/register/emailConfirm")
+    @PostMapping("/api/members/register/email-confirm")
     public ResponseDto<Object> emailConfirm(@RequestParam String email) throws Exception {
 
         return emailService.sendSimpleMessage(email);

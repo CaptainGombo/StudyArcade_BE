@@ -18,15 +18,4 @@ public class RoomCreateRequestDto {
 	private boolean secret;
 	private String roomPassword;
 	private LocalDate expirationDate;
-
-	// @AssertTrue
-	// public boolean isCategory() {
-	// 	try{
-	// 		CategoryEnum categoryEnum = CategoryEnum.valueOf(category);
-	// 	} catch (Exception exception){
-	// 		throw new IllegalArgumentException("category 값을 정확하게 입력해 주세요.");
-	// 	}
-	// 	return true;
-	//
-	// }
 }

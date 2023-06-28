@@ -11,6 +11,7 @@ import trillion9.studyarcade_be.global.security.UserDetailsImpl;
 @Component
 class CustomSentryUserProvider implements SentryUserProvider {
 
+    // Sentry 로깅에 에러 발생 유저 기록
     @Override
     public User provideUser() {
         User user = new User();

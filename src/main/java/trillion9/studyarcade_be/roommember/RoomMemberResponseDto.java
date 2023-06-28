@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 public class RoomMemberResponseDto {
     private String nickname;
     private String sessionId;
-    private String roomToken;
     private boolean roomMaster;
+//    private String roomToken;
 
     public RoomMemberResponseDto(RoomMember roomMember) {
-        // this.nickname = roomMember.getMember().getNickname();
+//        this.nickname = roomMember.getMember().getNickname();
         this.sessionId = roomMember.getSessionId();
-        this.roomToken = roomMember.getRoomToken();
         this.roomMaster = roomMember.isRoomMaster();
+//        this.roomToken = roomMember.getRoomToken();
     }
 }

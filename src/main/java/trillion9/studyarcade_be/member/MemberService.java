@@ -65,6 +65,7 @@ public class MemberService {
                 .build();
 
         memberRepository.save(member);
+
         return ResponseDto.setSuccess("회원가입 성공");
     }
 
@@ -197,7 +198,6 @@ public class MemberService {
 
         return ResponseDto.setSuccess("프로필 조회 성공", responseDto);
     }
-
 
     @Transactional
     public ResponseDto<MemberResponseDto> updateProfile(MemberRequestDto memberRequestDto, MultipartFile image, Member member) throws IOException {
