@@ -8,7 +8,6 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
@@ -66,14 +65,13 @@ public class JobConfig {
     @Bean
     public Job roomAndStudyTimeJob(Step roomStep, Step sessionStep, Step memberStep) {
         return jobBuilderFactory.get("roomAndStudyTimeJob")
-                .incrementer(new RunIdIncrementer()) // Incrementer를 통해 JobParameter 구분
+//                .incrementer(new RunIdIncrementer()) // Incrementer를 통해 JobParameter 구분
                 .start(roomStep)
                 .next(sessionStep)
                 .next(memberStep)
                 .build();
     }
 
-    // 처리량이 적어서 Tasklet 단위로 처리
     // 만료일이 된 Room 삭제 및 해당 Room에 포함된 RoomMember 삭제 Step
     @Bean
     public Step roomStep() {
@@ -81,16 +79,6 @@ public class JobConfig {
                 .tasklet(roomTasklet())
                 .build();
     }
-
-    // 현재 RoomMember가 존재하는 세션 외의 모든 세션 삭제
-//    @Bean
-//    public Step sessionStep() throws OpenViduJavaClientException, OpenViduHttpException {
-//        return stepBuilderFactory.get("sessionStep")
-//                .<String, String> chunk(CHUNK_SIZE)
-//                .reader(sessionReader())
-//                .writer(sessionWriter())
-//                .build();
-//    }
 
     // 현재 RoomMember가 존재하는 세션 외의 모든 세션 삭제 Step
     @Bean
@@ -143,43 +131,6 @@ public class JobConfig {
             return RepeatStatus.FINISHED;
         };
     }
-
-//    public JpaPagingItemReader<String> sessionReader() {
-//        return new JpaPagingItemReaderBuilder<String>()
-//                .name("jpaPagingItemReader")
-//                .entityManagerFactory(entityManagerFactory)
-//                .pageSize(CHUNK_SIZE)
-//                .queryString("SELECT DISTINCT m.sessionId FROM RoomMember m")
-//                .build();
-//    }
-
-    // 서버 Session과 비교해야 하기 때문에 Cursor 사용
-//    public JpaCursorItemReader<String> sessionReader() {
-//        return new JpaCursorItemReaderBuilder<String>()
-//                .name("jpaCursorItemReader")
-//                .entityManagerFactory(entityManagerFactory)
-//                .queryString("SELECT DISTINCT m.sessionId FROM RoomMember m")
-//                .build();
-//    }
-
-//    public ItemWriter<String> sessionWriter() throws OpenViduJavaClientException, OpenViduHttpException {
-//
-//            openvidu.fetch();
-//            List<Session> activeSessionList = openvidu.getActiveSessions();
-//
-//            activeSessionList.removeIf(session -> sessionIds.contains(session.getSessionId()));
-//
-//            for (Session session : activeSessionList) {
-//                try {
-//                    session.close();
-//                    log.info("Session " + session.getSessionId() + " closed");
-//                } catch (OpenViduHttpException e) {
-//                    // 세션을 닫을 때 발생한 예외 처리
-//                    log.error("Failed to close session " + session.getSessionId(), e);
-//                }
-//            }
-//        };
-//    }
 
     public JpaPagingItemReader<Member> memberReader() {
         return new JpaPagingItemReaderBuilder<Member>()
@@ -243,4 +194,52 @@ public class JobConfig {
             }
         };
     }
+
+    /* Session을 Chunk로 처리할 경우 */
+
+    //    @Bean
+//    public Step sessionStep() throws OpenViduJavaClientException, OpenViduHttpException {
+//        return stepBuilderFactory.get("sessionStep")
+//                .<String, String> chunk(CHUNK_SIZE)
+//                .reader(sessionReader())
+//                .writer(sessionWriter())
+//                .build();
+//    }
+
+//    public JpaPagingItemReader<String> sessionReader() {
+//        return new JpaPagingItemReaderBuilder<String>()
+//                .name("jpaPagingItemReader")
+//                .entityManagerFactory(entityManagerFactory)
+//                .pageSize(CHUNK_SIZE)
+//                .queryString("SELECT DISTINCT m.sessionId FROM RoomMember m")
+//                .build();
+//    }
+
+    // 서버 Session과 비교해야 하기 때문에 Cursor 사용
+//    public JpaCursorItemReader<String> sessionReader() {
+//        return new JpaCursorItemReaderBuilder<String>()
+//                .name("jpaCursorItemReader")
+//                .entityManagerFactory(entityManagerFactory)
+//                .queryString("SELECT DISTINCT m.sessionId FROM RoomMember m")
+//                .build();
+//    }
+
+//    public ItemWriter<String> sessionWriter() throws OpenViduJavaClientException, OpenViduHttpException {
+//
+//            openvidu.fetch();
+//            List<Session> activeSessionList = openvidu.getActiveSessions();
+//
+//            activeSessionList.removeIf(session -> sessionIds.contains(session.getSessionId()));
+//
+//            for (Session session : activeSessionList) {
+//                try {
+//                    session.close();
+//                    log.info("Session " + session.getSessionId() + " closed");
+//                } catch (OpenViduHttpException e) {
+//                    // 세션을 닫을 때 발생한 예외 처리
+//                    log.error("Failed to close session " + session.getSessionId(), e);
+//                }
+//            }
+//        };
+//    }
 }
