@@ -23,9 +23,10 @@ import trillion9.studyarcade_be.chat.RedisSubscriber;
 public class RedisRepositoryConfig {
 
 	private final RedisProperties redisProperties;
-	// lettuce
-	// RedisConnectionFactory 인터페이스를 통해 LettuceConnectionFactory를 생성하여 반환한다.
-	// RedisProperties로 yaml에 저장한 host, post를 가지고 와서 연결한다.
+
+	 /* lettuce
+	 RedisConnectionFactory 인터페이스를 통해 LettuceConnectionFactory를 생성하여 반환한다.
+	 RedisProperties로 yaml에 저장한 host, post를 가지고 와서 연결한다. */
 	@Bean
 	public RedisConnectionFactory redisConnectionFactory(){
 		return new LettuceConnectionFactory(redisProperties.getHost(), redisProperties.getPort());

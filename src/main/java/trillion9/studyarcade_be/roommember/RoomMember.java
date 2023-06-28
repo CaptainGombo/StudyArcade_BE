@@ -18,15 +18,13 @@ public class RoomMember extends AuditingEntity {
     @Column(name = "room_member_id")
     private Long id;
     private String sessionId;
-    private String roomToken;
 
     @ColumnDefault("false")
     private boolean roomMaster;
 
     @Builder
-    private RoomMember(String sessionId, String roomToken, boolean roomMaster) {
+    private RoomMember(String sessionId, boolean roomMaster) {
         this.sessionId = sessionId;
-        this.roomToken = roomToken;
         this.roomMaster = roomMaster;
     }
 

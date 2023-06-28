@@ -32,18 +32,18 @@ public class StompHandler implements ChannelInterceptor {
 
 			String jwtAccessToken = jwtUtil.socketResolveToken(accessToken);
 
-			/* Access Token 검증 성공인 경우 */
+			// Access Token 검증 성공인 경우
 			if (jwtAccessToken != null && jwtUtil.validateToken(jwtAccessToken)) {
 				log.info("엑세스 토큰 인증 성공");
 			}
-			/* Access 토큰이 만료된 경우 또는 유효하지 않은 경우 */
+			// Access 토큰이 만료된 경우 또는 유효하지 않은 경우
 			else {
 				log.info("JWT 토큰이 만료되어, Refresh token 확인 작업을 진행합니다.");
 
-				/* Refresh Token 존재 여부 확인.*/
+				// Refresh Token 존재 여부 확인
 				String jwtRefreshToken = jwtUtil.resolveToken(refreshToken);
 
-				/* Refresh Token이 유효한 경우 */
+				// Refresh Token이 유효한 경우
 				if (jwtRefreshToken != null && jwtUtil.validateToken(jwtRefreshToken)) {
 					log.info("리프레시 토큰 인증 성공");
 				} else {
