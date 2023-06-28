@@ -218,34 +218,18 @@ public class RoomService {
              }
          }
 
-        // 이미 입장한 유저일 경우 예외 발생
-        Optional<RoomMember> alreadyEnterChatRoomUser
-            = roomMemberRepository.findByMemberIdAndSessionId(member.getId(), session.getSessionId());
+        // 이미 입장한 유저일 경우 예외 발생 & 방 입장 하나로 제한
+        Optional<RoomMember> roomMemberCheck = roomMemberRepository.findByMemberId(member.getId());
 
-        if (alreadyEnterChatRoomUser.isPresent()) throw new CustomException(MEMBER_ALREADY_ENTERED);
-
-        // 방 입장 하나로 제한
-//        Optional<RoomMember> roomMemberCheck = roomMemberRepository.findByMemberId(member.getId());
-//
-//        if (roomMemberCheck.isPresent()) {
-//            throw new CustomException(ROOM_MEMBER_LIMIT_EXCEEDED);
-//        }
+        if (roomMemberCheck.isPresent()) throw new CustomException(ROOM_MEMBER_LIMIT_EXCEEDED);
 
         // 스터디 룸의 최대 인원은 9명으로 제한하고, 초과 시 예외 발생
         synchronized (room) {
             room.updateUserCount(room.getUserCount() + 1);
-
             if (room.getUserCount() > roomMaxUser) {
-                // 트랜잭션에 의해 위의 updateCntUser 메서드의 user수 +1 자동으로 롤백(-1)되어서 9에 맞추어짐
                 throw new CustomException(ROOM_FULL);
             }
         }
-//
-//        room.updateUserCount(room.getUserCount() + 1);
-//
-//        if (room.getUserCount() > roomMaxUser) {
-//            throw new CustomException(ROOM_FULL);
-//        }
 
         // 방 입장 토큰 생성
 //        String roomToken = createToken(member, room.getSessionId());

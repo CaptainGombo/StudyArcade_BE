@@ -25,7 +25,7 @@ import trillion9.studyarcade_be.global.jwt.JwtUtil;
 @EnableWebSecurity
 public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Bean
