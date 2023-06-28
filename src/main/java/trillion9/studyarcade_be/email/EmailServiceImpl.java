@@ -91,6 +91,6 @@ public class EmailServiceImpl implements EmailService{
             es.printStackTrace();
             throw new IllegalArgumentException(es.getMessage());
         }
-        return ResponseDto.setSuccess("이메일 발송 성공");
+        return ResponseDto.setSuccess("이메일 발송 성공", ePw);
     }
 }
