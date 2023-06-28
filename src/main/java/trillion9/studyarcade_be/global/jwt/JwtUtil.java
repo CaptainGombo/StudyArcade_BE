@@ -32,13 +32,13 @@ public class JwtUtil {
     public static final String REFRESH_TOKEN = "Refresh_Token";
 
 //    public static final long ACCESS_TOKEN_TIME = 30 * 60 * 1000L;   // AccessToken Time 30 min
-    public static final long ACCESS_TOKEN_TIME = 1 * 60 * 1000L;   // AccessToken Time 30 min
+    public static final long ACCESS_TOKEN_TIME = 1 * 60 * 1000L;   // AccessToken Time 1 min
 //    public static final long REFRESH_TOKEN_TIME = 24 * 60 * 60 * 1000L; // RefreshToken Time 1 day
-    public static final long REFRESH_TOKEN_TIME = 3 * 60 * 1000L; // RefreshToken Time 1 day
+    public static final long REFRESH_TOKEN_TIME = 3 * 60 * 1000L; // RefreshToken Time 3 min
 
     private final UserDetailsServiceImpl userDetailsService;
     private final MemberRepository memberRepository;
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Value("${jwt.secret.key}")
     private String secretKey;
@@ -112,7 +112,7 @@ public class JwtUtil {
         Member member = memberRepository.findByEmail(getUserInfoFromToken(token)).orElseThrow(
                 () -> new NullPointerException(HttpStatus.BAD_REQUEST.getReasonPhrase())
         );
-        String refreshToken = redisTemplate.opsForValue().get("RT:" + member.getEmail());
+        String refreshToken = (String) redisTemplate.opsForValue().get("RT:" + member.getEmail());
 
         // 사용자의 Refresh 토큰 가져오기
         return refreshToken != null && token.equals(refreshToken.substring(7));
