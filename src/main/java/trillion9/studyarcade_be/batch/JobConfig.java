@@ -53,6 +53,7 @@ public class JobConfig {
 
     private OpenVidu openvidu;
 
+
     @PostConstruct
     public void init() {
         this.openvidu = new OpenVidu(OPENVIDU_URL, OPENVIDU_SECRET);

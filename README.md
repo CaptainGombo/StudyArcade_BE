@@ -1,6 +1,6 @@
-# 🌳 항해99 14기 9조 실전프로젝트 : STUDY HUB 🌳
+# 🌳 STUDY HUB 🌳
+![1](https://github.com/Study-Hub-09/StudyHub_BE/assets/129656095/c3896e16-d210-4ecd-beb7-e8e1063a48cc)
 
-![1](https://github.com/Study-Hub-09/StudyHub_FE/assets/129656095/995d1d64-5777-4434-b8e0-25d31e33fd64)
 
 
 >🧑‍💻 개발 기간 : 2023.05.19 ~ 2023.06.30</p> 👉 서비스 URL : https://www.study-hub.shop </P>
@@ -140,7 +140,7 @@
 ## 📊 개선 사항
 ### BACK END
 <details>
-  <summary> ❕마이페이지 조회 성능 개선을 위한 통계 쿼리 최적화 방안 </summary>
+  <summary> ❕마이페이지 조회 성능 개선을 위한 Redis 캐싱 방안 </summary>
     <br>
   
   **`기술 도입 배경`**
