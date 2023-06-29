@@ -1,13 +1,13 @@
 package trillion9.studyarcade_be.room.dto;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 
+@Builder
 @Getter
-@RequiredArgsConstructor
 public class RoomCreateRequestDto {
 	@NotBlank(message = "스터디룸 이름을 입력해 주세요!")
 	private String roomName;
@@ -18,4 +18,5 @@ public class RoomCreateRequestDto {
 	private boolean secret;
 	private String roomPassword;
 	private LocalDate expirationDate;
+
 }

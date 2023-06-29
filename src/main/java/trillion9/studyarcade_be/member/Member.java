@@ -35,7 +35,8 @@ public class Member {
     private final LocalDateTime createdAt = LocalDateTime.now();
 
     @Builder
-    private Member(Long kakaoId, String nickname, String email, String password, Long dailyStudyTime, Long totalStudyTime, String title, String imageUrl) {
+    public Member(Long id, Long kakaoId, String nickname, String email, String password, Long dailyStudyTime, Long totalStudyTime, String title, String imageUrl) {
+        this.id = id;
         this.kakaoId = kakaoId;
         this.nickname = nickname;
         this.email = email;

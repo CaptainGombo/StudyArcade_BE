@@ -1,11 +1,11 @@
 package trillion9.studyarcade_be.room.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import trillion9.studyarcade_be.room.Room;
 
 @Getter
-@NoArgsConstructor
+@AllArgsConstructor
 public class RoomResponseDto {
 	private String sessionId;
 	private String roomName;
@@ -24,4 +24,5 @@ public class RoomResponseDto {
 		this.category = room.getCategory();
 		this.secret = room.isSecret();
 	}
+
 }

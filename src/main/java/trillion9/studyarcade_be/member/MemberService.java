@@ -45,6 +45,7 @@ public class MemberService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final S3Util s3Util;
 
+
     @Transactional
     public ResponseDto<String> register(MemberRequestDto memberRequestDto) {
         if (!memberRequestDto.getPassword().equals(memberRequestDto.getCheckPassword())) {
@@ -247,4 +248,5 @@ public class MemberService {
         }
         return nextGradeRemainingTime;
     }
+
 }

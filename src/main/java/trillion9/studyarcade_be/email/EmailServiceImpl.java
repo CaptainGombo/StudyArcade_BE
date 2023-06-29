@@ -7,11 +7,13 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import trillion9.studyarcade_be.global.ResponseDto;
 import trillion9.studyarcade_be.global.exception.CustomException;
+import trillion9.studyarcade_be.member.Member;
 import trillion9.studyarcade_be.member.MemberRepository;
 
 import javax.mail.Message.RecipientType;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.util.Optional;
 import java.util.Random;
 
 import static trillion9.studyarcade_be.global.exception.ErrorCode.INVALID_USER_EXISTENCE;
@@ -80,9 +82,10 @@ public class EmailServiceImpl implements EmailService{
     public ResponseDto<Object> sendSimpleMessage(String to) throws Exception {
         // TODO Auto-generated method stub
 
-        memberRepository.findByEmail(to).ifPresent(member -> {
+        Optional<Member> memberOptional = memberRepository.findByEmail(to);
+        if (memberOptional.isPresent()) {
             throw new CustomException(INVALID_USER_EXISTENCE);
-        });
+        }
 
         MimeMessage message = createMessage(to);
         try { // 예외처리
