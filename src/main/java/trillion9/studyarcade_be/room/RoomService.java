@@ -285,7 +285,7 @@ public class RoomService {
     }
 
      // 스터디 룸 생성 시 세션 생성
-     private RoomCreateResponseDto createSession(Member member) throws
+     RoomCreateResponseDto createSession(Member member) throws
          OpenViduJavaClientException, OpenViduHttpException {
 
          Session session = openvidu.createSession();
