@@ -32,6 +32,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.LinkedHashMap;
 
 import static trillion9.studyarcade_be.global.exception.ErrorCode.*;
 
@@ -140,15 +141,15 @@ public class MemberService {
         LocalDate now = LocalDate.now();
 
         // 마지막 7일 통계
-        // 마지막 7일 통계
         Map<String, Long> dailyStudyChart = hash.entries(member.getId() + "D");
         dailyStudyChart = dailyStudyChart.entrySet().stream()
                 .filter(entry -> {
                     LocalDate entryDate = LocalDate.parse(entry.getKey());
-                    return entryDate.isAfter(now.minusDays(7));
+                    return entryDate.isAfter(now.minusDays(6)); // 오늘을 포함하여 최근 7일치 데이터 가져오기
                 })
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
+                .sorted(Map.Entry.comparingByKey())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
         // 마지막 7주 통계
         Map<String, Long> weeklyStudyChart = hash.entries(member.getId() + "W");
         // 마지막 7달 통계
