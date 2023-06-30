@@ -198,6 +198,7 @@ public class JobConfig {
                 String monthlyKey = member.getId() + "M";
                 // 기존 데이터 삭제
                 if (!hash.keys(monthlyKey).isEmpty()) hash.delete(monthlyKey);
+
                 List<Object[]> monthlyStudyTime = studyTimeRepository.findStudyTimeByMonthRange(member.getId(), now.minusMonths(6), now);
                 for (Object[] objects : monthlyStudyTime) {
                     String year = String.valueOf(objects[0].toString());
