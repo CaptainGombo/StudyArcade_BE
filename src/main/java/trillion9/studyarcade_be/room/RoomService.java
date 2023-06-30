@@ -26,6 +26,7 @@ import trillion9.studyarcade_be.roommember.RoomMemberResponseDto;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Calendar;
@@ -205,8 +206,10 @@ public class RoomService {
         }
 
         // 해당 sessionId를 가진 스터디룸이 존재하는지 확인
-        Room room = roomRepository.findBySessionId(session.getSessionId()).orElseThrow(
-                () -> new CustomException(ROOM_NOT_FOUND));
+        Room room = entityManager.find(Room.class, sessionId, LockModeType.PESSIMISTIC_WRITE);
+        if (room == null) {
+            throw new CustomException(ROOM_NOT_FOUND);
+        }
 
          // 비공개 방일 경우, 비밀번호 체크를 수행
          if (room.isSecret()) {
@@ -224,11 +227,9 @@ public class RoomService {
         if (roomMemberCheck.isPresent()) throw new CustomException(ROOM_MEMBER_LIMIT_EXCEEDED);
 
         // 스터디 룸의 최대 인원은 9명으로 제한하고, 초과 시 예외 발생
-        synchronized (room) {
-            room.updateUserCount(room.getUserCount() + 1);
-            if (room.getUserCount() > roomMaxUser) {
-                throw new CustomException(ROOM_FULL);
-            }
+        room.updateUserCount(room.getUserCount() + 1);
+        if (room.getUserCount() > roomMaxUser) {
+            throw new CustomException(ROOM_FULL);
         }
 
         // 방 입장 토큰 생성
