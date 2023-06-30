@@ -165,9 +165,6 @@ public class JobConfig {
             for (Member member : members) {
                 // 마지막 7일 통계
                 String dailyKey = member.getId() + "D";
-                // 기존 데이터 삭제
-                if (!hash.keys(dailyKey).isEmpty()) hash.delete(dailyKey);
-
                 List<Object[]> dailyStudyTime = studyTimeRepository.findStudyTimeByDateRange(member.getId(), now.minusDays(6), now.minusDays(1));
                 for (Object[] value : dailyStudyTime) {
                     String day = String.valueOf(value[0].toString());
@@ -181,9 +178,6 @@ public class JobConfig {
 
                 // 마지막 7주 통계
                 String weeklyKey = member.getId() + "W";
-                // 기존 데이터 삭제
-                if (!hash.keys(weeklyKey).isEmpty()) hash.delete(weeklyKey);
-
                 List<Object[]> weeklyStudyTime = studyTimeRepository.findStudyTimeByWeekRange(member.getId(), now.minusWeeks(6), now);
                 for (Object[] objects : weeklyStudyTime) {
                     String week = String.valueOf(objects[0].toString());
@@ -196,8 +190,6 @@ public class JobConfig {
 
                 // 마지막 7달 통계
                 String monthlyKey = member.getId() + "M";
-                // 기존 데이터 삭제
-                if (!hash.keys(monthlyKey).isEmpty()) hash.delete(monthlyKey);
                 List<Object[]> monthlyStudyTime = studyTimeRepository.findStudyTimeByMonthRange(member.getId(), now.minusMonths(6), now);
                 for (Object[] objects : monthlyStudyTime) {
                     String year = String.valueOf(objects[0].toString());
