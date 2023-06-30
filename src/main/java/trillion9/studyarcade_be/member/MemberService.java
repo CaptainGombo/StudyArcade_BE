@@ -238,24 +238,24 @@ public class MemberService {
     public Long getNextGradeRemainingTime(Member member) {
         Long totalStudyTime = member.getTotalStudyTime();
 
-        if (totalStudyTime >= 1501 * 60) {
+        if (totalStudyTime >= 1501 * 60 * 60) {
             return 0L; // 이미 최고 등급인 경우 남은 시간은 0으로 처리
         }
 
         long nextGradeRemainingTime;
 
-        if (totalStudyTime >= 1001 * 60) {
-            nextGradeRemainingTime = (1501 * 60) - totalStudyTime;
-        } else if (totalStudyTime >= 651 * 60) {
-            nextGradeRemainingTime = (1001 * 60) - totalStudyTime;
-        } else if (totalStudyTime >= 401 * 60) {
-            nextGradeRemainingTime = (651 * 60) - totalStudyTime;
-        } else if (totalStudyTime >= 201 * 60) {
-            nextGradeRemainingTime = (401 * 60) - totalStudyTime;
-        } else if (totalStudyTime >= 51 * 60) {
-            nextGradeRemainingTime = (201 * 60) - totalStudyTime;
+        if (totalStudyTime >= 1001 * 60 * 60) {
+            nextGradeRemainingTime = (1501 * 60 * 60) - totalStudyTime;
+        } else if (totalStudyTime >= 651 * 60 * 60) {
+            nextGradeRemainingTime = (1001 * 60 * 60) - totalStudyTime;
+        } else if (totalStudyTime >= 401 * 60 * 60) {
+            nextGradeRemainingTime = (651 * 60 * 60) - totalStudyTime;
+        } else if (totalStudyTime >= 201 * 60 * 60) {
+            nextGradeRemainingTime = (401 * 60 * 60) - totalStudyTime;
+        } else if (totalStudyTime >= 51 * 60 * 60) {
+            nextGradeRemainingTime = (201 * 60 * 60) - totalStudyTime;
         } else {
-            nextGradeRemainingTime = (51 * 60) - totalStudyTime;
+            nextGradeRemainingTime = (51 * 60 * 60) - totalStudyTime;
         }
         return nextGradeRemainingTime;
     }
