@@ -25,10 +25,12 @@ import trillion9.studyarcade_be.room.repository.RoomRepository;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static trillion9.studyarcade_be.global.exception.ErrorCode.*;
@@ -134,17 +136,39 @@ public class MemberService {
     }
 
     public ResponseDto<MyPageResponseDto> myPage(Member member) {
-
         HashOperations<String, String, Long> hash = redisTemplate.opsForHash();
+        LocalDate now = LocalDate.now();
 
         // 마지막 7일 통계
         Map<String, Long> dailyStudyChart = hash.entries(member.getId() + "D");
+        Map<String, Long> limitedDailyStudyChart = dailyStudyChart.entrySet().stream()
+                .filter(entry -> {
+                    LocalDate entryDate = LocalDate.parse(entry.getKey());
+                    return entryDate.isAfter(now.minusDays(7));
+                })
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
         // 마지막 7주 통계
         Map<String, Long> weeklyStudyChart = hash.entries(member.getId() + "W");
+        Map<String, Long> limitedWeeklyStudyChart = weeklyStudyChart.entrySet().stream()
+                .filter(entry -> {
+                    String week = entry.getKey();
+                    LocalDate startOfWeek = LocalDate.parse(week + "-1");
+                    return startOfWeek.isAfter(now.minusWeeks(7));
+                })
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
         // 마지막 7달 통계
         Map<String, Long> monthlyStudyChart = hash.entries(member.getId() + "M");
+        Map<String, Long> limitedMonthlyStudyChart = monthlyStudyChart.entrySet().stream()
+                .filter(entry -> {
+                    String yearMonth = entry.getKey();
+                    LocalDate startOfMonth = LocalDate.parse(yearMonth + "-01");
+                    return startOfMonth.isAfter(now.minusMonths(7));
+                })
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        //다음 등급까지 남은 시간 조회
+        // 다음 등급까지 남은 시간 조회
         Long nextGradeRemainingTime = getNextGradeRemainingTime(member);
 
         // 총 공부시간 랭킹 1~3위 정보 조회
@@ -174,9 +198,9 @@ public class MemberService {
                 .title(member.getTitle())
                 .topRankedList(topRankedDtoList)
                 .nextGradeRemainingTime(nextGradeRemainingTime)
-                .dailyStudyChart(dailyStudyChart)
-                .weeklyStudyChart(weeklyStudyChart)
-                .monthlyStudyChart(monthlyStudyChart)
+                .dailyStudyChart(limitedDailyStudyChart)
+                .weeklyStudyChart(limitedWeeklyStudyChart)
+                .monthlyStudyChart(limitedMonthlyStudyChart)
                 .myRooms(myRooms)
                 .build();
 
