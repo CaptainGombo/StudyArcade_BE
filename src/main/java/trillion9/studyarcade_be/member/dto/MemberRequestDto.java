@@ -2,12 +2,13 @@ package trillion9.studyarcade_be.member.dto;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
 
-@Builder
 @Getter
+@NoArgsConstructor
 public class MemberRequestDto {
 
     @Pattern(regexp = "^[a-zA-Z가-힣]{2,10}$", message = "닉네임은 2글자~10글자 사이의 알파벳 또는 한글로 입력해주세요.")
@@ -24,16 +25,32 @@ public class MemberRequestDto {
     private String checkPassword;
 
 
-    @Builder
     @Getter
+    @NoArgsConstructor
     public static class login {
         @Email
         private String email;
         private String password;
 
+        @Builder
+        public login(String email, String password) {
+            this.email = email;
+            this.password = password;
+        }
+
+    }
+
+    @Builder
+    public MemberRequestDto(String nickname, String email, String imageUrl, String password, String checkPassword) {
+        this.nickname = nickname;
+        this.email = email;
+        this.imageUrl = imageUrl;
+        this.password = password;
+        this.checkPassword = checkPassword;
     }
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
+
 }
