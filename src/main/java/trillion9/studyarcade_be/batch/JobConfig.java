@@ -170,7 +170,9 @@ public class JobConfig {
                 for (Object[] value : dailyStudyTime) {
                     String day = String.valueOf(value[0].toString());
                     Long studyTime = Long.parseLong(value[1].toString());
-                    hash.put(dailyKey, day, studyTime); // 새로운 데이터 저장
+                    if (day != null && studyTime != null) { // 값이 null이 아닌 경우에만 저장
+                        hash.put(dailyKey, day, studyTime); // 새로운 데이터 저장
+                    }
                 }
                 hash.put(dailyKey, now.toString(), 0L);
                 redisTemplate.expire(dailyKey, 1, TimeUnit.DAYS);
@@ -182,7 +184,9 @@ public class JobConfig {
                 for (Object[] objects : weeklyStudyTime) {
                     String week = String.valueOf(objects[0].toString());
                     Long studyTime = Long.parseLong(objects[1].toString());
-                    hash.put(weeklyKey, week, studyTime); // 새로운 데이터 저장
+                    if (week != null && studyTime != null) { // 값이 null이 아닌 경우에만 저장
+                        hash.put(weeklyKey, week, studyTime); // 새로운 데이터 저장
+                    }
                 }
                 redisTemplate.expire(weeklyKey, 1, TimeUnit.DAYS);
 
@@ -194,7 +198,9 @@ public class JobConfig {
                     String year = String.valueOf(objects[0].toString());
                     String month = String.valueOf(objects[1].toString());
                     Long studyTime = Long.parseLong(objects[2].toString());
-                    hash.put(monthlyKey, year + "." + month, studyTime); // 새로운 데이터 저장
+                    if (year != null && month != null && studyTime != null) { // 값이 null이 아닌 경우에만 저장
+                        hash.put(monthlyKey, year + "." + month, studyTime); // 새로운 데이터 저장
+                    }
                 }
                 redisTemplate.expire(monthlyKey, 1, TimeUnit.DAYS);
             }
