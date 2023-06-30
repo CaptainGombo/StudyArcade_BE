@@ -158,40 +158,45 @@ public class JobConfig {
 
     // Redis에 통계 데이터 저장
     public ItemWriter<Member> updateStudyTimeStatistics() {
-
         HashOperations<String, String, Long> hash = redisTemplate.opsForHash();
         LocalDate now = LocalDate.now();
 
         return members -> {
             for (Member member : members) {
                 // 마지막 7일 통계
+                String dailyKey = member.getId() + "D";
+                hash.delete(dailyKey); // 기존 데이터 삭제
                 List<Object[]> dailyStudyTime = studyTimeRepository.findStudyTimeByDateRange(member.getId(), now.minusDays(6), now.minusDays(1));
                 for (Object[] value : dailyStudyTime) {
                     String day = String.valueOf(value[0].toString());
                     Long studyTime = Long.parseLong(value[1].toString());
-                    hash.put(member.getId() + "D", day, studyTime);
+                    hash.put(dailyKey, day, studyTime); // 새로운 데이터 저장
                 }
-                hash.put(member.getId() + "D", now.toString(), 0L);
-                redisTemplate.expire(member.getId() + "D", 1, TimeUnit.DAYS);
+                hash.put(dailyKey, now.toString(), 0L);
+                redisTemplate.expire(dailyKey, 1, TimeUnit.DAYS);
 
                 // 마지막 7주 통계
+                String weeklyKey = member.getId() + "W";
+                hash.delete(weeklyKey); // 기존 데이터 삭제
                 List<Object[]> weeklyStudyTime = studyTimeRepository.findStudyTimeByWeekRange(member.getId(), now.minusWeeks(6), now);
                 for (Object[] objects : weeklyStudyTime) {
                     String week = String.valueOf(objects[0].toString());
                     Long studyTime = Long.parseLong(objects[1].toString());
-                    hash.put(member.getId() + "W", week, studyTime);
+                    hash.put(weeklyKey, week, studyTime); // 새로운 데이터 저장
                 }
-                redisTemplate.expire(member.getId() + "W", 1, TimeUnit.DAYS);
+                redisTemplate.expire(weeklyKey, 1, TimeUnit.DAYS);
 
                 // 마지막 7달 통계
+                String monthlyKey = member.getId() + "M";
+                hash.delete(monthlyKey); // 기존 데이터 삭제
                 List<Object[]> monthlyStudyTime = studyTimeRepository.findStudyTimeByMonthRange(member.getId(), now.minusMonths(6), now);
                 for (Object[] objects : monthlyStudyTime) {
                     String year = String.valueOf(objects[0].toString());
                     String month = String.valueOf(objects[1].toString());
                     Long studyTime = Long.parseLong(objects[2].toString());
-                    hash.put(member.getId() + "M", year + "." + month, studyTime);
+                    hash.put(monthlyKey, year + "." + month, studyTime); // 새로운 데이터 저장
                 }
-                redisTemplate.expire(member.getId() + "M", 1, TimeUnit.DAYS);
+                redisTemplate.expire(monthlyKey, 1, TimeUnit.DAYS);
             }
         };
     }
