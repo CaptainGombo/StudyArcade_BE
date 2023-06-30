@@ -145,7 +145,7 @@ public class MemberService {
         dailyStudyChart = dailyStudyChart.entrySet().stream()
                 .filter(entry -> {
                     LocalDate entryDate = LocalDate.parse(entry.getKey());
-                    return entryDate.isAfter(now.minusDays(6)); // 오늘을 포함하여 최근 7일치 데이터 가져오기
+                    return !entryDate.isBefore(now.minusDays(6)); // 오늘을 포함하여 최근 7일치 데이터 가져오기
                 })
                 .sorted(Map.Entry.comparingByKey())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
