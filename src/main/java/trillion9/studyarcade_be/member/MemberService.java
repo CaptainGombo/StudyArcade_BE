@@ -140,8 +140,9 @@ public class MemberService {
         LocalDate now = LocalDate.now();
 
         // 마지막 7일 통계
+        // 마지막 7일 통계
         Map<String, Long> dailyStudyChart = hash.entries(member.getId() + "D");
-        Map<String, Long> limitedDailyStudyChart = dailyStudyChart.entrySet().stream()
+        dailyStudyChart = dailyStudyChart.entrySet().stream()
                 .filter(entry -> {
                     LocalDate entryDate = LocalDate.parse(entry.getKey());
                     return entryDate.isAfter(now.minusDays(7));
@@ -150,23 +151,8 @@ public class MemberService {
 
         // 마지막 7주 통계
         Map<String, Long> weeklyStudyChart = hash.entries(member.getId() + "W");
-        Map<String, Long> limitedWeeklyStudyChart = weeklyStudyChart.entrySet().stream()
-                .filter(entry -> {
-                    String week = entry.getKey();
-                    LocalDate startOfWeek = LocalDate.parse(week + "-1");
-                    return startOfWeek.isAfter(now.minusWeeks(7));
-                })
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
         // 마지막 7달 통계
         Map<String, Long> monthlyStudyChart = hash.entries(member.getId() + "M");
-        Map<String, Long> limitedMonthlyStudyChart = monthlyStudyChart.entrySet().stream()
-                .filter(entry -> {
-                    String yearMonth = entry.getKey();
-                    LocalDate startOfMonth = LocalDate.parse(yearMonth + "-01");
-                    return startOfMonth.isAfter(now.minusMonths(7));
-                })
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         // 다음 등급까지 남은 시간 조회
         Long nextGradeRemainingTime = getNextGradeRemainingTime(member);
@@ -198,9 +184,9 @@ public class MemberService {
                 .title(member.getTitle())
                 .topRankedList(topRankedDtoList)
                 .nextGradeRemainingTime(nextGradeRemainingTime)
-                .dailyStudyChart(limitedDailyStudyChart)
-                .weeklyStudyChart(limitedWeeklyStudyChart)
-                .monthlyStudyChart(limitedMonthlyStudyChart)
+                .dailyStudyChart(dailyStudyChart)
+                .weeklyStudyChart(weeklyStudyChart)
+                .monthlyStudyChart(monthlyStudyChart)
                 .myRooms(myRooms)
                 .build();
 
